@@ -30,8 +30,6 @@ To find the post type associated with a web page, you can use the `get_post_type
 
 The `get_post_type` function function uses the following syntax:
 
-.. code-block:: python
-
 .. autofunction:: indieweb_utils.get_post_type
 
 Here are the arguments you can use:
@@ -91,8 +89,6 @@ Webmention endpoint discovery is useful if you want to know if you can send webm
 
 You can discover if a URL has an associated webmention endpoint using the `discover_webmention_endpoint` function:
 
-.. code-block:: python
-
 .. autofunction:: indieweb_utils.discover_webmention_endpoint
 
 Here is an example of the function in action:
@@ -118,8 +114,6 @@ Canonicalization turns a relative URL into a complete URL.
 
 To canonicalize a URL, use this function:
 
-.. code-block:: python
-
 .. autofunction:: indieweb_utils.canonicalize
 
 This function requires two arguments.
@@ -143,8 +137,6 @@ Discover an Article Author
 You can discover the original author of an article as per the Authorship Specification.
 
 To do so, use this function:
-
-.. code-block:: python
 
 .. autofunction:: indieweb_utils.discover_author
 
@@ -201,8 +193,6 @@ This function implements a callback handler to verify the response frmo an autho
 
 To use this function, you need to pass in the following arguments:
 
-.. code-block:: python
-
 .. autofunction:: indieweb_utils.indieauth_callback_handler
 
 This function verifies that an authorization server has returned a valid response and redeems a token.
@@ -226,8 +216,6 @@ Generate Reply Context
 
 To generate reply context for a given page, use the following function:
 
-.. code-block:: python
-
 .. autofunction:: indieweb_utils.get_reply_context
 
 This function will return a dictionary with the following keys:
@@ -248,8 +236,6 @@ Find the Original Version of a Post
 ------------
 
 To find the original version of a post per the Original Post Discovery algorithm, use this code:
-
-.. code-block:: python
 
 .. autofunction:: indieweb_utils.discover_original_post
 
