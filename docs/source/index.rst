@@ -17,6 +17,7 @@ Contents
 .. toctree::
 
    usage
+   api
 
 Feature Set
 --------
