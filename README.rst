@@ -9,12 +9,12 @@ Python indieweb-utils Library
 
 This project is under active development.
 
-The documentation for this project is available at `indieweb-utils.readthedocs.io <https://indieweb-utils.readthedocs.io/en/latest/>`.
+The documentation for this project is available at `indieweb-utils.readthedocs.io <https://indieweb-utils.readthedocs.io/en/latest/>`_.
 
 License
 -------
 
-This project is licensed under the [MIT license](LICENSE).
+This project is licensed under the `MIT license <LICENSE>`_.
 
 Dependencies
 -------
@@ -39,5 +39,5 @@ Feel free to create an issue or pull request on GitHub and your contribution wil
 Contributors
 -------
 
-- `capjamesg <https://github.com/capjamesg>`
-- `tantek <https://github.com/tantek>`
+- `capjamesg <https://github.com/capjamesg>`_
+- `tantek <https://github.com/tantek>`_
