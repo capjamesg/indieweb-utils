@@ -3,9 +3,6 @@ Usage
 
 .. _installation:
 
-Contents
---------
-
 .. toctree::
 
    :ref:"Installation"
@@ -16,17 +13,24 @@ Installation
 
 To install this package, run the following command:
 
+.. code-block:: python
+
     pip install indieweb-utils
 
 You can import the package using the following line of code:
 
+.. code-block:: python
+
     import indieweb_utils
 
-   ### Find a Post Type
+Find a Post Type
+------------
 
 To find the post type associated with a web page, you can use the `get_post_type` function.
 
 The `get_post_type` function function uses the following syntax:
+
+.. code-block:: python
 
     indieweb_utils.post_type_discovery.get_post_type(url, custom_properties=[])
 
@@ -44,9 +48,13 @@ Custom Properties
 
 The structure of the custom properties tuple is:
 
-(attribute_to_look_for, value_to_return)
+.. code-block:: python
+
+   (attribute_to_look_for, value_to_return)
 
 An example custom property value is:
+
+.. code-block:: python
 
     custom_properties = [
         ("poke-of", "poke")
@@ -60,6 +68,8 @@ Custom properties are added to the end of the post type discovery list, just bef
 
 Here is an example of the `get_post_type` function in use:
 
+.. code-block:: python
+
     import indieauth_helpers
 
     url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
@@ -70,6 +80,8 @@ Here is an example of the `get_post_type` function in use:
 
 This code returns the following string:
 
+.. code-block:: python
+
     article
 
 Discover a Webmention Endpoint
@@ -78,6 +90,8 @@ Discover a Webmention Endpoint
 Webmention endpoint discovery is useful if you want to know if you can send webmentions to a site or if you want to send a webmention to a site.
 
 You can discover if a URL has an associated webmention endpoint using this code:
+
+.. code-block:: python
 
     import indieauth_helpers
 
@@ -91,11 +105,14 @@ If successful, this function will return the URL of the webmention endpoint asso
 
 If a webmention endpoint could not be found, URL will be equal to None. A string message value will be provided that you can use for debugging or present to a user.
 
-### Canonicalize a URL
+Canonicalize a URL
+------------
 
 Canonicalization turns a relative URL into a complete URL.
 
 To canonicalize a URL, use this function:
+
+.. code-block:: python
 
     url = indieweb_utils.canonicalize.canonicalize_url(old_url, domain)
 
@@ -110,6 +127,8 @@ The domain of the resource is needed so that it can be added to the URL during c
 
 A complete URL returned by this function will look like this:
 
+.. code-block:: python
+
     https://indieweb.org/POSSE
 
 Discover an Article Author
@@ -118,6 +137,8 @@ Discover an Article Author
 You can discover the original author of an article as per the Authorship Specification.
 
 To do so, use this function:
+
+.. code-block:: python
 
     post_type = indieauth_helpers.authorship_discovery.discover_author(url)
 
@@ -141,6 +162,8 @@ These are the two outputs defined in the authorship inference algorithm. Your pr
 
 Here is an example of the `discover_author` function in action:
 
+.. code-block:: python
+
     import indieauth_helpers
 
     url = "https://aaronparecki.com/2021/12/07/8/drone"
@@ -150,6 +173,8 @@ Here is an example of the `discover_author` function in action:
     print(post_type)
 
 This code returns the following h-card:
+
+.. code-block:: python
 
     {
         'type': ['h-card'],
@@ -169,6 +194,8 @@ The last stage of the IndieAuth authentication flow for a client is to verify a 
 This function implements a callback handler to verify the response frmo an authorization server and redeem a token.
 
 To use this function, you need to pass in the following arguments:
+
+.. code-block:: python
 
     message, response = indieweb_utils.auth.indieauth_callback_handler(
         code, # The code that was returned by the IndieAuth server
@@ -201,9 +228,13 @@ Generate Reply Context
 
 To generate reply context for a given page, use the following function:
 
+.. code-block:: python
+
     reply_context = indieweb_utils.context.generate_reply_context(url)
 
 This function will return a dictionary with the following keys:
+
+.. code-block:: python
 
     {
         "p-name": "The title of the page",
