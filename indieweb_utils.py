@@ -1,5 +1,5 @@
 """
-indieweb-utils - A Python library that provides building blogs for people implementing IndieWeb applications.
+indieweb_utils - A Python library that provides building blogs for people implementing IndieWeb applications.
 """
 
 import re
