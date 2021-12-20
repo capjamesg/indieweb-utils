@@ -11,13 +11,12 @@ author = 'capjamesg'
 
 sys.path.insert(0, os.path.abspath('../..'))
 
-release = '0.1'
-version = '0.1.0'
+release = '0.1.1'
+version = '0.1.1'
 
 # -- General configuration
 
 extensions = [
-    'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',

@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import requests
 import mf2py
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 def canonicalize_url(url, domain, full_url=None, protocol="https"):
     """
