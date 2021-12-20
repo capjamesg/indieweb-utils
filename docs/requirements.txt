@@ -1,1 +1,4 @@
 indieweb_utils==0.1.1
+bs4==latest
+mf2py==latest
+requests==latest

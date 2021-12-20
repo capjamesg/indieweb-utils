@@ -9,7 +9,7 @@ Usage
    :ref:"Custom Properties"
 
 Installation
-------------
+------------------------
 
 To install this package, run the following command:
 
@@ -24,7 +24,7 @@ You can import the package using the following line of code:
     import indieweb_utils
 
 Find a Post Type
-------------
+------------------------
 
 To find the post type associated with a web page, you can use the `get_post_type` function.
 
@@ -42,7 +42,7 @@ The function returns a single string with the post type of the specified web pag
 See the Post Type Discovery specification for a full list of post types.
 
 Custom Properties
-------------
+------------------------
 
 The structure of the custom properties tuple is:
 
@@ -83,7 +83,7 @@ This code returns the following string:
     article
 
 Discover a Webmention Endpoint
-------------
+------------------------------------
 
 Webmention endpoint discovery is useful if you want to know if you can send webmentions to a site or if you want to send a webmention to a site.
 
@@ -108,7 +108,7 @@ If successful, this function will return the URL of the webmention endpoint asso
 If a webmention endpoint could not be found, URL will be equal to None. A string message value will be provided that you can use for debugging or present to a user.
 
 Canonicalize a URL
-------------
+------------------------
 
 Canonicalization turns a relative URL into a complete URL.
 
@@ -132,7 +132,7 @@ A complete URL returned by this function will look like this:
     https://indieweb.org/POSSE
 
 Discover an Article Author
-------------
+------------------------------------
 
 You can discover the original author of an article as per the Authorship Specification.
 
@@ -185,7 +185,7 @@ This code returns the following h-card:
     }
 
 Handle an IndieAuth Callback Request
-------------
+------------------------------------
 
 The last stage of the IndieAuth authentication flow for a client is to verify a callback response and exchange the provided code with a token.
 
@@ -212,7 +212,7 @@ If successful, this function will return a None value for "message" and the JSON
 The function will return a message and a None value for response if there was an error. The message value tells you what went wrong during the token verification process.
 
 Generate Reply Context
-------------
+------------------------
 
 To generate reply context for a given page, use the following function:
 
@@ -233,7 +233,7 @@ This function will return a dictionary with the following keys:
 A None value will be specified if any of the above attributes cannot be found.
 
 Find the Original Version of a Post
-------------
+------------------------------------
 
 To find the original version of a post per the Original Post Discovery algorithm, use this code:
 
