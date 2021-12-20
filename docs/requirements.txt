@@ -1,4 +1,12 @@
-indieweb_utils==0.1.1
-bs4==latest
-mf2py==latest
-requests==latest
+beautifulsoup4==4.10.0
+bs4==0.0.1
+certifi==2021.10.8
+charset-normalizer==2.0.9
+html5lib==1.1
+idna==3.3
+mf2py==1.1.2
+requests==2.26.0
+six==1.16.0
+soupsieve==2.3.1
+urllib3==1.26.7
+webencodings==0.5.1
