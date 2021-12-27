@@ -251,7 +251,7 @@ def indieauth_callback_handler(
     granted_scopes = r.json().get("scope").split(" ")
 
     if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
-        message = "You need to grant {} access to use this tool.".format(", ".join(required_scopes).strip(", "))
+        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
         return message, None
 
     return None, r.json()
@@ -524,10 +524,15 @@ def get_reply_context(url, twitter_bearer_token=None):
     photo_url = None
     site_supports_webmention = False
 
-    if url.startswith("https://") or url.startswith("http://"):
-        parsed = mf2py.parse(requests.get(url, timeout=10, verify=False).text)
+    http_headers = {
+        'Accept': 'text/html',
+        'User-Agent': 'indieweb_utils'
+    }
 
-        supports_webmention = requests.get("https://webmention.jamesg.blog/discover?target={}".format(url))
+    if url.startswith("https://") or url.startswith("http://"):
+        parsed = mf2py.parse(requests.get(url, timeout=10, verify=False, headers=http_headers).text)
+
+        supports_webmention = requests.get(f"https://webmention.jamesg.blog/discover?target={url}")
 
         if supports_webmention.status_code == 200:
             if supports_webmention.json().get("success") == True:
@@ -614,7 +619,20 @@ def get_reply_context(url, twitter_bearer_token=None):
                 elif soup.find("meta", property="twitter:image") and soup.find("meta", property="twitter:image")["content"]:
                     post_photo_url = soup.find("meta", property="twitter:image")["content"]
 
-            h_entry = {"author_image": author_image, "author_url": author_url, "author_name": author_name, "post_body": post_body, "p-name": p_name}
+            h_entry = {
+                "type": "entry",
+                "author": {
+                    "type": "card",
+                    "url": author_url,
+                    "name": author_name,
+                    "photo": author_image
+                },
+                "name": p_name,
+                "url": url,
+                "content": {
+                    "html": post_body
+                }
+            }
 
             if post_photo_url:
                 h_entry["post_photo_url"] = post_photo_url
@@ -650,9 +668,21 @@ def get_reply_context(url, twitter_bearer_token=None):
             else:
                 post_body = None
 
-            h_card = {"author_image": author_image, "author_url": url, "author_name": author_name, "post_body": post_body, "p-name": None}
-
-            return h_card, site_supports_webmention
+            h_entry = {
+                "type": "entry",
+                "author": {
+                    "type": "card",
+                    "url": url,
+                    "name": author_name,
+                    "photo": author_image
+                },
+                "url": url,
+                "content": {
+                    "html": post_body
+                }
+            }
+            
+            return h_entry, site_supports_webmention
             
         h_entry = {}
 
@@ -660,15 +690,15 @@ def get_reply_context(url, twitter_bearer_token=None):
             site_supports_webmention = False
             tweet_uid = url.strip("/").split("/")[-1]
             headers = {
-                "Authorization": "Bearer {}".format(twitter_bearer_token)
+                "Authorization": f"Bearer {twitter_bearer_token}"
             }
-            r = requests.get("https://api.twitter.com/2/tweets/{}?tweet.fields=author_id".format(tweet_uid), headers=headers, timeout=10, verify=False)
+            r = requests.get(f"https://api.twitter.com/2/tweets/{tweet_uid}?tweet.fields=author_id", headers=headers, timeout=10, verify=False)
 
             if r and r.status_code != 200:
                 return {}, None
 
             get_author = requests.get(
-                "https://api.twitter.com/2/users/{}?user.fields=url,name,profile_image_url,username".format(r.json()["data"].get("author_id")),
+                f"https://api.twitter.com/2/users/{r.json()['data'].get('author_id')}?user.fields=url,name,profile_image_url,username",
                 headers=headers,
                 timeout=10,
                 verify=False
@@ -683,11 +713,23 @@ def get_reply_context(url, twitter_bearer_token=None):
                 author_name = None
                 author_url = None
 
-            h_entry = {"p-name": "", "post_body": r.json()["data"].get("text"), "author_image": photo_url, "author_url": author_url, "author_name": author_name}
+            h_entry = {
+                "type": "entry",
+                "author": {
+                    "type": "card",
+                    "url": author_url,
+                    "name": author_name,
+                    "photo": photo_url
+                },
+                "url": url,
+                "content": {
+                    "text": r.json()["data"].get("text")
+                }
+            }
 
             return h_entry, site_supports_webmention
 
-        soup = BeautifulSoup(requests.get(url).text, "lxml")
+        soup = BeautifulSoup(requests.get(url, headers=http_headers).text, "lxml")
 
         page_title = soup.find("title")
 
@@ -746,8 +788,19 @@ def get_reply_context(url, twitter_bearer_token=None):
         if not domain.startswith("https://") and not domain.startswith("http://"):
             author_url = "https://" + domain
 
-        h_entry = {"p-name": page_title, "post_body": p_tag, "author_image": photo_url, "author_url": "https://" + domain, "author_name": domain}
-
+            h_entry = {
+                "type": "entry",
+                "author": {
+                    "type": "card",
+                    "url": "https://" + domain,
+                    "photo": photo_url
+                },
+                "url": "https://" + domain,
+                "content": {
+                    "text": p_tag
+                }
+            }
+            
         if post_photo_url:
             h_entry["post_photo_url"] = post_photo_url
 
@@ -781,3 +834,130 @@ def is_authenticated(token_endpoint, headers, session, approved_user=None):
         return False
 
     return True
+
+def send_webmention(source, target, me=None):
+    if not source and not target:
+        message = {
+            "title": "Please enter a source and target.",
+            "description": "Please enter a source and target.",
+            "url": target,
+            "status": "failed"
+        }
+
+        return message
+
+
+    if not target.startswith("https://"):
+        message = {
+            "title": "Error: Target must use https:// protocol.",
+            "description": "Target must use https:// protocol.",
+            "url": target,
+            "status": "failed"
+        }
+
+        return message
+
+    # if domain is not approved, don't allow access
+    if me != None:
+        target_domain = target.split("/")[2]
+
+        if "/" in me.strip("/"):
+            raw_domain = me.split("/")[2]
+        else:
+            raw_domain = me
+
+        if not target_domain.endswith(raw_domain):
+            message = {
+                "title": f"Error: Target must be a {me} post.",
+                "description": f"Target must be a {me} post.",
+                "url": target,
+                "status": "failed"
+            }
+
+            return message
+
+    # set up bs4
+    r = requests.get(target, allow_redirects=True)
+
+    soup = BeautifulSoup(r.text, "lxml")
+    
+    link_header = r.headers.get("Link")
+
+    endpoint = None
+
+    if link_header:
+        parsed_links = requests.utils.parse_header_links(link_header.rstrip('>').replace('>,<', ',<'))
+
+        for link in parsed_links:
+            if "webmention" in link["rel"]:
+                endpoint = link["url"]
+                break
+
+    if endpoint == None:
+        for item in soup():
+            if item.name == "a" and item.get("rel") and item["rel"][0] == "webmention":
+                endpoint = item.get("href")
+                break
+            elif item.name == "link" and item.get("rel") and item["rel"][0] == "webmention":
+                endpoint = item.get("href")
+                break
+
+    if endpoint == "0.0.0.0" or endpoint == "127.0.0.1" or endpoint == "localhost":
+        message = {
+            "title": "Error:" + "Your endpoint is not supported.",
+            "description": "Your endpoint is not supported.",
+            "url": target,
+            "status": "failed"
+        }
+
+        return message
+
+    if endpoint == None:
+        message = {
+            "title": "Error:" + "No endpoint could be found for this resource.",
+            "description": "No endpoint could be found for this resource.",
+            "url": target,
+            "status": "failed"
+        }
+
+        return message
+
+
+    if endpoint == "":
+        endpoint = target
+
+    if not endpoint.startswith("https://") and not endpoint.startswith("http://") and not endpoint.startswith("/"):
+        if r.history:
+            endpoint = "/".join(r.url.split("/")[:-1]) + "/" + endpoint
+        else:
+            endpoint = "/".join(target.split("/")[:-1]) + "/" + endpoint
+
+    if endpoint.startswith("/"):
+        if r.history:
+            endpoint = "https://" + r.url.split("/")[2] + endpoint
+        else:
+            endpoint = "https://" + target.split("/")[2] + endpoint
+    
+    # make post request to endpoint with source and target as values
+    r = requests.post(endpoint, 
+        data={"source": source, "target": target},
+        headers={"Content-Type": "application/x-www-form-urlencoded"})
+
+    message = str(r.json()["message"])
+
+    if r.status_code == 200 or r.status_code == 201 or r.status_code == 202:
+        message = {
+            "title": message,
+            "description": message,
+            "url": target,
+            "status": "success"
+        }
+    else:
+        message = {
+            "title": "Error: " + message,
+            "description": "Error: " + message,
+            "url": target,
+            "status": "failed"
+        }
+
+    return message

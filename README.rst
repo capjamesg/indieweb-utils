@@ -5,7 +5,7 @@ Python indieweb-utils Library
    :target: https://indieweb-utils.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-**indieweb-utils** is a Python library that provides building blogs for people implementing IndieWeb applications. This library contains implementations for some specifications that may be useful in IndieWeb applications.
+**indieweb-utils** is a Python library that provides building blocks for people implementing IndieWeb applications. This library contains implementations for some specifications that may be useful in IndieWeb applications.
 
 This project is under active development.
 
