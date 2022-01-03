@@ -246,6 +246,9 @@ def indieauth_callback_handler(
     if me != None:
         if r.json().get("me").strip("/") != me.strip("/"):
             message = "Your domain is not allowed to access this website."
+        else:
+            message = "An invalid me value was provided."
+            
         return message, None
 
     granted_scopes = r.json().get("scope").split(" ")
@@ -517,8 +520,8 @@ def get_reply_context(url, twitter_bearer_token=None):
     :type url: str
     :param twitter_bearer_token: The optional Twitter bearer token to use. This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
     :type twitter_bearer_token: str
-    :return: The reply context.
-    :rtype: dict
+    :return: was successful (bool), reply context (dict) or error (dict), page accepts webmention (bool)
+    :rtype: list
     """
     h_entry = None
     photo_url = None
@@ -530,7 +533,19 @@ def get_reply_context(url, twitter_bearer_token=None):
     }
 
     if url.startswith("https://") or url.startswith("http://"):
-        parsed = mf2py.parse(requests.get(url, timeout=10, verify=False, headers=http_headers).text)
+        try:
+            page_content = requests.get(url, timeout=10, verify=False, headers=http_headers)
+        except:
+            return True, {
+                "error": "Page content could not be retrieved."
+            }
+
+        if page_content.status_code != 200:
+            return True, {
+                "error": page_content.status_code
+            }
+
+        parsed = mf2py.parse(page_content.text)
 
         supports_webmention = requests.get(f"https://webmention.jamesg.blog/discover?target={url}")
 
@@ -640,7 +655,7 @@ def get_reply_context(url, twitter_bearer_token=None):
             if post_video_url:
                 h_entry["post_video_url"] = post_video_url
 
-            return h_entry, site_supports_webmention
+            return True, h_entry, site_supports_webmention
 
         elif parsed["items"] and parsed["items"][0]["type"] == ["h-card"]:
             h_card = parsed["items"][0]
@@ -682,7 +697,7 @@ def get_reply_context(url, twitter_bearer_token=None):
                 }
             }
             
-            return h_entry, site_supports_webmention
+            return True, h_entry, site_supports_webmention
             
         h_entry = {}
 
@@ -727,7 +742,7 @@ def get_reply_context(url, twitter_bearer_token=None):
                 }
             }
 
-            return h_entry, site_supports_webmention
+            return True, h_entry, site_supports_webmention
 
         soup = BeautifulSoup(requests.get(url, headers=http_headers).text, "lxml")
 
@@ -804,9 +819,9 @@ def get_reply_context(url, twitter_bearer_token=None):
         if post_photo_url:
             h_entry["post_photo_url"] = post_photo_url
 
-        return h_entry, site_supports_webmention
+        return True, h_entry, site_supports_webmention
 
-    return h_entry, site_supports_webmention
+    return True, h_entry, site_supports_webmention
 
 def is_authenticated(token_endpoint, headers, session, approved_user=None):
     """
