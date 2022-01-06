@@ -6,3 +6,8 @@ build-backend = "flit_core.buildapi"
 name = "indieweb_utils"
 authors = [{name = "capjamesg", email = "jamesg@jamesg.blog"}]
 dynamic = ["version", "description"]
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"
+python_paths = ["src"]
+testpaths = ["tests"]
