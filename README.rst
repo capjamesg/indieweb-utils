@@ -17,7 +17,7 @@ License
 This project is licensed under the `MIT license <LICENSE>`_.
 
 Dependencies
--------
+--------------
 
 This project uses the following dependencies:
 
@@ -25,8 +25,21 @@ This project uses the following dependencies:
 - mf2py for microformats parsing
 - requests for making HTTP requests
 
+
+Running Tests
+---------------
+
+Tests are run using the pytest library. Install development dependencies and run tests with the following commands.
+
+::
+
+  $ pip install -r requirements_dev.txt
+  $ pytest
+
+
+
 Contributing
--------
+---------------
 
 This project welcomes contributions from anyone who wants to improve the library.
 
@@ -37,7 +50,8 @@ If you have another idea on how to improve this library, let us know.
 Feel free to create an issue or pull request on GitHub and your contribution will be reviewed.
 
 Contributors
--------
+------------
 
 - `capjamesg <https://github.com/capjamesg>`_
 - `tantek <https://github.com/tantek>`_
+- `jamesvandyne <https://github.com/jamesvandyne/>`_
