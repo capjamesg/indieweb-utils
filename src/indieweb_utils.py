@@ -4,9 +4,21 @@ for people implementing IndieWeb applications.
 """
 
 import re
+import ipaddress
+from dataclasses import dataclass
+
 from bs4 import BeautifulSoup
 import requests
 import mf2py
+
+# this reply context object is not currently in use
+@dataclass
+class ReplyContext:
+    author_url: str
+    author_name: str
+    author_photo: str
+    post_url: str
+    post_body: str
 
 __version__ = "0.1.2"
 
@@ -140,9 +152,19 @@ def discover_webmention_endpoint(target):
         message = "No webmention endpoint could be found for this resource."
         return None, message
 
-    invalid_endpoints = ("0.0.0.0", "127.0.0.1", "localhost")
+    # verify if IP address is not allowed
+    try:
+        endpoint_as_ip = ipaddress.ip_address(endpoint)
 
-    if endpoint in invalid_endpoints:
+        if endpoint.is_private == True or endpoint.is_multicast == True \
+            or endpoint_as_ip.is_loopback == True or endpoint_as_ip.is_unspecified == True \
+                or endpoint_as_ip.is_reserved == True or endpoint_as_ip.is_link_local == True:
+            message = "The endpoint does not connect to an accepted IP address."
+            return message, None
+    except ValueError:
+        pass
+
+    if endpoint == "localhost":
         message = "This resource is not supported."
         return None, message
 
@@ -297,6 +319,56 @@ def get_post_type(h_entry, custom_properties=[]):
         return "article"
 
     return "note"
+
+def discover_web_page_feeds(url):
+    """
+    Get all feeds on a web page.
+
+    :param url: The URL of the page whose associated feeds you want to retrieve.
+    :type url: str
+    :return: A dictionary of feeds on the web page. The dictionary keys are feed URLs and the values are feed titles.
+    :rtype: dict
+    """
+    if not url.startswith("http://") and not url.startswith("https://"):
+        url = "https://" + url
+    elif url.startswith("//"):
+        url = "https:" + url
+
+    try:
+        web_page = requests.get(url, timeout=10, allow_redirects=True)
+
+        web_page = web_page.text
+    except:
+        return []
+
+    soup = BeautifulSoup(web_page, "lxml")
+
+    # check for presence of mf2 hfeed
+    h_feed = soup.find_all(class_="h-feed")
+
+    feeds = []
+
+    if soup.find("link", rel="alternate", type="application/atom+xml"):
+        feeds.append(soup.find("link", rel="alternate", type="application/atom+xml").get("href"))
+    if soup.find("link", rel="alternate", type="application/rss+xml"):
+        feeds.append(soup.find("link", rel="alternate", type="application/rss+xml").get("href"))
+    if soup.find("link", rel="feed", type="text/html"):
+        # used for mircoformats rel=feed discovery
+        feeds.append(soup.find("link", rel="feed", type="text/html").get("href"))
+    if h_feed:
+        feeds.append(url)
+
+    for feed in range(len(feeds)):
+        f = feeds[feed]
+
+        if f.startswith("/"):
+            feeds[feed] = url.strip("/") + f
+        elif f.startswith("http://") or f.startswith("https://"):
+            pass
+        elif f.startswith("//"):
+            feeds[feed] = "https:" + f
+
+    return feeds
 
 def discover_author(url, page_contents=None):
     """
@@ -519,6 +591,7 @@ def get_reply_context(url, twitter_bearer_token=None):
     :return: was successful (bool), reply context (dict) or error (dict), page accepts webmention (bool)
     :rtype: list
     """
+
     h_entry = None
     photo_url = None
     site_supports_webmention = False
@@ -541,15 +614,9 @@ def get_reply_context(url, twitter_bearer_token=None):
                 "error": page_content.status_code
             }
 
+        site_supports_webmention, _ = discover_webmention_endpoint(url)
+            
         parsed = mf2py.parse(page_content.text)
-
-        supports_webmention = requests.get(
-            f"https://webmention.jamesg.blog/discover?target={url}"
-        )
-
-        if supports_webmention.status_code == 200:
-            if supports_webmention.json().get("success") == True:
-                site_supports_webmention = True
 
         domain = url.replace("https://", "").replace("http://", "").split("/")[0]
 
@@ -647,10 +714,14 @@ def get_reply_context(url, twitter_bearer_token=None):
 
             # look for featured image to display in reply context
             if post_photo_url is None:
-                if soup.find("meta", property="og:image") and soup.find("meta", property="og:image")["content"]:
-                    post_photo_url = soup.find("meta", property="og:image")["content"]
-                elif soup.find("meta", property="twitter:image") and soup.find("meta", property="twitter:image")["content"]:
-                    post_photo_url = soup.find("meta", property="twitter:image")["content"]
+                meta_og_image = soup.find("meta", property="og:image")
+                meta_twitter_image = soup.find("meta", property="twitter:image")
+
+                if meta_og_image and meta_og_image.get("content"):
+                    post_photo_url = meta_og_image["content"]
+
+                elif meta_twitter_image and meta_twitter_image.get("content"):
+                    post_photo_url = meta_twitter_image["content"]
 
             h_entry = {
                 "type": "entry",
@@ -771,7 +842,9 @@ def get_reply_context(url, twitter_bearer_token=None):
 
             return True, h_entry, site_supports_webmention
 
-        soup = BeautifulSoup(requests.get(url, headers=http_headers).text, "lxml")
+        request = requests.get(url, headers=http_headers)
+
+        soup = BeautifulSoup(request.text, "lxml")
 
         page_title = soup.find("title")
 
@@ -919,72 +992,17 @@ def send_webmention(source, target, me=None):
 
             return message
 
-    # set up bs4
-    r = requests.get(target, allow_redirects=True)
-
-    soup = BeautifulSoup(r.text, "lxml")
-    
-    link_header = r.headers.get("Link")
-
-    endpoint = None
-
-    if link_header:
-        parsed_links = requests.utils.parse_header_links(link_header.rstrip('>').replace('>,<', ',<'))
-
-        for link in parsed_links:
-            if "webmention" in link["rel"]:
-                endpoint = link["url"]
-                break
+    endpoint, message = discover_webmention_endpoint(target)
 
     if endpoint is None:
-        for item in soup():
-            if item.name == "a" and item.get("rel") and item["rel"][0] == "webmention":
-                endpoint = item.get("href")
-                break
-
-            if item.name == "link" and item.get("rel") and item["rel"][0] == "webmention":
-                endpoint = item.get("href")
-                break
-
-    invalid_endpoints = ("0.0.0.0", "127.0.0.1", "localhost")
-
-    if endpoint in invalid_endpoints:
         message = {
-            "title": "Error:" + "Your endpoint is not supported.",
-            "description": "Your endpoint is not supported.",
+            "title": "Error:" + message,
+            "description": message,
             "url": target,
             "status": "failed"
         }
 
         return message
-
-    if endpoint is None:
-        message = {
-            "title": "Error:" + "No endpoint could be found for this resource.",
-            "description": "No endpoint could be found for this resource.",
-            "url": target,
-            "status": "failed"
-        }
-
-        return message
-
-
-    if endpoint == "":
-        endpoint = target
-
-    valid_start = ("https://", "http://", "/")
-
-    if not any(endpoint.startswith(start) for start in valid_start):
-        if r.history:
-            endpoint = "/".join(r.url.split("/")[:-1]) + "/" + endpoint
-        else:
-            endpoint = "/".join(target.split("/")[:-1]) + "/" + endpoint
-
-    if endpoint.startswith("/"):
-        if r.history:
-            endpoint = "https://" + r.url.split("/")[2] + endpoint
-        else:
-            endpoint = "https://" + target.split("/")[2] + endpoint
     
     # make post request to endpoint with source and target as values
     r = requests.post(
@@ -1000,7 +1018,9 @@ def send_webmention(source, target, me=None):
 
     message = str(r.json()["message"])
 
-    if r.status_code == 200 or r.status_code == 201 or r.status_code == 202:
+    valid_status_codes = (200, 201, 202)
+
+    if r.status_code in valid_status_codes:
         message = {
             "title": message,
             "description": message,
