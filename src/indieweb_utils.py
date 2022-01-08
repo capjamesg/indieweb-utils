@@ -3,13 +3,14 @@ indieweb_utils - A Python library that provides building blocks
 for people implementing IndieWeb applications.
 """
 
-import re
 import ipaddress
+import re
 from dataclasses import dataclass
 
-from bs4 import BeautifulSoup
-import requests
 import mf2py
+import requests
+from bs4 import BeautifulSoup
+
 
 # this reply context object is not currently in use
 @dataclass
@@ -20,7 +21,9 @@ class ReplyContext:
     post_url: str
     post_body: str
 
+
 __version__ = "0.1.2"
+
 
 def canonicalize_url(url, domain, full_url=None, protocol="https"):
     """
@@ -67,7 +70,7 @@ def canonicalize_url(url, domain, full_url=None, protocol="https"):
         final_result = protocol + "://" + domain.strip() + "/" + url[3:]
     else:
         final_result = protocol + "://" + url
-    
+
     # replace ../ throughout url
 
     url_after_replacing_dots = ""
@@ -92,6 +95,7 @@ def canonicalize_url(url, domain, full_url=None, protocol="https"):
 
     return final_url
 
+
 def discover_endpoints(url, headers_to_find):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
@@ -110,9 +114,7 @@ def discover_endpoints(url, headers_to_find):
     http_link_headers = endpoint_request.headers.get("link")
 
     if http_link_headers:
-        parsed_link_headers = requests.utils.parse_header_links(
-            http_link_headers.rstrip('>').replace('>,<', ',<')
-        )
+        parsed_link_headers = requests.utils.parse_header_links(http_link_headers.rstrip(">").replace(">,<", ",<"))
     else:
         parsed_link_headers = []
 
@@ -131,6 +133,7 @@ def discover_endpoints(url, headers_to_find):
             response.pop(response_url)
 
     return response
+
 
 def discover_webmention_endpoint(target):
     """
@@ -156,9 +159,14 @@ def discover_webmention_endpoint(target):
     try:
         endpoint_as_ip = ipaddress.ip_address(endpoint)
 
-        if endpoint.is_private == True or endpoint.is_multicast == True \
-            or endpoint_as_ip.is_loopback == True or endpoint_as_ip.is_unspecified == True \
-                or endpoint_as_ip.is_reserved == True or endpoint_as_ip.is_link_local == True:
+        if (
+            endpoint.is_private == True
+            or endpoint.is_multicast == True
+            or endpoint_as_ip.is_loopback == True
+            or endpoint_as_ip.is_unspecified == True
+            or endpoint_as_ip.is_reserved == True
+            or endpoint_as_ip.is_link_local == True
+        ):
             message = "The endpoint does not connect to an accepted IP address."
             return message, None
     except ValueError:
@@ -178,20 +186,13 @@ def discover_webmention_endpoint(target):
 
     if endpoint.startswith("/"):
         endpoint = "https://" + target.split("/")[2] + endpoint
-    
+
     return endpoint, ""
 
+
 def indieauth_callback_handler(
-        code,
-        state,
-        token_endpoint,
-        code_verifier,
-        session_state,
-        me,
-        callback_url,
-        client_id,
-        required_scopes
-    ):
+    code, state, token_endpoint, code_verifier, session_state, me, callback_url, client_id, required_scopes
+):
     """
     Exchange a callback 'code' for an authentication token.
 
@@ -226,19 +227,17 @@ def indieauth_callback_handler(
         "redirect_uri": callback_url,
         "client_id": client_id,
         "grant_type": "authorization_code",
-        "code_verifier": code_verifier
+        "code_verifier": code_verifier,
     }
 
-    headers = {
-        "Accept": "application/json"
-    }
+    headers = {"Accept": "application/json"}
 
     try:
         r = requests.post(token_endpoint, data=data, headers=headers)
     except:
         message = "Your token endpoint server could not be accessed."
         return message, None
-    
+
     if r.status_code != 200:
         message = "There was an error with your token endpoint server."
         return message, None
@@ -257,12 +256,12 @@ def indieauth_callback_handler(
 
     granted_scopes = r.json().get("scope").split(" ")
 
-    if r.json().get("scope") == "" or \
-            any(scope not in granted_scopes for scope in required_scopes):
+    if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
         message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
         return message, None
 
     return None, r.json()
+
 
 def get_post_type(h_entry, custom_properties=[]):
     """
@@ -287,7 +286,7 @@ def get_post_type(h_entry, custom_properties=[]):
         ("like-of", "like"),
         ("video", "video"),
         ("photo", "photo"),
-        ("summary", "summary")
+        ("summary", "summary"),
     ]
 
     for prop in custom_properties:
@@ -319,6 +318,7 @@ def get_post_type(h_entry, custom_properties=[]):
         return "article"
 
     return "note"
+
 
 def discover_web_page_feeds(url):
     """
@@ -370,6 +370,7 @@ def discover_web_page_feeds(url):
 
     return feeds
 
+
 def discover_author(url, page_contents=None):
     """
     Discover the author of a post per the IndieWeb Authorship specification.
@@ -389,33 +390,33 @@ def discover_author(url, page_contents=None):
 
     preliminary_author = None
 
-    h_entry = [e for e in full_page['items'] if e['type'] == ['h-entry']]
+    h_entry = [e for e in full_page["items"] if e["type"] == ["h-entry"]]
 
-    if h_entry and h_entry[0]["properties"].get('author'):
-        preliminary_author = h_entry[0]["properties"]['author'][0]
+    if h_entry and h_entry[0]["properties"].get("author"):
+        preliminary_author = h_entry[0]["properties"]["author"][0]
 
-    h_feed = [e for e in full_page['items'] if e['type'] == ['h-feed']]
+    h_feed = [e for e in full_page["items"] if e["type"] == ["h-feed"]]
 
-    if h_feed and h_feed[0]["properties"].get('author'):
-        preliminary_author = h_entry[0]["properties"]['author'][0]
+    if h_feed and h_feed[0]["properties"].get("author"):
+        preliminary_author = h_entry[0]["properties"]["author"][0]
 
     author_page_url = None
-        
+
     if preliminary_author and type(preliminary_author) == str:
-        if preliminary_author.startswith('https://'):
+        if preliminary_author.startswith("https://"):
             # author is url, further processing needed
             author_page_url = preliminary_author
         else:
             # author is name
             return preliminary_author
-            
+
     if preliminary_author and type(preliminary_author) == dict:
         # author is h-card so the value can be returned
         return preliminary_author
 
     # if rel=author, look for h-card on the rel=author link
     if author_page_url is None and h_entry and h_entry[0].get("rels") and h_entry[0]["rels"].get("author"):
-        rel_author = h_entry[0]['rels']['author']
+        rel_author = h_entry[0]["rels"]["author"]
 
         if rel_author:
             author_page_url = rel_author[0]
@@ -430,42 +431,46 @@ def discover_author(url, page_contents=None):
             author_page_url = author_page_url
         else:
             author_page_url = None
-        
+
     if author_page_url is not None:
         new_h_card = mf2py.parse(url=author_page_url)
 
         # get rel me values from parsed object
         if new_h_card.get("rels") and new_h_card.get("rels").get("me"):
-            rel_mes = new_h_card['rels']['me']
+            rel_mes = new_h_card["rels"]["me"]
         else:
             rel_mes = []
 
-        final_h_card = [e for e in new_h_card['items'] if e['type'] == 'h-card']
+        final_h_card = [e for e in new_h_card["items"] if e["type"] == "h-card"]
 
         if len(final_h_card) > 0:
             for card in final_h_card:
                 for j in card["items"]:
-                    if j.get('type') and j.get('type') == ['h-card'] and \
-                            j['properties']['url'] == rel_author and \
-                            j['properties'].get('uid') == j['properties']['url']:
+                    if (
+                        j.get("type")
+                        and j.get("type") == ["h-card"]
+                        and j["properties"]["url"] == rel_author
+                        and j["properties"].get("uid") == j["properties"]["url"]
+                    ):
                         h_card = j
                         return h_card
 
-                    if j.get('type') and j.get('type') == ['h-card'] and j['properties'].get('url') in rel_mes:
+                    if j.get("type") and j.get("type") == ["h-card"] and j["properties"].get("url") in rel_mes:
                         h_card = j
                         return h_card
 
-                    if j.get('type') and j.get('type') == ['h-card'] and j['properties']['url'] == rel_author:
+                    if j.get("type") and j.get("type") == ["h-card"] and j["properties"]["url"] == rel_author:
                         h_card = j
                         return h_card
 
     # no author found, return None
     return None
 
+
 def syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain):
     if url_to_check == posse_permalink:
         return candidate_url
-        
+
     if url_to_check and url_to_check.split("/")[2] == posse_domain:
         try:
             r = requests.get(url_to_check, timeout=10, allow_redirects=True)
@@ -478,6 +483,7 @@ def syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain
                 return candidate_url
 
     return None
+
 
 def discover_original_post(posse_permalink):
     """
@@ -503,7 +509,7 @@ def discover_original_post(posse_permalink):
         if post_h_entry.select(".u-url .u-uid"):
             original_post_url = post_h_entry.select(".u-url .u-uid")[0].get("href")
             return original_post_url
-    
+
         canonical_links = parsed_post.select("link[rel='canonical']")
 
         if canonical_links:
@@ -516,7 +522,7 @@ def discover_original_post(posse_permalink):
             if link.text.lower() == "see original".lower():
                 if link.get("href"):
                     original_post_url = link.get("href")
-                    
+
                     return original_post_url
 
         candidate_url = None
@@ -551,34 +557,25 @@ def discover_original_post(posse_permalink):
         for link in all_hyperlinks:
             if "u-syndication" in link.get("class"):
                 url_to_check = link.get("href")
-                
-                original_post_url = syndication_check(
-                    url_to_check,
-                    posse_permalink,
-                    candidate_url,
-                    posse_domain
-                )
+
+                original_post_url = syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
 
                 if original_post_url:
                     return original_post_url
-        
+
         all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
 
         for header in all_syndication_link_headers:
             if header.get("href") == posse_permalink:
                 url_to_check = header.get("href")
-                
-                original_post_url = syndication_check(
-                    url_to_check,
-                    posse_permalink,
-                    candidate_url,
-                    posse_domain
-                )
+
+                original_post_url = syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
 
                 if original_post_url:
                     return original_post_url
-    
+
     return None
+
 
 def get_reply_context(url, twitter_bearer_token=None):
     """
@@ -596,26 +593,19 @@ def get_reply_context(url, twitter_bearer_token=None):
     photo_url = None
     site_supports_webmention = False
 
-    http_headers = {
-        'Accept': 'text/html',
-        'User-Agent': 'indieweb_utils'
-    }
+    http_headers = {"Accept": "text/html", "User-Agent": "indieweb_utils"}
 
     if url.startswith("https://") or url.startswith("http://"):
         try:
             page_content = requests.get(url, timeout=10, verify=False, headers=http_headers)
         except:
-            return True, {
-                "error": "Page content could not be retrieved."
-            }
+            return True, {"error": "Page content could not be retrieved."}
 
         if page_content.status_code != 200:
-            return True, {
-                "error": page_content.status_code
-            }
+            return True, {"error": page_content.status_code}
 
         site_supports_webmention, _ = discover_webmention_endpoint(url)
-            
+
         parsed = mf2py.parse(page_content.text)
 
         domain = url.replace("https://", "").replace("http://", "").split("/")[0]
@@ -628,19 +618,21 @@ def get_reply_context(url, twitter_bearer_token=None):
             author_image = None
 
             if h_entry["properties"].get("author"):
-                if type(h_entry["properties"]["author"][0]) == dict and h_entry["properties"]["author"][0].get("type") == ["h-card"]:
-                    if h_entry['properties']['author'][0]['properties'].get('url'):
-                        author_url = h_entry['properties']['author'][0]['properties']['url'][0] 
+                if type(h_entry["properties"]["author"][0]) == dict and h_entry["properties"]["author"][0].get(
+                    "type"
+                ) == ["h-card"]:
+                    if h_entry["properties"]["author"][0]["properties"].get("url"):
+                        author_url = h_entry["properties"]["author"][0]["properties"]["url"][0]
                     else:
                         author_url = url
 
-                    if h_entry['properties']['author'][0]['properties'].get('name'):
-                        author_name = h_entry['properties']['author'][0]['properties']['name'][0]
+                    if h_entry["properties"]["author"][0]["properties"].get("name"):
+                        author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
                     else:
                         author_name = None
-                    
-                    if h_entry['properties']['author'][0]['properties'].get('photo'):
-                        author_image = h_entry['properties']['author'][0]['properties']['photo'][0]
+
+                    if h_entry["properties"]["author"][0]["properties"].get("photo"):
+                        author_image = h_entry["properties"]["author"][0]["properties"]["photo"][0]
                     else:
                         author_image = None
                 elif type(h_entry["properties"]["author"][0]) == str:
@@ -648,17 +640,17 @@ def get_reply_context(url, twitter_bearer_token=None):
                         author_url = url.split("/")[0] + "//" + domain + h_entry["properties"].get("author")[0]
 
                     author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
-                    
-                    if author["items"] and author["items"][0]["type"] == ["h-card"]:
-                        author_url = h_entry['properties']['author'][0]
 
-                        if author['items'][0]['properties'].get('name'):
-                            author_name = h_entry['properties']['author'][0]['properties']['name'][0]
+                    if author["items"] and author["items"][0]["type"] == ["h-card"]:
+                        author_url = h_entry["properties"]["author"][0]
+
+                        if author["items"][0]["properties"].get("name"):
+                            author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
                         else:
                             author_name = None
-                        
-                        if author['items']['properties'].get('photo'):
-                            author_image = h_entry['properties']['author'][0]['properties']['photo'][0]
+
+                        if author["items"]["properties"].get("photo"):
+                            author_image = h_entry["properties"]["author"][0]["properties"]["photo"][0]
                         else:
                             author_image = None
 
@@ -672,7 +664,7 @@ def get_reply_context(url, twitter_bearer_token=None):
                 post_body = h_entry["properties"]["content"][0]["html"]
                 soup = BeautifulSoup(post_body, "html.parser")
                 post_body = soup.text
-                
+
                 favicon = soup.find("link", rel="icon")
 
                 if favicon and not author_image:
@@ -696,8 +688,9 @@ def get_reply_context(url, twitter_bearer_token=None):
             else:
                 p_name = None
 
-            if author_url is not None and \
-                    (not author_url.startswith("https://") and not author_url.startswith("http://")):
+            if author_url is not None and (
+                not author_url.startswith("https://") and not author_url.startswith("http://")
+            ):
                 author_url = "https://" + author_url
 
             if not author_name and author_url:
@@ -725,17 +718,10 @@ def get_reply_context(url, twitter_bearer_token=None):
 
             h_entry = {
                 "type": "entry",
-                "author": {
-                    "type": "card",
-                    "url": author_url,
-                    "name": author_name,
-                    "photo": author_image
-                },
+                "author": {"type": "card", "url": author_url, "name": author_name, "photo": author_image},
                 "name": p_name,
                 "url": url,
-                "content": {
-                    "html": post_body
-                }
+                "content": {"html": post_body},
             }
 
             if post_photo_url:
@@ -750,12 +736,12 @@ def get_reply_context(url, twitter_bearer_token=None):
             h_card = parsed["items"][0]
 
             if h_card["properties"].get("name"):
-                author_name = h_card['properties']['name'][0]
+                author_name = h_card["properties"]["name"][0]
             else:
                 author_name = None
 
             if h_card["properties"].get("photo"):
-                author_image = h_card['properties']['photo'][0]
+                author_image = h_card["properties"]["photo"][0]
                 if author_image.startswith("//"):
                     author_image = "https:" + author_image
                 elif author_image.startswith("/"):
@@ -768,41 +754,32 @@ def get_reply_context(url, twitter_bearer_token=None):
                 author_image = None
 
             if h_card["properties"].get("note"):
-                post_body = h_card['properties']['note'][0]
+                post_body = h_card["properties"]["note"][0]
             else:
                 post_body = None
 
             h_entry = {
                 "type": "entry",
-                "author": {
-                    "type": "card",
-                    "url": url,
-                    "name": author_name,
-                    "photo": author_image
-                },
+                "author": {"type": "card", "url": url, "name": author_name, "photo": author_image},
                 "url": url,
-                "content": {
-                    "html": post_body
-                }
+                "content": {"html": post_body},
             }
-            
+
             return True, h_entry, site_supports_webmention
-            
+
         h_entry = {}
 
         if url.startswith("https://twitter.com") and twitter_bearer_token is not None:
             site_supports_webmention = False
             tweet_uid = url.strip("/").split("/")[-1]
 
-            headers = {
-                "Authorization": f"Bearer {twitter_bearer_token}"
-            }
+            headers = {"Authorization": f"Bearer {twitter_bearer_token}"}
 
             r = requests.get(
                 f"https://api.twitter.com/2/tweets/{tweet_uid}?tweet.fields=author_id",
                 headers=headers,
-                timeout=10, 
-                verify=False
+                timeout=10,
+                verify=False,
             )
 
             if r and r.status_code != 200:
@@ -811,10 +788,7 @@ def get_reply_context(url, twitter_bearer_token=None):
             base_url = f"https://api.twitter.com/2/users/{r.json()['data'].get('author_id')}"
 
             get_author = requests.get(
-                f"{base_url}?user.fields=url,name,profile_image_url,username",
-                headers=headers,
-                timeout=10,
-                verify=False
+                f"{base_url}?user.fields=url,name,profile_image_url,username", headers=headers, timeout=10, verify=False
             )
 
             if get_author and get_author.status_code == 200:
@@ -828,16 +802,9 @@ def get_reply_context(url, twitter_bearer_token=None):
 
             h_entry = {
                 "type": "entry",
-                "author": {
-                    "type": "card",
-                    "url": author_url,
-                    "name": author_name,
-                    "photo": photo_url
-                },
+                "author": {"type": "card", "url": author_url, "name": author_name, "photo": photo_url},
                 "url": url,
-                "content": {
-                    "text": r.json()["data"].get("text")
-                }
+                "content": {"text": r.json()["data"].get("text")},
             }
 
             return True, h_entry, site_supports_webmention
@@ -863,8 +830,8 @@ def get_reply_context(url, twitter_bearer_token=None):
         else:
             p_tag = None
 
-        if soup.select('.e-content'):
-            p_tag = soup.select('.e-content')[0]
+        if soup.select(".e-content"):
+            p_tag = soup.select(".e-content")[0]
 
             # get first paragraph
             if p_tag:
@@ -879,13 +846,13 @@ def get_reply_context(url, twitter_bearer_token=None):
         post_photo_url = None
 
         # look for featured image to display in reply context
-        if soup.select('.u-photo'):
-            post_photo_url = soup.select('.u-photo')[0]['src']
+        if soup.select(".u-photo"):
+            post_photo_url = soup.select(".u-photo")[0]["src"]
         elif soup.find("meta", property="og:image") and soup.find("meta", property="og:image")["content"]:
             post_photo_url = soup.find("meta", property="og:image")["content"]
         elif soup.find("meta", property="twitter:image") and soup.find("meta", property="twitter:image")["content"]:
             post_photo_url = soup.find("meta", property="twitter:image")["content"]
-            
+
         favicon = soup.find("link", rel="icon")
 
         if favicon and not photo_url:
@@ -905,23 +872,18 @@ def get_reply_context(url, twitter_bearer_token=None):
 
             h_entry = {
                 "type": "entry",
-                "author": {
-                    "type": "card",
-                    "url": "https://" + domain,
-                    "photo": photo_url
-                },
+                "author": {"type": "card", "url": "https://" + domain, "photo": photo_url},
                 "url": "https://" + domain,
-                "content": {
-                    "text": p_tag
-                }
+                "content": {"text": p_tag},
             }
-            
+
         if post_photo_url:
             h_entry["post_photo_url"] = post_photo_url
 
         return True, h_entry, site_supports_webmention
 
     return True, h_entry, site_supports_webmention
+
 
 def is_authenticated(token_endpoint, headers, session, approved_user=None):
     """
@@ -951,24 +913,24 @@ def is_authenticated(token_endpoint, headers, session, approved_user=None):
 
     return True
 
+
 def send_webmention(source, target, me=None):
     if not source and not target:
         message = {
             "title": "Please enter a source and target.",
             "description": "Please enter a source and target.",
             "url": target,
-            "status": "failed"
+            "status": "failed",
         }
 
         return message
-
 
     if not target.startswith("https://"):
         message = {
             "title": "Error: Target must use https:// protocol.",
             "description": "Target must use https:// protocol.",
             "url": target,
-            "status": "failed"
+            "status": "failed",
         }
 
         return message
@@ -987,7 +949,7 @@ def send_webmention(source, target, me=None):
                 "title": f"Error: Target must be a {me} post.",
                 "description": f"Target must be a {me} post.",
                 "url": target,
-                "status": "failed"
+                "status": "failed",
             }
 
             return message
@@ -995,25 +957,15 @@ def send_webmention(source, target, me=None):
     endpoint, message = discover_webmention_endpoint(target)
 
     if endpoint is None:
-        message = {
-            "title": "Error:" + message,
-            "description": message,
-            "url": target,
-            "status": "failed"
-        }
+        message = {"title": "Error:" + message, "description": message, "url": target, "status": "failed"}
 
         return message
-    
+
     # make post request to endpoint with source and target as values
     r = requests.post(
-        endpoint, 
-        data={
-            "source": source,
-            "target": target
-        },
-        headers={
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+        endpoint,
+        data={"source": source, "target": target},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
 
     message = str(r.json()["message"])
@@ -1021,18 +973,8 @@ def send_webmention(source, target, me=None):
     valid_status_codes = (200, 201, 202)
 
     if r.status_code in valid_status_codes:
-        message = {
-            "title": message,
-            "description": message,
-            "url": target,
-            "status": "success"
-        }
+        message = {"title": message, "description": message, "url": target, "status": "success"}
     else:
-        message = {
-            "title": "Error: " + message,
-            "description": "Error: " + message,
-            "url": target,
-            "status": "failed"
-        }
+        message = {"title": "Error: " + message, "description": "Error: " + message, "url": target, "status": "failed"}
 
     return message
