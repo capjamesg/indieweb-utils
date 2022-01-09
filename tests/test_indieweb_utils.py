@@ -39,3 +39,18 @@ class TestPostTypeDiscovery:
         h_entry = [item for item in parsed["items"] if item.get("type") == ["h-entry"]]
 
         assert get_post_type(h_entry[0]) == "article"
+
+
+class TestWebPageFeedDiscovery:
+    def test_webpage_feed_discovery(self):
+        feeds = discover_web_page_feeds("https://jamesg.blog/")
+
+        assumed_feeds = [
+            "https://jamesg.blog/", # h-feed
+            "https://jamesg.blog/feeds/posts.xml",
+            "https://jamesg.blog/feeds/posts.jf2",
+            "https://jamesg.blog/feeds/posts.json",
+        ]
+
+        for f in feeds:
+            assert f in assumed_feeds
