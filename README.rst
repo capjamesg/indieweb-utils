@@ -29,13 +29,50 @@ This project uses the following dependencies:
 Running Tests
 ---------------
 
-Tests are run using the pytest library. Install development dependencies and run tests with the following commands.
+Quality is maintained ensuring each merged passes testing, typing, linting, and formatting requirements.
+
+To check locally install the development dependencies and run the suite using `tox`.
 
 ::
 
   $ pip install -r requirements_dev.txt
-  $ pytest
+  $ tox
 
+Alternatively, you can run just a single check by passing the environment to tox.
+
+Unit Tests
+~~~~~~~~~~~~~~
+
+Tests use pytest.
+
+::
+
+  $ tox -e py39  # Run all tests
+  $ tox -e py39 tests/test_indieweb_utils.py::TestPostTypeDiscovery  # Run a single test
+
+Linting
+~~~~~~~~~~~~
+
+Linting is checked with black, isort, and flake8.
+
+::
+
+  $ tox -e lint
+
+Black and isort errors can be fixed automatically. Use the `fmt` to fix those errors automatically.
+
+::
+
+  $ tox -e fmt
+
+Typing
+~~~~~~~~~~~~
+
+Types are validated with mypy.
+
+::
+
+  $ tox -e typecheck
 
 
 Contributing
