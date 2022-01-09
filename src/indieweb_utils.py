@@ -320,7 +320,7 @@ def get_post_type(h_entry, custom_properties=[]):
     return "note"
 
 
-def discover_web_page_feeds(url):
+def discover_web_page_feeds(url, user_mime_types=[]):
     """
     Get all feeds on a web page.
 
@@ -345,28 +345,37 @@ def discover_web_page_feeds(url):
 
     # check for presence of mf2 hfeed
     h_feed = soup.find_all(class_="h-feed")
+    page_title = soup.find("title")
 
-    feeds = []
+    page_domain = url.split("/")[2]
 
-    if soup.find("link", rel="alternate", type="application/atom+xml"):
-        feeds.append(soup.find("link", rel="alternate", type="application/atom+xml").get("href"))
-    if soup.find("link", rel="alternate", type="application/rss+xml"):
-        feeds.append(soup.find("link", rel="alternate", type="application/rss+xml").get("href"))
-    if soup.find("link", rel="feed", type="text/html"):
-        # used for mircoformats rel=feed discovery
-        feeds.append(soup.find("link", rel="feed", type="text/html").get("href"))
+    valid_mime_types = [
+        "application/rss+xml",
+        "application/atom+xml",
+        "application/rdf+xml",
+        "application/xml",
+        "application/json",
+        "application/mf2+json",
+        "application/atom+xml",
+        "application/feed+json",
+        "application/jf2feed_json",
+    ]
+
+    valid_mime_types += user_mime_types
+
+    valid_mime_types = list(set(valid_mime_types))
+
+    feeds = {}
+
+    for mime_type in valid_mime_types:
+        if soup.find("link", rel="alternate", type=mime_type):
+            feed_title = soup.find("link", rel="alternate", type=mime_type).get("title")
+            feed_url = canonicalize_url(soup.find("link", rel="alternate", type=mime_type).get("href"), page_domain)
+
+            feeds[feed_url] = feed_title
+
     if h_feed:
-        feeds.append(url)
-
-    for feed in range(len(feeds)):
-        f = feeds[feed]
-
-        if f.startswith("/"):
-            feeds[feed] = url.strip("/") + f
-        elif f.startswith("http://") or f.startswith("https://"):
-            pass
-        elif f.startswith("//"):
-            feeds[feed] = "https:" + f
+        feeds[feed_url] = page_title.text
 
     return feeds
 
@@ -915,6 +924,15 @@ def is_authenticated(token_endpoint, headers, session, approved_user=None):
 
 
 def send_webmention(source, target, me=None):
+    """
+    Send a webmention to a target URL.
+
+    :param source: The source URL.
+    :param target: The target URL.
+    :param me: Your domain, optional.
+    :return: dict with keys "title", "description", "url", and "status"
+    :rtype: dict
+    """
     if not source and not target:
         message = {
             "title": "Please enter a source and target.",
