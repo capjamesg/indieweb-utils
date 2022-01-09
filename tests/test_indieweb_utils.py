@@ -24,9 +24,7 @@ def test_canonicalize_url(url, expected):
 class TestWebmentionEndpointDiscovery:
     def test_webmention_endpoint_discovery(self):
         # TODO: Mock the request so unit tests are making network requests
-        endpoints = discover_webmention_endpoint(
-            "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
-        )
+        endpoints = discover_webmention_endpoint("https://jamesg.blog/2021/12/06/advent-of-bloggers-6/")
         assert len(endpoints) > 0
         assert endpoints[0] == "https://webmention.jamesg.blog/endpoint"
 
