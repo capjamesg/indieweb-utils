@@ -874,7 +874,8 @@ def get_reply_context(url, twitter_bearer_token=None):
                 "type": "entry",
                 "author": {"type": "card", "url": "https://" + domain, "photo": photo_url},
                 "url": "https://" + domain,
-                "content": {"text": p_tag},
+                "name": page_title,
+                "content": {"text": p_tag, "html": p_tag},
             }
 
         if post_photo_url:
