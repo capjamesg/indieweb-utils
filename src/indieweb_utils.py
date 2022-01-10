@@ -5,7 +5,7 @@ for people implementing IndieWeb applications.
 
 import ipaddress
 import re
-from dataclasses import dataclass
+import dataclasses
 from typing import Dict, Optional, List
 from urllib import parse as url_parse
 
@@ -15,13 +15,20 @@ from bs4 import BeautifulSoup
 
 
 # this reply context object is not currently in use
-@dataclass
+@dataclasses.dataclass
 class ReplyContext:
     author_url: str
     author_name: str
     author_photo: str
     post_url: str
     post_body: str
+
+
+@dataclasses.dataclass
+class FeedUrl:
+    url: str
+    mime_type: str
+    title: str
 
 
 __version__ = "0.1.3"
@@ -359,17 +366,17 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
         "application/jf2feed_json",
     }
 
-    feeds = {}
+    feeds: List[FeedUrl] = []
 
     for mime_type in valid_mime_types.union(user_mime_types):
         if soup.find("link", rel="alternate", type=mime_type):
             feed_title = soup.find("link", rel="alternate", type=mime_type).get("title")
             feed_url = canonicalize_url(soup.find("link", rel="alternate", type=mime_type).get("href"), page_domain)
 
-            feeds[feed_url] = feed_title
+            feeds.append(FeedUrl(url=feed_url, mime_type=mime_type, title=feed_title))
 
     if h_feed:
-        feeds[feed_url] = page_title.text
+        feeds.append(FeedUrl(url=url, mime_type="text/html", title=page_title.text))
 
     return feeds
 
