@@ -6,6 +6,8 @@ for people implementing IndieWeb applications.
 import ipaddress
 import re
 from dataclasses import dataclass
+from typing import Dict, Optional, List
+from urllib import parse as url_parse
 
 import mf2py
 import requests
@@ -22,7 +24,7 @@ class ReplyContext:
     post_body: str
 
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 def canonicalize_url(url, domain, full_url=None, protocol="https"):
@@ -42,21 +44,16 @@ def canonicalize_url(url, domain, full_url=None, protocol="https"):
     """
 
     if url.startswith("http://") or url.startswith("https://"):
-        domain = url.split("/")[2]
+        domain = url_parse.urlsplit(url).netloc
+        url_protocol = url_parse.urlsplit(url).scheme
+        path = url_parse.urlsplit(url).path
 
-        # remove port from domain
+        if url.startswith("http://"):
+            domain = domain.replace(":80", "")
+        elif url.startswith("https://"):
+            domain = domain.replace(":443", "")
 
-        domain = domain.split(":")[0]
-        protocol = url.split("/")[0]
-
-        return protocol + "//" + domain + "/" + "/".join(url.split("/")[3:])
-
-    if ":" in domain:
-        text_before_port = domain.split(":")[0]
-
-        text_after_port = domain.split(":")[1].split("/")[0]
-
-        domain = text_before_port + "/" + text_after_port
+        return url_protocol + "://" + domain + path
 
     final_result = ""
 
@@ -320,15 +317,16 @@ def get_post_type(h_entry, custom_properties=[]):
     return "note"
 
 
-def discover_web_page_feeds(url, user_mime_types=[]):
+def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None) -> Dict[str, str]:
     """
     Get all feeds on a web page.
-
     :param url: The URL of the page whose associated feeds you want to retrieve.
     :type url: str
     :return: A dictionary of feeds on the web page. The dictionary keys are feed URLs and the values are feed titles.
     :rtype: dict
     """
+    user_mime_types = user_mime_types or []
+
     if not url.startswith("http://") and not url.startswith("https://"):
         url = "https://" + url
     elif url.startswith("//"):
@@ -347,9 +345,9 @@ def discover_web_page_feeds(url, user_mime_types=[]):
     h_feed = soup.find_all(class_="h-feed")
     page_title = soup.find("title")
 
-    page_domain = url.split("/")[2]
+    page_domain = url_parse.urlsplit(url).netloc
 
-    valid_mime_types = [
+    valid_mime_types = {
         "application/rss+xml",
         "application/atom+xml",
         "application/rdf+xml",
@@ -359,15 +357,11 @@ def discover_web_page_feeds(url, user_mime_types=[]):
         "application/atom+xml",
         "application/feed+json",
         "application/jf2feed_json",
-    ]
-
-    valid_mime_types += user_mime_types
-
-    valid_mime_types = list(set(valid_mime_types))
+    }
 
     feeds = {}
 
-    for mime_type in valid_mime_types:
+    for mime_type in valid_mime_types.union(user_mime_types):
         if soup.find("link", rel="alternate", type=mime_type):
             feed_title = soup.find("link", rel="alternate", type=mime_type).get("title")
             feed_url = canonicalize_url(soup.find("link", rel="alternate", type=mime_type).get("href"), page_domain)
@@ -480,7 +474,7 @@ def syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain
     if url_to_check == posse_permalink:
         return candidate_url
 
-    if url_to_check and url_to_check.split("/")[2] == posse_domain:
+    if url_to_check and url_parse.urlsplit(url_to_check).netloc == posse_domain:
         try:
             r = requests.get(url_to_check, timeout=10, allow_redirects=True)
         except:
@@ -561,7 +555,7 @@ def discover_original_post(posse_permalink):
 
         all_hyperlinks = parsed_candidate_url.select("a")
 
-        posse_domain = posse_permalink.split("/")[2]
+        posse_domain = url_parse.urlsplit(posse_permalink).netloc
 
         for link in all_hyperlinks:
             if "u-syndication" in link.get("class"):
@@ -617,7 +611,7 @@ def get_reply_context(url, twitter_bearer_token=None):
 
         parsed = mf2py.parse(page_content.text)
 
-        domain = url.replace("https://", "").replace("http://", "").split("/")[0]
+        domain = url_parse.urlsplit(url).netloc
 
         if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
             h_entry = parsed["items"][0]
@@ -646,7 +640,7 @@ def get_reply_context(url, twitter_bearer_token=None):
                         author_image = None
                 elif type(h_entry["properties"]["author"][0]) == str:
                     if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
-                        author_url = url.split("/")[0] + "//" + domain + h_entry["properties"].get("author")[0]
+                        author_url = url_parse.urlsplit(url).scheme + "://" + domain + h_entry["properties"]["author"][0]
 
                     author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
 
@@ -664,10 +658,10 @@ def get_reply_context(url, twitter_bearer_token=None):
                             author_image = None
 
                 if author_url is not None and author_url.startswith("/"):
-                    author_url = url.split("/")[0] + "//" + domain + author_url
+                    author_url = url_parse.urlsplit(url).scheme + "://" + domain + author_url
 
                 if author_image is not None and author_image.startswith("/"):
-                    author_image = url.split("/")[0] + "//" + domain + author_image
+                    author_image = url_parse.urlsplit(url).scheme + "://" + domain + author_image
 
             if h_entry["properties"].get("content") and h_entry["properties"].get("content")[0].get("html"):
                 post_body = h_entry["properties"]["content"][0]["html"]
@@ -703,7 +697,7 @@ def get_reply_context(url, twitter_bearer_token=None):
                 author_url = "https://" + author_url
 
             if not author_name and author_url:
-                author_name = author_url.split("/")[2]
+                author_name = url_parse.urlsplit(author_url).netloc
 
             post_photo_url = None
             post_video_url = None
@@ -752,13 +746,13 @@ def get_reply_context(url, twitter_bearer_token=None):
             if h_card["properties"].get("photo"):
                 author_image = h_card["properties"]["photo"][0]
                 if author_image.startswith("//"):
-                    author_image = "https:" + author_image
+                    author_image = url_parse.urlsplit(url) + author_image
                 elif author_image.startswith("/"):
-                    author_image = url.split("/")[0] + "//" + domain + author_image
+                    author_image = url_parse.urlsplit(url) + "://" + domain + author_image
                 elif author_image.startswith("http://") or author_image.startswith("https://"):
                     author_image = author_image
                 else:
-                    author_image = "https://" + domain + "/" + author_image
+                    author_image = url_parse.urlsplit(url) + domain + "/" + author_image
             else:
                 author_image = None
 
@@ -883,7 +877,8 @@ def get_reply_context(url, twitter_bearer_token=None):
                 "type": "entry",
                 "author": {"type": "card", "url": "https://" + domain, "photo": photo_url},
                 "url": "https://" + domain,
-                "content": {"text": p_tag},
+                "name": page_title,
+                "content": {"text": p_tag, "html": p_tag},
             }
 
         if post_photo_url:
@@ -924,15 +919,6 @@ def is_authenticated(token_endpoint, headers, session, approved_user=None):
 
 
 def send_webmention(source, target, me=None):
-    """
-    Send a webmention to a target URL.
-
-    :param source: The source URL.
-    :param target: The target URL.
-    :param me: Your domain, optional.
-    :return: dict with keys "title", "description", "url", and "status"
-    :rtype: dict
-    """
     if not source and not target:
         message = {
             "title": "Please enter a source and target.",
@@ -955,10 +941,10 @@ def send_webmention(source, target, me=None):
 
     # if domain is not approved, don't allow access
     if me is not None:
-        target_domain = target.split("/")[2]
+        target_domain = url_parse.urlsplit(target).netloc
 
         if "/" in me.strip("/"):
-            raw_domain = me.split("/")[2]
+            raw_domain = url_parse.urlsplit(me).netloc
         else:
             raw_domain = me
 
