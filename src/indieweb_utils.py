@@ -56,7 +56,7 @@ def canonicalize_url(url, domain=None, full_url=None):
     path = url_parse.urlsplit(url).path
 
     if domain == None:
-        domain = url_parse.urlsplit(url).netloc
+        domain = url_parse.urlsplit(url).netloc.split(":")[0]
 
     if url.startswith("http://") or url.startswith("https://"):
         return f"{url_protocol}://{domain}{path}"
