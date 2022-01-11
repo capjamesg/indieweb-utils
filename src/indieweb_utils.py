@@ -34,7 +34,7 @@ class FeedUrl:
 __version__ = "0.1.3"
 
 
-def canonicalize_url(url, domain, full_url=None, protocol="https"):
+def canonicalize_url(url, domain=None, full_url=None):
     """
     Return a canonical URL for the given URL.
 
@@ -44,42 +44,38 @@ def canonicalize_url(url, domain, full_url=None, protocol="https"):
     :type domain: str
     :param full_url: Optional full URL to use for the canonical URL.
     :type full_url: str or None
-    :param protocol: Optional protocol to use for the canonical URL.
-    :type protocol: str or None
     :return: The canonical URL.
     :rtype: str
     """
 
-    if url.startswith("http://") or url.startswith("https://"):
+    url_protocol = url_parse.urlsplit(url).scheme
+
+    if not url_protocol:
+        url_protocol = "https"
+
+    path = url_parse.urlsplit(url).path
+
+    if domain == None:
         domain = url_parse.urlsplit(url).netloc
-        url_protocol = url_parse.urlsplit(url).scheme
-        path = url_parse.urlsplit(url).path
 
-        if url.startswith("http://"):
-            domain = domain.replace(":80", "")
-        elif url.startswith("https://"):
-            domain = domain.replace(":443", "")
-
-        return url_protocol + "://" + domain + path
+    if url.startswith("http://") or url.startswith("https://"):
+        return f"{url_protocol}://{domain}{path}"
 
     final_result = ""
 
-    if url.startswith("//"):
-        final_result = protocol + ":" + domain.strip() + "/" + url
-    elif url.startswith("/"):
-        final_result = protocol + "://" + domain.strip() + "/" + url
-    elif url.startswith("./"):
-        final_result = full_url + url[1:]
-    elif url.startswith("../"):
-        final_result = protocol + "://" + domain.strip() + "/" + url[3:]
-    else:
-        final_result = protocol + "://" + url
+    if full_url:
+        url_protocol = url_parse.urlsplit(full_url).scheme
+        final_result = f"{url_protocol}://{domain}{path}"
+    elif url_protocol:
+        final_result = f"{url_protocol}://{domain}{path}"
 
     # replace ../ throughout url
 
     url_after_replacing_dots = ""
 
-    to_check = final_result.replace(domain, "").replace(protocol + "://", "")
+    to_check = final_result.replace(domain, "").split("://")[1]
+
+    to_check = to_check.replace("//", "/")
 
     for url_item in to_check.split("/"):
         if url_item == "..":
@@ -95,7 +91,7 @@ def canonicalize_url(url, domain, full_url=None, protocol="https"):
 
     url_after_replacing_dots = url_after_replacing_dots.replace("./", "/")
 
-    final_url = protocol + "://" + domain + "/" + url_after_replacing_dots.lstrip("/")
+    final_url = url_protocol + "://" + domain + "/" + url_after_replacing_dots.lstrip("/")
 
     return final_url
 
