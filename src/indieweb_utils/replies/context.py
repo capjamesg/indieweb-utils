@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from urllib import parse as url_parse
 import mf2py
 import requests
 from bs4 import BeautifulSoup
@@ -32,7 +32,7 @@ def get_reply_context(url, twitter_bearer_token=None):
     h_entry = None
     photo_url = None
     site_supports_webmention = False
-
+    parsed_url = url_parse.urlsplit(url)
     http_headers = {"Accept": "text/html", "User-Agent": "indieweb_utils"}
 
     if url.startswith("https://") or url.startswith("http://"):
@@ -209,7 +209,7 @@ def get_reply_context(url, twitter_bearer_token=None):
 
         h_entry = {}
 
-        if url.startswith("https://twitter.com") and twitter_bearer_token is not None:
+        if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
             site_supports_webmention = False
             tweet_uid = url.strip("/").split("/")[-1]
 
