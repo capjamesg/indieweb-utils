@@ -7,18 +7,17 @@ from indieweb_utils import *
 
 
 @pytest.mark.parametrize(
-    "url, expected",
+    "url, domain, expected",
     [
-        ("http://www.example.com/", "http://www.example.com/"),
-        ("example.com/", "https://example.com/"),
-        ("http://www.example.com:80/", "http://www.example.com/"),
-        ("example.com/../", "https://example.com/"),
-        ("example.com/./image.png", "https://example.com/image.png"),
-        ("example.com/../image.png", "https://example.com/image.png"),
+        ("http://www.example.com/", "www.example.com", "http://www.example.com/"),
+        ("example.com/", "example.com", "https://example.com/"),
+        ("http://www.example.com:80/", "www.example.com", "http://www.example.com/"),
+        ("example.com/../", "example.com", "https://example.com/"),
+        ("example.com/./image.png", "example.com", "https://example.com/image.png"),
+        ("example.com/../image.png", "example.com", "https://example.com/image.png"),
     ],
 )
-def test_canonicalize_url(url, expected):
-    domain = "example.com"
+def test_canonicalize_url(url, domain, expected):
     assert canonicalize_url(url=url, domain=domain) == expected
 
 
