@@ -80,11 +80,7 @@ Contributing
 
 This project welcomes contributions from anyone who wants to improve the library.
 
-This library would benefit from the addition of new helper functions that would assist someone building an IndieWeb application. Assistance with documentation, building test cases, and fixing any bugs listed on the Issues page is also welcome.
-
-If you have another idea on how to improve this library, let us know.
-
-Feel free to create an issue or pull request on GitHub and your contribution will be reviewed.
+Please see the `contributing guidelines <CONTRIBUTING.md>`_ for more information on how to contribute to the repository.
 
 Contributors
 ------------
