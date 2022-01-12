@@ -54,4 +54,4 @@ class TestWebPageFeedDiscovery:
         ]
 
         for f in feeds:
-            assert f in assumed_feeds
+            assert f.url in assumed_feeds
