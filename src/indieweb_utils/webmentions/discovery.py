@@ -29,12 +29,12 @@ def discover_webmention_endpoint(target):
         endpoint_as_ip = ipaddress.ip_address(endpoint)
 
         if (
-            endpoint.is_private == True
-            or endpoint.is_multicast == True
-            or endpoint_as_ip.is_loopback == True
-            or endpoint_as_ip.is_unspecified == True
-            or endpoint_as_ip.is_reserved == True
-            or endpoint_as_ip.is_link_local == True
+            endpoint.is_private is True
+            or endpoint.is_multicast is True
+            or endpoint_as_ip.is_loopback is True
+            or endpoint_as_ip.is_unspecified is True
+            or endpoint_as_ip.is_reserved is True
+            or endpoint_as_ip.is_link_local is True
         ):
             message = "The endpoint does not connect to an accepted IP address."
             return message, None
