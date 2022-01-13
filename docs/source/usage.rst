@@ -68,11 +68,11 @@ Here is an example of the `get_post_type` function in use:
 
 .. code-block:: python
 
-    import indieauth_helpers
+    import indieweb_utils
 
     url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
 
-    post_type = indieweb_utils.post_type_discovery.discover_endpoint(url)
+    post_type = indieweb_utils.discover_endpoint(url)
 
     print(post_type)
 
@@ -95,11 +95,11 @@ Here is an example of the function in action:
 
 .. code-block:: python
 
-    import indieauth_helpers
+    import indieweb_utils
 
     url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
 
-    url, message = indieauth_helpers.webmention.discover_webmention_endpoint(url)
+    url, message = indieweb_utils.discover_webmention_endpoint(url)
 
     print(url)
 
@@ -162,11 +162,11 @@ Here is an example of the `discover_author` function in action:
 
 .. code-block:: python
 
-    import indieauth_helpers
+    import indieweb_utils
 
     url = "https://aaronparecki.com/2021/12/07/8/drone"
 
-    post_type = indieauth_helpers.authorship_discovery.discover_author(url)
+    post_type = indieweb_utils.discover_author(url)
 
     print(post_type)
 
@@ -211,6 +211,17 @@ If successful, this function will return a None value for "message" and the JSON
 
 The function will return a message and a None value for response if there was an error. The message value tells you what went wrong during the token verification process.
 
+Check if a User is Authenticated (Flask)
+----------------------------------------
+
+To check if a user is authenticated in a Flask application, use the following function:
+
+.. autofunction:: indieweb_utils.is_authenticated
+
+This function checks if an authorization token is provided in a header or user storage. If a token is provided, that token is verified with the specified token endpoint.
+
+A True value is returned if a user has provided a token and that token is valid. A False value is returned if a user has not provided a token or if the token is invalid.
+
 Generate Reply Context
 ------------------------
 
@@ -240,3 +251,26 @@ To find the original version of a post per the Original Post Discovery algorithm
 .. autofunction:: indieweb_utils.discover_original_post
 
 This function will return the URL of the original version of a post, if one is found. Otherwise, None will be returned.
+
+Send a Webmention
+------------------
+
+To send a webmention to a target, use this function:
+
+.. autofunction:: indieweb_utils.send_webmention
+
+This function will return a dictionary with the following keys:
+
+    - `status`: "success" or "failed" depending on the outcome of the webmention.
+    - `title`: A high-level message describing the outcome of the webmention.
+    - `description`: A string describing the status of the response.
+    - `url`: The target URL.
+
+Discover all Feeds on a Page
+-----------------------------
+
+To discover the feeds on a page, use this function:
+
+.. autofunction:: indieweb_utils.discover_web_page_feeds
+
+This function returns a dictionary with all feeds on a page.
