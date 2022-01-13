@@ -134,7 +134,7 @@ def get_reply_context(url, twitter_bearer_token=None):
                 author_url = "https://" + author_url
 
             if not author_name and author_url:
-                author_name = author_url.split("/")[2]
+                author_name = url_parse.urlsplit(author_url).netloc
 
             post_photo_url = None
             post_video_url = None

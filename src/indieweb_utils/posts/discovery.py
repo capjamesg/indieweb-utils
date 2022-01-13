@@ -1,4 +1,5 @@
 import re
+from urllib import parse as url_parse
 
 import mf2py
 import requests
@@ -74,7 +75,7 @@ def discover_original_post(posse_permalink: str):
 
         all_hyperlinks = parsed_candidate_url.select("a")
 
-        posse_domain = posse_permalink.split("/")[2]
+        posse_domain = url_parse.urlsplit(posse_permalink).netloc
 
         for link in all_hyperlinks:
             if "u-syndication" in link.get("class"):
@@ -256,7 +257,7 @@ def _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domai
     if url_to_check == posse_permalink:
         return candidate_url
 
-    if url_to_check and url_to_check.split("/")[2] == posse_domain:
+    if url_to_check and url_parse.urlsplit(url_to_check).netloc == posse_domain:
         try:
             r = requests.get(url_to_check, timeout=10, allow_redirects=True)
         except:
