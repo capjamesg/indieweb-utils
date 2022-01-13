@@ -8,5 +8,5 @@ pytest-pythonpath==0.7.3
 mypy==0.931
 types-dataclasses==0.6.4
 types-requests==2.27.3
-typing-extensions==0.4.3
+typing-extensions==4.0.1
 flake8==4.0.1

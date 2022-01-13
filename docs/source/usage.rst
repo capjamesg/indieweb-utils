@@ -240,3 +240,26 @@ To find the original version of a post per the Original Post Discovery algorithm
 .. autofunction:: indieweb_utils.discover_original_post
 
 This function will return the URL of the original version of a post, if one is found. Otherwise, None will be returned.
+
+Send a Webmention
+------------------
+
+To send a webmention to a target, use this function:
+
+.. autofunction:: indieweb_utils.send_webmention
+
+This function will return a dictionary with the following keys:
+
+    - `status`: "success" or "failed" depending on the outcome of the webmention.
+    - `title`: A high-level message describing the outcome of the webmention.
+    - `description`: A string describing the status of the response.
+    - `url`: The target URL.
+
+Discover all Feeds on a Page
+-----------------------------
+
+To discover the feeds on a page, use this function:
+
+.. autofunction:: indieweb_utils.discover_web_page_feeds
+
+This function returns a dictionary with all feeds on a page.
