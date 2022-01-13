@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def discover_webmention_endpoint(target):
+def discover_webmention_endpoint(target: str) -> list:
     """
     Return the webmention endpoint for the given target.
 

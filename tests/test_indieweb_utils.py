@@ -54,3 +54,22 @@ class TestWebPageFeedDiscovery:
 
         for f in feeds:
             assert f.url in assumed_feeds
+
+
+class TestReplyContextDiscovery:
+    # TODO: Add test cases for Twitter
+    # TODO: Add test cases for other websites
+    # TODO: Add test cases with photo / video responses
+    def test_reply_context_discovery(self):
+        url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
+
+        context = get_reply_context(url)
+
+        assert context.post_url == "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
+        assert context.name == "Advent of Bloggers 2021: Day 6"
+        assert context.author_name == "James"
+        assert context.author_url == "https://jamesg.blog"
+        assert context.author_photo == ""
+        assert context.photo == ""
+        assert context.video == ""
+        assert context.webmention_endpoint == "https://webmention.jamesg.blog/endpoint"
