@@ -1,4 +1,5 @@
 from dataclasses import dataclass, asdict
+from typing import List
 from distutils.sysconfig import customize_compiler
 from urllib import parse as url_parse
 import mf2py
@@ -8,6 +9,11 @@ from bs4 import BeautifulSoup
 from ..utils.urls import canonicalize_url
 from ..webmentions.discovery import discover_webmention_endpoint
 
+@dataclass
+class PostAuthor:
+    name: str
+    url: str
+    photo: str
 
 @dataclass
 class ReplyContext:
@@ -18,12 +24,14 @@ class ReplyContext:
     video: str
     post_html: str
     post_text: str
-    author_name: str
-    author_url: str
-    author_photo: str
+    authors: List[PostAuthor]
 
 
 class ReplyContextRetrievalError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+class UnsupportedScheme(Exception):
     def __init__(self, message):
         self.message = message
 
@@ -45,8 +53,8 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
     parsed_url = url_parse.urlsplit(url)
     http_headers = {"Accept": "text/html", "User-Agent": "indieweb_utils"}
 
-    if not url.startswith("https://") and not url.startswith("http://"):
-        return return_object
+    if parsed_url.scheme not in ["http", "https"]:
+        raise UnsupportedScheme(f"{parsed_url.scheme} is not supported.")
 
     try:
         page_content = requests.get(url, timeout=10, verify=False, headers=http_headers)
@@ -54,7 +62,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
         raise ReplyContextRetrievalError("Could not retrieve page content.")
 
     if page_content.status_code != 200:
-        raise ReplyContextRetrievalError("Page did not return a 200 response.")
+        raise ReplyContextRetrievalError(f"Page returned a {page_content.status_code} response.")
 
     webmention_endpoint_url, _ = discover_webmention_endpoint(url)
 
@@ -62,7 +70,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
 
     parsed = mf2py.parse(page_content.text)
 
-    domain = url.replace("https://", "").replace("http://", "").split("/")[0]
+    domain = parsed_url.netloc
 
     if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
         h_entry = parsed["items"][0]
@@ -91,7 +99,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
                     author_image = ""
             elif type(h_entry["properties"]["author"][0]) == str:
                 if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
-                    author_url = url.split("/")[0] + "//" + domain + h_entry["properties"].get("author")[0]
+                    author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
                 author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
 
@@ -109,10 +117,10 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
                         author_image = ""
 
             if author_url is not None and author_url.startswith("/"):
-                author_url = url.split("/")[0] + "//" + domain + author_url
+                author_url = parsed_url.scheme + "://" + domain + author_url
 
             if author_image is not None and author_image.startswith("/"):
-                author_image = url.split("/")[0] + "//" + domain + author_image
+                author_image = parsed_url.scheme + "://" + domain + author_image
 
         if h_entry["properties"].get("content") and h_entry["properties"].get("content")[0].get("html"):
             post_body = h_entry["properties"]["content"][0]["html"]
@@ -174,9 +182,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
         return_object.post_url = url
         return_object.post_text = post_body
         return_object.post_html = post_body
-        return_object.author_url = author_url
-        return_object.author_name = author_name
-        return_object.author_photo = author_image
+        return_object.authors = [PostAuthor(url=author_url, name=author_name, photo=author_image)]
 
         if post_photo_url:
             return_object.photo = post_photo_url
@@ -203,7 +209,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
             if author_image.startswith("//"):
                 author_image = "https:" + author_image
             elif author_image.startswith("/"):
-                author_image = url.split("/")[0] + "//" + domain + author_image
+                author_image = parsed_url.scheme + "://" + domain + author_image
             elif author_image.startswith("http://") or author_image.startswith("https://"):
                 author_image = author_image
             else:
@@ -220,9 +226,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
         return_object.post_url = url
         return_object.post_text = post_body
         return_object.post_html = post_body
-        return_object.author_url = url
-        return_object.author_name = author_name
-        return_object.author_photo = author_image
+        return_object.authors = [PostAuthor(url=url, name=author_name, photo=author_image)]
         return_object.photo = ""
         return_object.video = ""
 
@@ -265,11 +269,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
         return_object.post_url = url
         return_object.post_text = r.json()["data"].get("text")
         return_object.post_html = r.json()["data"].get("html")
-        return_object.author_url = author_url
-        return_object.author_name = author_name
-        return_object.author_photo = photo_url
-        return_object.photo = ""
-        return_object.video = ""
+        return_object.authors = [PostAuthor(url=author_url, name=author_name, photo=author_photo)]
 
         # convert type class to dictionary
         h_entry = asdict(h_entry)
@@ -341,9 +341,7 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
     return_object.post_url = url
     return_object.post_text = p_tag
     return_object.post_html = p_tag
-    return_object.author_url = author_url
-    return_object.author_name = ""
-    return_object.author_photo = photo_url
+    return_object.authors = [PostAuthor(url=author_url, name="", photo=photo_url)]
 
     if post_photo_url:
         return_object.photo = post_photo_url

@@ -67,9 +67,9 @@ class TestReplyContextDiscovery:
 
         assert context.post_url == "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
         assert context.name == "Advent of Bloggers 2021: Day 6"
-        assert context.author_name == "James"
-        assert context.author_url == "https://jamesg.blog"
-        assert context.author_photo == ""
+        assert context.authors[0].name == "James"
+        assert context.authors[0].url == "https://jamesg.blog"
+        assert context.authors[0].photo == ""
         assert context.photo == ""
         assert context.video == ""
         assert context.webmention_endpoint == "https://webmention.jamesg.blog/endpoint"
