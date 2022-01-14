@@ -1,4 +1,5 @@
 import requests
+from urllib import parse as url_parse
 
 from . import discovery
 
@@ -26,10 +27,10 @@ def send_webmention(source, target, me=None):
 
     # if domain is not approved, don't allow access
     if me is not None:
-        target_domain = target.split("/")[2]
+        target_domain = url_parse.urlsplit(target).scheme
 
         if "/" in me.strip("/"):
-            raw_domain = me.split("/")[2]
+            raw_domain = url_parse.urlsplit(me).scheme
         else:
             raw_domain = me
 

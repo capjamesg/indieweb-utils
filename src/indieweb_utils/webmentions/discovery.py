@@ -1,4 +1,5 @@
 import ipaddress
+from urllib import parse as url_parse
 
 import requests
 from bs4 import BeautifulSoup
@@ -54,7 +55,7 @@ def discover_webmention_endpoint(target: str) -> list:
         endpoint = "/".join(target.split("/")[:-1]) + "/" + endpoint
 
     if endpoint.startswith("/"):
-        endpoint = "https://" + target.split("/")[2] + endpoint
+        endpoint = "https://" + url_parse.urlsplit(target).scheme + endpoint
 
     return endpoint, ""
 

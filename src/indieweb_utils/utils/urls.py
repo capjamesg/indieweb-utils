@@ -1,3 +1,5 @@
+from urllib import parse as url_parse
+
 def canonicalize_url(url, domain, full_url=None, protocol="https"):
     """
     Return a canonical URL for the given URL.
@@ -15,14 +17,15 @@ def canonicalize_url(url, domain, full_url=None, protocol="https"):
     """
 
     if url.startswith("http://") or url.startswith("https://"):
-        domain = url.split("/")[2]
+        domain = url_parse.urlsplit(url).netloc
 
         # remove port from domain
 
         domain = domain.split(":")[0]
-        protocol = url.split("/")[0]
 
-        return protocol + "//" + domain + "/" + "/".join(url.split("/")[3:])
+        protocol = url_parse.urlsplit(url).scheme
+
+        return protocol + "://" + domain + "/" + "/".join(url.split("/")[3:])
 
     if ":" in domain:
         text_before_port = domain.split(":")[0]

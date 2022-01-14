@@ -154,9 +154,9 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "") -> ReplyContext
             not author_url.startswith("https://") and not author_url.startswith("http://")
         ):
             author_url = "https://" + author_url
-
+            
         if not author_name and author_url:
-            author_name = author_url.split("/")[2]
+            author_name = url_parse.urlsplit(author_url).netloc
 
         post_photo_url = ""
         post_video_url = ""
