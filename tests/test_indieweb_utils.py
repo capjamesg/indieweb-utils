@@ -54,3 +54,22 @@ class TestWebPageFeedDiscovery:
 
         for f in feeds:
             assert f.url in assumed_feeds
+
+class TestSendWebmention:
+    def test_send_webmention(self):
+        source = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
+        target = "https://jamesg.blog/mugs/"
+
+        message = send_webmention(source, target)
+
+        assert message["status"] == "success"
+
+class TestAuthorshipDiscovery:
+    def test_authorship_discovery(self):
+        url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
+
+        author = discover_author(url)
+
+        assert author["properties"]["url"] == ["https://jamesg.blog"]
+        assert author["properties"]["name"] == ["James"]
+        assert author["properties"]["photo"] == ["https://jamesg.blog/assets/coffeeshop.jpg"]
