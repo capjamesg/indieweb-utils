@@ -54,3 +54,10 @@ class TestWebPageFeedDiscovery:
 
         for f in feeds:
             assert f.url in assumed_feeds
+
+class TestWebmentionValidation:
+    def test_webmention_validation(self):
+        source = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
+        target = "https://jamesg.blog/mugs/"
+
+        assert validate_webmention(source=source, target=target, vouch_list=[]) == (True, True)
