@@ -15,13 +15,11 @@ class FeedUrl:
     title: str
 
 
-def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None) -> Dict[str, str]:
+def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None) -> List[FeedUrl]:
     """
     Get all feeds on a web page.
     :param url: The URL of the page whose associated feeds you want to retrieve.
     :type url: str
-    :return: A dictionary of feeds on the web page. The dictionary keys are feed URLs and the values are feed titles.
-    :rtype: dict
     """
     user_mime_types = user_mime_types or []
 
