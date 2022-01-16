@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    
+      <title>Home | James' Coffee Blog</title>
+    
+
+    <link rel="stylesheet" href="/assets/styles/styles.css" />
+
+    <link href="mailto:jamesg@jamesg.blog" rel="me">
+    <link href="https://jamesg.coffee" rel="me">
+    <link href="https://twitter.com/capjamesg" rel="me">
+    <link href="https://micro.blog/capjamesg" rel="me">
+    <link href="https://indieweb.social/@capjamesg" rel="me">
+
+    
+      <meta name="description" content="Hello! I'm James (also capjamesg). My pronouns are he/him/his. This is my blog." />
+      <meta name="twitter:description" content="Hello! I'm James (also capjamesg). My pronouns are he/him/his. This is my blog." />
+      <meta name="og:description" content="Hello! I'm James (also capjamesg). My pronouns are he/him/his. This is my blog." />
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Home" />
+    <meta name="twitter:url" content="/" />
+    
+    
+      <meta property="og:image" content="/assets/coffeeshop.jpg">
+      <meta name="twitter:image" content="/assets/coffeeshop.jpg">
+    
+
+    <link rel="icon" href="/favicon.ico" />
+
+    <link rel="apple-touch-icon-precomposed" href="/favicon.ico" />
+
+    
+
+    
+      <link rel="alternate" type="application/atom+xml" title="RSS" href="/feeds/posts.xml"/>
+      <link rel="alternate" type="application/jf2feed+json" title="RSS" href="/feeds/posts.jf2"/>
+      <link rel="alternate" type="application/json" title="RSS" href="/feeds/posts.json"/>
+    
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+     <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Home | James' Coffee Blog">
+    <meta name="twitter:site" content="@capjamesg">
+    <meta name="twitter:creator" content="@capjamesg">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Home | James' Coffee Blog" />
+    <meta property="og:url" content="/" />
+    <meta property="og:site_name" content="James' Coffee Blog" />
+
+    <link rel="webmention" href="https://webmention.jamesg.blog/endpoint" />
+    <link rel="pingback" href="https://webmention.io/jamesg.blog/xmlrpc" />
+
+    <link rel="subscribe" href="https://microsub.jamesg.blog/discover-feed">
+
+    
+      <link rel="micropub" href="https://micropub.jamesg.blog/micropub">
+      <link rel="authorization_endpoint" href="https://auth.jamesg.blog/auth">
+      <link rel="token_endpoint" href="https://auth.jamesg.blog/token">
+      
+      <link rel="microsub" href="https://microsub.jamesg.blog/endpoint">
+      
+      <link rel="self" href="https://jamesg.blog/" />
+      <link rel="hub" href="https://websub.jamesg.blog">
+    
+
+    <meta name="robots" content="noindex" />
+
+    <style id="darkmode" media="none">
+      html, .citation_box, details, summary, .social li, .stub {
+        background-color: #1F2937;
+      }
+      a {
+        color: lightgreen;
+        border-bottom: 2px dotted lightgreen;
+      }
+      a:hover {
+        color: #ccc;
+      }
+      h1, h2, h3 {
+        color: orange;
+      }
+      .social_interaction, .webmention {
+        background: none;
+      }
+      p, li, dt, dd, .indieweb_footer, input, label {
+        color: white;
+      }
+      input, textarea, code, pre, main {
+        background-color: #0c2548;
+        color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="#main" class="accessibility_label">Skip to main content</a>
+    	<nav id="top_navigation">
+	<p><a href="https://jamesg.blog" rel="home">James' Coffee Blog <span aria-hidden="true">☕</span></a></p>
+	<ul>
+		<li><a href="/coffee-posts/">Coffee Posts</a></li>
+		<li><a href="/indieweb/">IndieWeb Posts</a></li>
+		<li><a href="/interviews/">Interviews</a></li>
+		<li><a href="/notes/">Notes</a></li>
+		<li><a href="https://indieweb-search.jamesg.blog/?q=site:%22jamesg.blog%22">Search</a></li>
+	</ul>
+</nav>
+      <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.getElementById('darkmode').media = "all";
+        }
+
+        if (localStorage.getItem('darkmode') == "true") {
+          document.getElementById('darkmode').media = "all";
+        } else if (localStorage.getItem('darkmode') == "false") {
+          document.getElementById('darkmode').media = "none";
+        }
+
+        var navigation = document.getElementById("top_navigation");
+        var ul = navigation.getElementsByTagName("ul")[0];
+        
+        var li = document.createElement("li");
+        var dark_style = document.getElementById("darkmode");
+  
+        if (dark_style.media === "all") {
+          li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+        } else {
+          li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+        }
+
+        ul.appendChild(li);
+  
+        function toggleTheme() {
+          if (dark_style.media === "all") {
+            dark_style.media = "none";
+            li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+            localStorage.setItem('darkmode', 'false');
+          } else {
+            dark_style.media = "all";
+            li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+            localStorage.setItem('darkmode', 'true');
+          }
+        }
+      </script>
+      <div id="main">
+    	 <h1>James' Coffee Blog <span aria-hidden="true">☕</span></h1>
+
+<section class="flex_item">
+	<div class="h-card flex_left_home">
+		<img src="/assets/coffeeshop.jpg" class="u-photo main-photo u-logo" alt="James sitting in a coffee shop, happily staring at a cup of coffee." width="200" height="200">
+
+		<h2>About Me <span role="img" aria-label="hand waving">👋</span></h2>
+		
+		<p>Hello! I'm <a href="https://jamesg.blog/" class="p-name u-url p-given-name">James</a> (also <span class="p-nickname">capjamesg</span>). My pronouns are <a href="https://pronoun.is/he/him/"><span class="u-pronoun">he</span>/<span class="u-pronoun">him</span>/<span class="u-pronoun">his</span></a>. This is my blog.</p>
+
+		<p class="p-note">I like to brew coffee at home. I usually use the Aeropress, V60, Chemex, or Kalita Wave to brew my coffee.</p>
+
+		<p>On this blog, I share my thoughts on all things coffee and I interview people who work in coffee, with a particular emphasis on the Scottish coffee industry.</p>
+
+		<p>I sometimes write about websites and web development.</p>
+		
+		<p>My email address is <a href="mailto:readers@jamesg.blog" class="u-email">readers@jamesg.blog</a> (<a href="/assets/key.asc" rel="me">public key for encryption</a>). I sometimes post on <a href="https://www.instagram.com/capjamesg/" rel="me">Instagram</a>.</p>
+
+		<p>I also contribute to the <a href="https://indieweb.org/User:Jamesg.blog" rel="me">IndieWeb</a> wiki. I have open sourced some code on <a href="https://github.com/capjamesg" rel="me">GitHub</a>.</p>
+
+		<p><a href="/posts/">380 Posts</a> <embed src="/assets/sparkline.svg?1,1,0,0,1,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1,0,0,0,0,1,0,1,0,0,2,0,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,2,0,0,0,0,0,0,0,2,0,0,2,0,1,1,2,0,1,1,1,1,1,0" width=100 height=15></p><p><a href="/likes/">464 Likes</a> <embed src="/assets/sparkline.svg?5,6,5,2,3,5,10,0,1,4,7,8,2,0,0,2,0,4,0,0,0,0,0,2,1,1,0,0,0,0,6,3,2,1,2,0,4,5,3,2,3,6,11,6,7,8,14,4,7,5,5,10,9,17,2,2,7,1,9,4,6,3,3,2,0,0,3,3,3,0,7,5,1,2,2,1,4,6,9,5,7,10,3,4,21,4,0,2,2,1" width=100 height=15></p><p><a href="/notes/">43 Notes</a> <embed src="/assets/sparkline.svg?0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,5,3,0,1,5,4,3,2,4,4,4,4,1" width=100 height=15></p><p><a href="/bookmarks/">94 Bookmarks</a> <embed src="/assets/sparkline.svg?0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,1,1,0,0,0,0,1,4,1,0,0,0,0,1,1,2,0,0,0,0,0,0,1,0,0,2,10,6,2,2,7,0,4,4,2,7,5,0,1,7,1,3,4,1,0" width=100 height=15></p>
+	</div>
+	<div class="flex_right_home">
+		<section class="h-feed hfeed main_feed">
+			<h2 class="p-name">Posts and Notes 📝</h2>
+			<p class="p-summary">Below are the most recent articles notes I have written.</p>
+			<ul class="blog">
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>I just watched Real Genius, a great movie where smart teens take back control of a technology they helped build but could not control. 5/5<a href="https://brid.gy/publish/twitter?bridgy_omit_link=true"></a>
+<a href='https://fed.brid.gy/'></a>
+<a href='https://brid.gy/publish/twitter?bridgy_omit_link=true'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-15 20:51:24-00:00">January 15, 2022</time> (<a href="/notes/2022-01-15-156/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>The new album by The Lumineers, Brightside, is amazing! 🔥<a href="https://brid.gy/publish/twitter?bridgy_omit_link=true"></a>
+<a href='https://fed.brid.gy/'></a>
+<a href='https://brid.gy/publish/twitter?bridgy_omit_link=true'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-14 20:50:18-00:00">January 14, 2022</time> (<a href="/notes/2022-01-14-650/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>TIL MediaWiki makes some really useful reports for maintaining a <a href='/tag/wiki' rel='tag'>#wiki</a> in the Special:SpecialPages section of a <a href='/tag/website' rel='tag'>#website</a>.<a href="https://brid.gy/publish/twitter?bridgy_omit_link=true"></a>
+<a href='https://fed.brid.gy/'></a>
+<a href='https://brid.gy/publish/twitter?bridgy_omit_link=true'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-14 19:03:34-00:00">January 14, 2022</time> (<a href="/notes/2022-01-14-167/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>Does anyone know why the Mac close / minimise / enlarge window buttons are on the left side of a window? <a href="https://brid.gy/publish/twitter?bridgy_omit_link=true"></a>
+<a href='https://fed.brid.gy/'></a>
+<a href='https://brid.gy/publish/twitter?bridgy_omit_link=true'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-14 18:43:33-00:00">January 14, 2022</time> (<a href="/notes/2022-01-14-791/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>This is my first note published on my new M1 <a href='/tag/macbookair' rel='tag'>#MacbookAir</a>. I'm already in love with this machine! Apple <a href='/tag/computers' rel='tag'>#computers</a> are so pleasurable to use.<a href="https://brid.gy/publish/twitter?bridgy_omit_link=true"></a>
+<a href='https://fed.brid.gy/'></a>
+<a href='https://brid.gy/publish/twitter?bridgy_omit_link=true'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-14 15:58:20-00:00">January 14, 2022</time> (<a href="/notes/2022-01-14-623/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<li style="display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 15px;" class="social_interaction h-entry">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<h3 class="p-name"><a href="/2022/01/14/programming-and-cooking/" class="u-url">Programming, cooking, and making what you want to use</a></h3>
+								<p>Published on <time class="dt-published" datetime="/2022-01-14 00:00:00-00:00/1">January 14, 2022</time> under the <a href="/category/indieweb" class="p-category">IndieWeb</a> category.</p>
+								<div class="p-summary"><p>I just read a delightful blog post called "<a href="https://www.robinsloan.com/notes/home-cooked-app/">An app can be a home-cooked meal</a>". The author of the post, Robin, shares his story of making a personal messaging app just for him and his close family. The messaging app doesn't aim to do much other than let them communicate in a way they feel is natural. There are no ads, forced updates, or anything of that nature to worry about. Because Robin made the app himself, he chooses its direction.</p></div>
+								<p><a href="/2022/01/14/programming-and-cooking/">Read more</a></p>
+							</div>
+						</li>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>What are the best resources to read on how databases work from a technical perspective? What data structures do they use? How are they so fast?<a href="https://brid.gy/publish/twitter?bridgy_omit_link=true"></a>
+<a href='https://fed.brid.gy/'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-13 21:29:40-00:00">January 13, 2022</time> (<a href="/notes/2022-01-13-542/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>A new Paramore album? I'm already excited!</p>
+<p>https://www.avclub.com/paramores-first-new-album-in-five-years-is-on-its-way-1848341175<a href="https://brid.gy/publish/twitter"></a>
+<a href='https://fed.brid.gy/'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-13 13:49:10-00:00">January 13, 2022</time> (<a href="/notes/2022-01-13-482/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>My blog home page now features sparklines which plot the frequency at which I create new posts: <img class='u-photo' src='https://jamesg.blog/assets/JiHnQ-.jpeg' alt='' /><a href="https://brid.gy/publish/twitter"></a>
+<a href='https://fed.brid.gy/'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-13 09:17:40-00:00">January 13, 2022</time> (<a href="/notes/2022-01-13-718/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+					
+						<div class="social_interaction h-entry full-webmention flex_item">
+							<div style="margin-right: 20px;">
+								<div class="u-author h-card" style="flex: 0 10%;">
+    <img src="https://jamesg.blog/assets/coffeeshop.jpg" class="u-photo" style="width: 60px;" alt="capjamesg, sitting in a coffee shop, happily staring at a cup of coffee.">
+</div>
+							</div>
+							<div class="flex_right_home">
+								<p>Friends who use static site generators: how long does it take for your site to build? It takes roughly one minute for my site to build with 1,700 pages. Is that good or bad, comparatively?<a href="https://brid.gy/publish/twitter"></a>
+<a href='https://fed.brid.gy/'></a></p>
+								<p>Posted on <time class="dt-published" datetime="2022-01-13 09:07:23-00:00">January 13, 2022</time> (<a href="/notes/2022-01-13-410/" class="u-url u-uid">see full post</a>).</p>
+							</div>
+						</div>
+					
+				
+			</ul>
+			<p><a href="/posts/">View all blog posts</a>
+			<p><a href="/notes/">View all notes</a>
+		</section> 
+	</div>
+</section>
+      </div>
+      <p class="accessibility_label_bottom"><a href="#main">Go Back to the Top</a></p>
+      <footer>
+	<ul>
+		<li><a href="/projects/">Projects</a></li>
+		<li><a href="/mugs/">Mugs</a></li>
+		<li><a href="/ratio/">Ratio Calculator</a></li>
+		<li><a href="/recipes/">Recipes</a></li>
+		<li><a href="/guestbook/">Guestbook</a></li>
+		<li><a href="https://retro.jamesg.blog">Retro Site</a></li>
+		<li><a href="/follow/">Follow My Site</a></li>
+		<li><a href="/sitemap/">Sitemap</a></li>
+		<li><a href="/archive/">Web Log Archive</a></li>
+		<li><a href="/feeds/posts.xml">RSS</a></li>
+	</ul>
+	<div class="indieweb_footer">
+		<a href="https://indieweb.org/Webmention" class="button-link"><img src="/assets/webmention_button.png" alt="Webmention logo indicating that you can send a webmention to this blog" width="80" height="15" /></a>
+		<a href="https://indieweb.org" class="button-link"><img src="/assets/indieweb_button.png" alt="IndieWeb logo" width="80" height="15" /></a><br />
+		<a href="https://microformats.org" class="button-link"><img src="/assets/microformats_button.png" alt="Microformats logo" width="80" height="15" /></a><br />
+		<p>
+			<a href="https://xn--sr8hvo.ws/%F0%9F%98%85%F0%9F%8F%BD%E3%8A%97%EF%B8%8F/previous">←</a>
+			IndieWeb Webring  
+			<a href="https://xn--sr8hvo.ws/%F0%9F%98%85%F0%9F%8F%BD%E3%8A%97%EF%B8%8F/next">→</a>
+		</p>
+		<p>
+			<a href="https://static-site-webring.jamesg.blog/previous">Previous</a>
+			Static Site Webring
+			<a href="https://static-site-webring.jamesg.blog/next">Next</a>
+		</p>
+	</div>
+</footer>
+    </main>
+  </body>
+</html>
