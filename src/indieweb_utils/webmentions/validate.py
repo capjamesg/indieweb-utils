@@ -8,13 +8,11 @@ from ..utils.urls import canonicalize_url
 
 
 class WebmentionValidationError(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 class WebmentionIsGone(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
@@ -38,7 +36,7 @@ def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
                 except:
                     return moderate
 
-                soup = BeautifulSoup(r.text, "lxml")
+                soup = BeautifulSoup(r.text, "html.parser")
 
                 # find hyperlink with source
                 # required for a vouch to be valid
@@ -85,10 +83,10 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
     target_protocol = url_parse.urlparse(target).scheme
 
     if source_protocol not in ["http", "https"]:
-        raise WebmentionValidationError("Source must contain a URL scheme.")
+        raise WebmentionValidationError("Source must use either a http:// or https:// URL scheme.")
     
     if target_protocol not in ["http", "https"]:
-        raise WebmentionValidationError("Target must contain a URL scheme.")
+        raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
     
     # Only allow 3 redirects before raising an error
     session = requests.Session()
@@ -109,17 +107,17 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
         pass
 
     try:
-        get_source_for_validation = session.get(source).text
+        get_source_for_validation = session.get(source)
     except Exception as e:
         raise WebmentionValidationError("Source could not be retrieved.")
 
     if validated_headers is False:
         validated_headers = validate_headers(check_source_size)
 
-    if check_source_size.status_code == 410:
+    if get_source_for_validation.status_code == 410:
         raise WebmentionIsGone("Webmention source returned 410 Gone code.")
 
-    parse_page = BeautifulSoup(get_source_for_validation, "lxml")
+    parse_page = BeautifulSoup(get_source_for_validation.text, "html.parser")
 
     # get all <link> tags
     meta_links = parse_page.find_all("link")
@@ -134,7 +132,7 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
     if check_source_size.status_code != 200:
         raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
     
-    soup = BeautifulSoup(get_source_for_validation, "lxml")
+    soup = BeautifulSoup(get_source_for_validation.text, "html.parser")
 
     all_anchors = soup.find_all("a")
     contains_valid_link_to_target = False
