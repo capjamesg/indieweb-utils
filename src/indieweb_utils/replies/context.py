@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from urllib import parse as url_parse
+
 import mf2py
 import requests
 from bs4 import BeautifulSoup

@@ -1,5 +1,6 @@
 from urllib import parse as url_parse
 
+
 def canonicalize_url(url, domain, full_url=None, protocol="https"):
     """
     Return a canonical URL for the given URL.
