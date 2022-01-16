@@ -1,8 +1,11 @@
 import ipaddress
+from typing import Dict, List
 from urllib import parse as url_parse
 
 import requests
 from bs4 import BeautifulSoup
+
+_WEBMENTION = "webmention"  # TODO: Move this to a constants file
 
 
 def discover_webmention_endpoint(target):
@@ -17,7 +20,7 @@ def discover_webmention_endpoint(target):
     if not target:
         return None, "No target specified."
 
-    endpoints = _discover_endpoints(target, ["webmention"])
+    endpoints = _discover_endpoints(target, [_WEBMENTION])
 
     endpoint = endpoints.get("webmention", None)
 
@@ -60,7 +63,7 @@ def discover_webmention_endpoint(target):
     return endpoint, ""
 
 
-def _discover_endpoints(url, headers_to_find):
+def _discover_endpoints(url: str, headers_to_find: List[str]):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
@@ -71,29 +74,51 @@ def _discover_endpoints(url, headers_to_find):
     :return: The discovered endpoints.
     :rtype: dict[str, str]
     """
-    response = {}
+    response: Dict[str, str] = {}
 
     endpoint_request = requests.get(url)
 
-    http_link_headers = endpoint_request.headers.get("link")
+    response.update(_find_links_in_headers(headers=endpoint_request.headers, target_headers=headers_to_find))
+    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find))
+    return response
 
-    if http_link_headers:
-        parsed_link_headers = requests.utils.parse_header_links(http_link_headers.rstrip(">").replace(">,<", ",<"))
+
+def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, str]:
+    """Return a dictionary { rel: url } containing the target headers."""
+    found: Dict[str, str] = {}
+    links = headers.get("link")
+    if links:
+        # [{'url': 'https://micropub.jamesg.blog/micropub', 'rel': 'micropub'} ]
+        parsed_link_headers: List[Dict[str, str]] = requests.utils.parse_header_links(links)
     else:
-        parsed_link_headers = []
+        return found
 
     for header in parsed_link_headers:
-        if header["rel"] in headers_to_find:
-            response[header["rel"]] = header["url"]
+        url = header.get("url", "")
+        rel = header.get("rel", "")
+        if _is_http_url(url) and rel in target_headers:
+            found[rel] = url
+    return found
 
-    soup = BeautifulSoup(endpoint_request.text, "lxml")
+
+def _find_links_html(*, body: str, target_headers: List[str]) -> Dict[str, str]:
+    """"""
+    soup = BeautifulSoup(body, "html.parser")
+    found: Dict[str, str] = {}
 
     for link in soup.find_all("link"):
-        if link.get("rel") in headers_to_find:
-            response[link.get("rel")] = link.get("href")
+        try:
+            rel = link.get("rel", [])[0]
+            href = link.get("href")
+        except IndexError:
+            continue
+        if _is_http_url(href) and rel in target_headers:
+            found[rel] = href
+    return found
 
-    for response_url in response:
-        if not response[response_url].startswith("https://") and not response[response_url].startswith("http://"):
-            response.pop(response_url)
 
-    return response
+def _is_http_url(url: str) -> bool:
+    """
+    Determine if URL is http or not
+    """
+    return url_parse.urlsplit(url).scheme in ["http", "https"]
