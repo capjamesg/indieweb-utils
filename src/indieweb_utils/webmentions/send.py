@@ -1,5 +1,6 @@
-import requests
 from urllib import parse as url_parse
+
+import requests
 
 from . import discovery
 
