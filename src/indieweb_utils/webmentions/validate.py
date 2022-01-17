@@ -16,10 +16,12 @@ class WebmentionIsGone(Exception):
 
 
 def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
-    # use vouch to flag webmentions for moderation
-    # see Vouch spec for more: https://indieweb.org/Vouch
-    # by default, webmention should require moderation
-    # if a vouch is valid, webmention does not need moderation
+    """
+    use vouch to flag webmentions for moderation
+    see Vouch spec for more: https://indieweb.org/Vouch
+    by default, webmention should require moderation
+    if a vouch is valid, webmention does not need moderation
+    """
 
     moderate = True
 
@@ -27,9 +29,6 @@ def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
         vouch_domain = url_parse.urlparse(vouch).netloc
 
         if moderate:
-            # only get domains
-            vouch_list = [v[0] for v in vouch_list]
-
             if vouch_domain in vouch_list:
                 try:
                     r = requests.get(vouch)
