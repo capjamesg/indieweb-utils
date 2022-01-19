@@ -197,9 +197,19 @@ To use this function, you need to pass in the following arguments:
 
 This function verifies that an authorization server has returned a valid response and redeems a token.
 
-You can leave the "me" value equal to None if any URL should be able to access your service. Otherwise, set "me" to the URL of the profile that should be able to access your service. Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
+You can leave the "me" value equal to None if any URL should be able to access your service.
 
-If successful, this function will return a None value for "message" and the JSON object returned by an IndieAuth authorization server. This JSON object should look like this:
+Otherwise, set "me" to the URL of the profile that should be able to access your service.
+
+Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
+
+If successful, this function will return an IndieAuthResponse object that looks like this:
+
+.. autoclass:: indieweb_utils.IndieAuthResponse
+
+This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
+
+An example endpoint response will look like this:
 
 .. code-block:: python
 
@@ -208,8 +218,6 @@ If successful, this function will return a None value for "message" and the JSON
         "access_token": "ACCESS_TOKEN",
         "scope": "SCOPE_LIST"
     }
-
-The function will return a message and a None value for response if there was an error. The message value tells you what went wrong during the token verification process.
 
 Check if a User is Authenticated (Flask)
 ----------------------------------------
@@ -229,19 +237,9 @@ To generate reply context for a given page, use the following function:
 
 .. autofunction:: indieweb_utils.get_reply_context
 
-This function will return a dictionary with the following keys:
+This function will return a ReplyContext object that looks like this:
 
-.. code-block:: python
-
-    {
-        "p-name": "The title of the page",
-        "post_body": "The body of the page",
-        "author_name": "The name of the author",
-        "author_url": "The URL of the author",
-        "author_image": "The URL of the author's photo",
-    }
-
-A None value will be specified if any of the above attributes cannot be found.
+.. autoclass:: indieweb_utils.ReplyContext
 
 Find the Original Version of a Post
 ------------------------------------
@@ -259,12 +257,9 @@ To send a webmention to a target, use this function:
 
 .. autofunction:: indieweb_utils.send_webmention
 
-This function will return a dictionary with the following keys:
+This function will return a SendWebmentionResponse object with this structure:
 
-    - `status`: "success" or "failed" depending on the outcome of the webmention.
-    - `title`: A high-level message describing the outcome of the webmention.
-    - `description`: A string describing the status of the response.
-    - `url`: The target URL.
+.. autoclass:: indieweb_utils.SendWebmentionResponse
 
 Discover all Feeds on a Page
 -----------------------------
@@ -274,3 +269,7 @@ To discover the feeds on a page, use this function:
 .. autofunction:: indieweb_utils.discover_web_page_feeds
 
 This function returns a dictionary with all feeds on a page.
+
+Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
+
+.. autoclass:; indieweb_utils.FeedUrl
