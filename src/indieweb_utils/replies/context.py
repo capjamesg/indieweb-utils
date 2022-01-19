@@ -1,6 +1,5 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import List
-from distutils.sysconfig import customize_compiler
 from urllib import parse as url_parse
 import mf2py
 import requests

@@ -1,32 +1,36 @@
 import requests
+
+from dataclasses import dataclass
 from urllib import parse as url_parse
 
 from . import discovery
 
+@dataclass
+class SendWebmentionResponse:
+    title: str
+    description: str
+    url: str
+    status: bool
 
-def send_webmention(source, target, me=None):
+def send_webmention(source: str, target: str, me: str = ""):
     if not source and not target:
-        message = {
-            "title": "Please enter a source and target.",
-            "description": "Please enter a source and target.",
-            "url": target,
-            "status": "failed",
-        }
+        return SendWebmentionResponse(
+            title=f"Error: A source or target was not provided.",
+            description=f"Error: A source or target was not provided.",
+            url=target,
+            succeeded=False,
+        )
 
-        return message
-
-    if not target.startswith("https://"):
-        message = {
-            "title": "Error: Target must use https:// protocol.",
-            "description": "Target must use https:// protocol.",
-            "url": target,
-            "status": "failed",
-        }
-
-        return message
+    if not target.startswith("https://") or not target.startswith("http://"):
+        return SendWebmentionResponse(
+            title=f"Error: Target must use a http:// or https:// protocol.",
+            description=f"Error: Target must use a http:// or https:// protocol.",
+            url=target,
+            succeeded=False,
+        )
 
     # if domain is not approved, don't allow access
-    if me is not None:
+    if me != "":
         target_domain = url_parse.urlsplit(target).scheme
 
         if "/" in me.strip("/"):
@@ -35,21 +39,22 @@ def send_webmention(source, target, me=None):
             raw_domain = me
 
         if not target_domain.endswith(raw_domain):
-            message = {
-                "title": f"Error: Target must be a {me} post.",
-                "description": f"Target must be a {me} post.",
-                "url": target,
-                "status": "failed",
-            }
-
-            return message
+            return SendWebmentionResponse(
+                title=f"Error: Target must be a {me} post.",
+                description=f"Error: Target must be a {me} post.",
+                url=target,
+                succeeded=False,
+            )
 
     endpoint, message = discovery.discover_webmention_endpoint(target)
 
     if endpoint is None:
-        message = {"title": "Error:" + message, "description": message, "url": target, "status": "failed"}
-
-        return message
+        return SendWebmentionResponse(
+            title=f"Error: {message}",
+            description=message,
+            url=target,
+            succeeded=False,
+        )
 
     # make post request to endpoint with source and target as values
     r = requests.post(
@@ -62,9 +67,17 @@ def send_webmention(source, target, me=None):
 
     valid_status_codes = (200, 201, 202)
 
-    if r.status_code in valid_status_codes:
-        message = {"title": message, "description": message, "url": target, "status": "success"}
-    else:
-        message = {"title": "Error: " + message, "description": "Error: " + message, "url": target, "status": "failed"}
+    if r.status_code not in valid_status_codes:
+        return SendWebmentionResponse(
+            title=f"Error: {message}",
+            description=message,
+            url=target,
+            succeeded=False,
+        )
 
-    return message
+    return SendWebmentionResponse(
+        title=message,
+        description=message,
+        url=target,
+        succeeded=True
+    )
