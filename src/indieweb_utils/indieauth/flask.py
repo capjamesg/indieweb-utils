@@ -1,17 +1,35 @@
 from dataclasses import dataclass
+from typing import Dict, Any, List
 
 import requests
 
 @dataclass
 class IndieAuthResponse:
-    endpoint_response: dict
+    endpoint_response: Dict[str, Any]
 
 
 class AuthenticationError(Exception):
     pass
 
 
+def _validate_indieauth_response(me: str, response: dict, required_scopes: List[str]) -> None:
+    if me is None:
+        message = "An invalid me value was provided."
+        raise AuthenticationError(message)
+
+    if response.json().get("me").strip("/") != me.strip("/"):
+        message = "Your domain is not allowed to access this website."
+        raise AuthenticationError(message)
+
+    granted_scopes = response.json().get("scope").split(" ")
+
+    if response.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
+        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
+        raise AuthenticationError(message)
+
+
 def indieauth_callback_handler(
+    *,
     code: str,
     state: str,
     token_endpoint: str,
@@ -20,7 +38,7 @@ def indieauth_callback_handler(
     me: str,
     callback_url: str,
     client_id: str,
-    required_scopes: str
+    required_scopes: List[str]
 ) -> IndieAuthResponse:
     """
     Exchange a callback 'code' for an authentication token.
@@ -64,30 +82,18 @@ def indieauth_callback_handler(
     headers = {"Accept": "application/json"}
 
     try:
-        r = requests.post(token_endpoint, data=data, headers=headers)
+        auth_request = requests.post(token_endpoint, data=data, headers=headers)
     except:
         message = "Your token endpoint server could not be accessed."
         raise AuthenticationError(message)
 
-    if r.status_code != 200:
+    if auth_request.status_code != 200:
         message = "There was an error with your token endpoint server."
         raise AuthenticationError(message)
 
-    if me is None:
-        message = "An invalid me value was provided."
-        raise AuthenticationError(message)
+    _validate_indieauth_response(me, auth_request, required_scopes)
 
-    if r.json().get("me").strip("/") != me.strip("/"):
-        message = "Your domain is not allowed to access this website."
-        raise AuthenticationError(message)
-
-    granted_scopes = r.json().get("scope").split(" ")
-
-    if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
-        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
-        raise AuthenticationError(message)
-
-    return IndieAuthResponse(r.json())
+    return IndieAuthResponse(auth_request.json())
 
 
 def is_authenticated(

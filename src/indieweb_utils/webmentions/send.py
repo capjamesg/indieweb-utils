@@ -18,7 +18,7 @@ def send_webmention(source: str, target: str, me: str = ""):
             title=f"Error: A source or target was not provided.",
             description=f"Error: A source or target was not provided.",
             url=target,
-            succeeded=False,
+            success=False,
         )
 
     if not target.startswith("https://") or not target.startswith("http://"):
@@ -26,7 +26,7 @@ def send_webmention(source: str, target: str, me: str = ""):
             title=f"Error: Target must use a http:// or https:// protocol.",
             description=f"Error: Target must use a http:// or https:// protocol.",
             url=target,
-            succeeded=False,
+            success=False,
         )
 
     # if domain is not approved, don't allow access
@@ -43,7 +43,7 @@ def send_webmention(source: str, target: str, me: str = ""):
                 title=f"Error: Target must be a {me} post.",
                 description=f"Error: Target must be a {me} post.",
                 url=target,
-                succeeded=False,
+                success=False,
             )
 
     endpoint, message = discovery.discover_webmention_endpoint(target)
@@ -53,7 +53,7 @@ def send_webmention(source: str, target: str, me: str = ""):
             title=f"Error: {message}",
             description=message,
             url=target,
-            succeeded=False,
+            success=False,
         )
 
     # make post request to endpoint with source and target as values
@@ -72,12 +72,12 @@ def send_webmention(source: str, target: str, me: str = ""):
             title=f"Error: {message}",
             description=message,
             url=target,
-            succeeded=False,
+            success=False,
         )
 
     return SendWebmentionResponse(
         title=message,
         description=message,
         url=target,
-        succeeded=True
+        success=True
     )
