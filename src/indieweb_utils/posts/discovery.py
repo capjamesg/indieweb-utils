@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def discover_original_post(posse_permalink: str):
+def discover_original_post(posse_permalink: str) -> str:
     """
     Find the original version of a post per the Original Post Discovery algorithm.
 
@@ -68,8 +68,9 @@ def discover_original_post(posse_permalink: str):
         try:
             request = requests.get(candidate_url)
         except:
-            # return None if URL could not be retrieved for verification
-            return None
+            # return a blank string if URL could not be retrieved for verification
+            # TODO: Create a custom exception for this error
+            return ""
 
         parsed_candidate_url = BeautifulSoup(request.text, "lxml")
 
@@ -97,10 +98,10 @@ def discover_original_post(posse_permalink: str):
                 if original_post_url:
                     return original_post_url
 
-    return None
+    return ""
 
 
-def discover_author(url, page_contents=None):
+def discover_author(url: str, page_contents=None) -> dict:
     """
     Discover the author of a post per the IndieWeb Authorship specification.
 
@@ -196,7 +197,7 @@ def discover_author(url, page_contents=None):
     return None
 
 
-def get_post_type(h_entry, custom_properties=[]):
+def get_post_type(h_entry: str, custom_properties: list = []) -> str:
     """
     Return the type of a h-entry per the Post Type Discovery algorithm.
 
