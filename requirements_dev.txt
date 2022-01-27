@@ -10,3 +10,4 @@ types-dataclasses==0.6.4
 types-requests==2.27.3
 typing-extensions==4.0.1
 flake8==4.0.1
+responses==0.17.0
