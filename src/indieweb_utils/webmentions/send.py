@@ -3,6 +3,8 @@ import requests
 from dataclasses import dataclass
 from urllib import parse as url_parse
 
+import requests
+
 from . import discovery
 
 @dataclass
