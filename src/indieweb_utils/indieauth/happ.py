@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import List
-
 from urllib.parse import urlparse as parse_url
+
 from bs4 import BeautifulSoup
 
 
@@ -84,3 +83,4 @@ def get_h_app_item(
         url=app_url,
         summary=app_summary
     )
+    

@@ -1,10 +1,40 @@
 import time
 import random
 import string
+import hashlib
+import base64
 import jwt
+
+from dataclasses import dataclass
+
 
 class AuthenticationError(Exception):
     pass
+
+
+class TokenValidationError(Exception):
+    pass
+
+
+class AuthorizationCodeExpiredError(Exception):
+    pass
+
+
+@dataclass
+class DecodedAuthToken:
+    me: str
+    client_id: str
+    scope: str
+    decoded_authorization_code: str
+
+
+@dataclass
+class TokenEndpointResponse:
+    access_token: str
+    token_type: str
+    scope: str
+    me: str
+
 
 def validate_authorization_response(
         grant_type: str,
@@ -32,28 +62,28 @@ def validate_authorization_response(
         :type code_challenge_method: str
         :param allowed_methods: The list of allowed code challenge methods (default: ["S256"]).
         :type allowed_methods: list
-
-        :returns: True if the response is valid, False otherwise.
+        :returns: A boolean indicating whether the response is valid.
         :rtype: bool
     """
 
     if grant_type != "authorization_code":
-        return False
+        raise TokenValidationError("Only authorization_code grant types are supported.")
 
     if not code or not client_id or not redirect_uri:
-        return False
+        raise TokenValidationError("Token request is missing required parameters.")
 
     if code_challenge and code_challenge_method:
         if code_challenge_method not in allowed_methods:
-            return False
+            raise TokenValidationError("The challenge method provided is not supported.")
 
         if len(code_challenge) < 43:
-            return False
+            raise TokenValidationError("The challenge provided is too short.")
 
         if len(code_challenge) > 128:
-            return False
+            raise TokenValidationError("The challenge provided is too long.")
 
     return True
+
 
 def verify_decoded_code(
         client_id: str,
@@ -80,15 +110,20 @@ def verify_decoded_code(
     """
 
     if int(time.time()) > decoded_expires:
-        return False
+        raise AuthorizationCodeExpiredError("The authorization code has expired.")
 
     if redirect_uri != decoded_redirect_uri:
-        return False
+        raise TokenValidationError(
+            "The redirect URI provided does not match the redirect URI in the authorization token."
+        )
 
     if client_id != decoded_client_id:
-        return False
+        raise TokenValidationError(
+            "The client ID provided does not match the client ID in the authorization token."
+        )
 
     return True
+
 
 def generate_auth_token(
         me: str,
@@ -99,7 +134,8 @@ def generate_auth_token(
         code_challenge: str,
         code_challenge_method: str,
         final_scope: str,
-        secret_key: str
+        secret_key: str,
+        **kwargs
     ) -> str:
     """
         Generates an IndieAuth authorization token.
@@ -122,6 +158,8 @@ def generate_auth_token(
         :type final_scope: str
         :param secret_key: The secret key used to sign the token.
         :type secret_key: str
+        :param kwargs: Additional parameters to include in the token.
+        :type kwargs: dict
         :returns: The authorization token.
         :rtype: str
     """
@@ -143,7 +181,8 @@ def generate_auth_token(
             "redirect_uri": redirect_uri,
             "scope": final_scope,
             "code_challenge": code_challenge,
-            "code_challenge_method": code_challenge_method
+            "code_challenge_method": code_challenge_method,
+            **kwargs
         },
         secret_key,
         algorithm="HS256"
@@ -151,6 +190,119 @@ def generate_auth_token(
 
     return encoded_code
 
-def generate_indieauth_token(
 
-)
+def redeem_code(
+        grant_type: str,
+        code: str,
+        client_id: str,
+        redirect_uri: str,
+        code_verifier: str,
+        secret_key: str,
+        **kwargs
+    ) -> TokenEndpointResponse:
+
+    """
+        Redeems an IndieAuth code for an access token.
+
+        :param grant_type: The grant type of the authorization request.
+        :type grant_type: str
+        :param code: The code returned from the authorization request.
+        :type code: str
+        :param client_id: The client ID of the authorization request.
+        :type client_id: str
+        :param redirect_uri: The redirect URI of the authorization request.
+        :type redirect_uri: str
+        :param code_verifier: The code verifier, used for PKCE.
+        :type code_verifier: str
+        :param secret_key: The secret key used to sign the token.
+        :type secret_key: str
+        :param kwargs: Additional parameters to include in the token.
+        :type kwargs: dict
+        :returns: A token endpoint response object.
+        :rtype: TokenEndpointResponse
+    """
+
+    if not code or not client_id or not redirect_uri or not grant_type:
+        raise AuthenticationError("A code, client_id, redirect_uri, and grant_type must be provided.")
+
+    if grant_type != "authorization_code":
+        raise AuthenticationError("Only authorization_code grant types are accepted.")
+
+    try:
+        decoded_code = jwt.decode(code, secret_key, algorithms=["HS256"])
+    except:
+        raise AuthenticationError("Code is invalid.")
+
+    if code_verifier != None and decoded_code["code_challenge_method"] == "S256":
+        sha256_code = hashlib.sha256(code_verifier.encode('utf-8')).hexdigest()
+
+        code_challenge = base64.b64encode(sha256_code.encode('utf-8')).decode('utf-8')
+
+        if code_challenge != decoded_code["code_challenge"]:
+            raise AuthenticationError("Code challenge in decoded code was invalid.")
+
+    message = verify_decoded_code(client_id, redirect_uri, decoded_code)
+
+    if message != None:
+        raise AuthenticationError(message)
+
+    scope = decoded_code["scope"]
+    me = decoded_code["me"]
+
+    access_token = jwt.encode(
+        {
+            "me": me,
+            "expires": int(time.time()) + 360000,
+            "client_id": client_id,
+            "redirect_uri": redirect_uri,
+            "scope": scope,
+            **kwargs
+        },
+        secret_key,
+        algorithm="HS256"
+    )
+
+    return TokenEndpointResponse(
+        access_token=access_token,
+        token_type="bearer",
+        scope=scope,
+        me=me
+    )
+
+
+def validate_access_token(
+        authorization_code: str,
+        secret_key: str,
+        algorithm: str
+    ) -> str:
+    """
+        Exchanges an authorization code for an access token.
+
+        :param authorization_code: The authorization code returned from the authorization request.
+        :type authorization_code: str
+        :param secret_key: The secret key used to sign the token.
+        :type secret_key: str
+        :param algorithm: The algorithm used to sign the token.
+        :type algorithm: str
+        :returns: An object with the me, client_id, and scope values from the access token.
+        :rtype: DecodedAuthToken
+    """
+    
+    try:
+        decoded_authorization_code = jwt.decode(authorization_code, secret_key, algorithm=algorithm)
+    except:
+        raise AuthenticationError("Authorization code is invalid.")
+
+    if int(time.time()) > decoded_authorization_code["expires"]:
+        raise AuthorizationCodeExpiredError("Authorization code has expired.")
+
+    me = decoded_authorization_code["me"]
+    client_id = decoded_authorization_code["client_id"]
+    scope = decoded_authorization_code["scope"]
+
+    return DecodedAuthToken(
+        me=me,
+        client_id=client_id,
+        scope=scope,
+        decoded_authorization_code=decoded_authorization_code
+    )
