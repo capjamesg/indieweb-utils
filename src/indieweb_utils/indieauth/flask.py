@@ -1,9 +1,45 @@
+from dataclasses import dataclass
+from typing import Dict, Any, List
+
 import requests
+
+@dataclass
+class IndieAuthResponse:
+    endpoint_response: Dict[str, Any]
+
+
+class AuthenticationError(Exception):
+    pass
+
+
+def _validate_indieauth_response(me: str, response: dict, required_scopes: List[str]) -> None:
+    if me is None:
+        message = "An invalid me value was provided."
+        raise AuthenticationError(message)
+
+    if response.json().get("me").strip("/") != me.strip("/"):
+        message = "Your domain is not allowed to access this website."
+        raise AuthenticationError(message)
+
+    granted_scopes = response.json().get("scope").split(" ")
+
+    if response.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
+        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
+        raise AuthenticationError(message)
 
 
 def indieauth_callback_handler(
-    code, state, token_endpoint, code_verifier, session_state, me, callback_url, client_id, required_scopes
-):
+    *,
+    code: str,
+    state: str,
+    token_endpoint: str,
+    code_verifier: str,
+    session_state: str,
+    me: str,
+    callback_url: str,
+    client_id: str,
+    required_scopes: List[str]
+) -> IndieAuthResponse:
     """
     Exchange a callback 'code' for an authentication token.
 
@@ -23,15 +59,17 @@ def indieauth_callback_handler(
     :type callback_url: str
     :param client_id: The client ID used in the original authentication request.
     :type client_id: str
-    :param required_scopes: The scopes required for the application to work. This list should not include optional scopes.
+    :param required_scopes: The scopes required for the application to work.
+            This list should not include optional scopes.
     :type required_scopes: list[str]
-    :return: A message indicating the result of the callback (success or failure) and the token endpoint response. The endpoint response will be equal to None if the callback failed.
+    :return: A message indicating the result of the callback (success or failure) and the token endpoint response.
+            The endpoint response will be equal to None if the callback failed.
     :rtype: tuple[str, dict]
     """
 
     if state != session_state:
-        message = "Your authentication failed. Please try again."
-        return message, None
+        message = "The provided state value did not match the session state. Please try again."
+        raise AuthenticationError(message)
 
     data = {
         "code": code,
@@ -44,37 +82,26 @@ def indieauth_callback_handler(
     headers = {"Accept": "application/json"}
 
     try:
-        r = requests.post(token_endpoint, data=data, headers=headers)
+        auth_request = requests.post(token_endpoint, data=data, headers=headers)
     except:
         message = "Your token endpoint server could not be accessed."
-        return message, None
+        raise AuthenticationError(message)
 
-    if r.status_code != 200:
+    if auth_request.status_code != 200:
         message = "There was an error with your token endpoint server."
-        return message, None
+        raise AuthenticationError(message)
 
-    # remove code verifier from session because the authentication flow has finished
+    _validate_indieauth_response(me, auth_request, required_scopes)
 
-    if me is None:
-        message = "An invalid me value was provided."
-
-        return message, None
-
-    if r.json().get("me").strip("/") != me.strip("/"):
-        message = "Your domain is not allowed to access this website."
-
-        return message
-
-    granted_scopes = r.json().get("scope").split(" ")
-
-    if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
-        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
-        return message, None
-
-    return None, r.json()
+    return IndieAuthResponse(auth_request.json())
 
 
-def is_authenticated(token_endpoint, headers, session, approved_user=None):
+def is_authenticated(
+        token_endpoint: str,
+        headers: dict,
+        session: dict,
+        approved_user: bool = None
+    ) -> bool:
     """
     Check if a user has provided a valid Authorization header or access token in session. Designed for use with Flask.
 
