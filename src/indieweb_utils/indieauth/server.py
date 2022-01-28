@@ -3,7 +3,12 @@ import random
 import string
 import hashlib
 import base64
+import binascii
+import os
 import jwt
+
+def generate_token(*, size: int = 20) -> str:
+    return binascii.hexlify(os.urandom(size)).decode()
 
 from dataclasses import dataclass
 
@@ -26,6 +31,12 @@ class DecodedAuthToken:
     client_id: str
     scope: str
     decoded_authorization_code: str
+
+
+@dataclass
+class AuthTokenResponse:
+    code: str
+    code_verifier: str
 
 
 @dataclass
@@ -69,7 +80,7 @@ def validate_authorization_response(
     if grant_type != "authorization_code":
         raise TokenValidationError("Only authorization_code grant types are supported.")
 
-    if not code or not client_id or not redirect_uri:
+    if all([code, client_id, redirect_uri]):
         raise TokenValidationError("Token request is missing required parameters.")
 
     if code_challenge and code_challenge_method:
@@ -136,7 +147,7 @@ def generate_auth_token(
         final_scope: str,
         secret_key: str,
         **kwargs
-    ) -> str:
+    ) -> AuthTokenResponse:
     """
         Generates an IndieAuth authorization token.
 
@@ -164,18 +175,18 @@ def generate_auth_token(
         :rtype: str
     """
 
-    if not client_id or not redirect_uri or not response_type or (not state and state != ""):
+    if all([client_id, redirect_uri, response_type, state]):
         raise AuthenticationError("Token request is missing required parameters.")
 
-    if response_type != "code" and response_type != "id":
+    if response_type not in ["code", "id"]:
         raise AuthenticationError("Only code and id response types are supported.")
 
-    random_string = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+    code_verifier = generate_token(10)
 
     encoded_code = jwt.encode(
         {
             "me": me,
-            "random_string": random_string,
+            "code_verifier": code_verifier,
             "expires": int(time.time()) + 3600,
             "client_id": client_id,
             "redirect_uri": redirect_uri,
@@ -188,7 +199,10 @@ def generate_auth_token(
         algorithm="HS256"
     )
 
-    return encoded_code
+    return AuthTokenResponse(
+        code=encoded_code,
+        code_verifier=code_verifier
+    )
 
 
 def redeem_code(

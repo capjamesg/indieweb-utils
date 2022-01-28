@@ -26,14 +26,6 @@ def get_profile(
     except:
         raise ProfileError("Request to retrieve profile URL did not return a valid response.")
 
-    if not me_profile:
-        return Profile(
-            name="",
-            photo="",
-            url="",
-            email=""
-        )
-
     profile_item = BeautifulSoup(me_profile.text, "html.parser")
     h_card = profile_item.select(".h-card")
 
