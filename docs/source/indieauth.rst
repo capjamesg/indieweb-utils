@@ -33,7 +33,7 @@ that is requesting a user to authenticate.
 
 You can do this using the following function:
 
-    ..autofunction:: indieweb_utils.get_h_app_item
+..autofunction:: indieweb_utils.get_h_app_item
 
 This function returns an object with the name, logo, url, and summary found in a h-app item.
 
@@ -51,7 +51,7 @@ of the specified page. If a h-card is not provided, empty strings are returned.
 
 Usage information for this function is below.
 
-    ..autofunction:: indieweb_utils.get_profile
+..autofunction:: indieweb_utils.get_profile
 
 Generate an authentication token
 --------------------------------
@@ -91,7 +91,7 @@ is valid.
 
 Here is the syntax for this function:
 
-    ..autofunction:: indieweb_utils.validate_authorization_response
+..autofunction:: indieweb_utils.validate_authorization_response
 
 Redeem an IndieAuth code at a token endpoint
 --------------------------------------------
@@ -113,7 +113,7 @@ a token for a token endpoint.
 
 Here is the syntax for this function:
 
-    ..autofunction:: indieweb_utils.redeem_code
+..autofunction:: indieweb_utils.redeem_code
 
 Validate an access token created by a token endpoint
 ----------------------------------------------------
@@ -130,4 +130,4 @@ If the code can be decoded, the me, client_id, and scope values will be returned
 
 Here is the syntax for the function:
 
-    ..autofunction:: indieweb_utils.validate_access_token
+..autofunction:: indieweb_utils.validate_access_token
