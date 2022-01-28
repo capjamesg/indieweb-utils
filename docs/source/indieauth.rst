@@ -86,7 +86,7 @@ The validate_authorization_response() function contains five checks:
 4. Verifies the length of the code challenge is within the range of 43 and 128 characters.
 
 You should use this function to ensure a POST request to an authorization endpoint to
-redeem an authorization code (per 5.3 Redeeming the Authorization Code in the IndieAuth spec)
+redeem an authorization code (per `5.3 Redeeming the Authorization Code <https://indieauth.spec.indieweb.org/#redeeming-the-authorization-code>`_ in the IndieAuth spec)
 is valid.
 
 Here is the syntax for this function:

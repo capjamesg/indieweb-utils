@@ -80,7 +80,7 @@ def validate_authorization_response(
     if grant_type != "authorization_code":
         raise TokenValidationError("Only authorization_code grant types are supported.")
 
-    if all([code, client_id, redirect_uri]):
+    if not all([code, client_id, redirect_uri]):
         raise TokenValidationError("Token request is missing required parameters.")
 
     if code_challenge and code_challenge_method:
