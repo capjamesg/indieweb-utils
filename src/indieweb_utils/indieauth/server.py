@@ -96,7 +96,7 @@ def validate_authorization_response(
     return True
 
 
-def verify_decoded_code(
+def _verify_decoded_code(
         client_id: str,
         redirect_uri: str,
         decoded_client_id: str,
@@ -212,6 +212,7 @@ def redeem_code(
         redirect_uri: str,
         code_verifier: str,
         secret_key: str,
+        algorithms: list = ["HS256"],
         **kwargs
     ) -> TokenEndpointResponse:
 
@@ -230,6 +231,8 @@ def redeem_code(
         :type code_verifier: str
         :param secret_key: The secret key used to sign the token.
         :type secret_key: str
+        :param algorithms: The list of algorithms to use for signing the token (default: ["HS256"]).
+        :type algorithms: list
         :param kwargs: Additional parameters to include in the token.
         :type kwargs: dict
         :returns: A token endpoint response object.
@@ -243,7 +246,7 @@ def redeem_code(
         raise AuthenticationError("Only authorization_code grant types are accepted.")
 
     try:
-        decoded_code = jwt.decode(code, secret_key, algorithms=["HS256"])
+        decoded_code = jwt.decode(code, secret_key, algorithms=algorithms)
     except:
         raise AuthenticationError("Code is invalid.")
 
@@ -255,7 +258,7 @@ def redeem_code(
         if code_challenge != decoded_code["code_challenge"]:
             raise AuthenticationError("Code challenge in decoded code was invalid.")
 
-    message = verify_decoded_code(client_id, redirect_uri, decoded_code)
+    message = _verify_decoded_code(client_id, redirect_uri, decoded_code)
 
     if message != None:
         raise AuthenticationError(message)
@@ -287,23 +290,23 @@ def redeem_code(
 def validate_access_token(
         authorization_code: str,
         secret_key: str,
-        algorithm: str
+        algorithms: list = ["HS256"],
     ) -> str:
     """
-        Exchanges an authorization code for an access token.
+        Validates an access token provided by a token endpoint.
 
         :param authorization_code: The authorization code returned from the authorization request.
         :type authorization_code: str
         :param secret_key: The secret key used to sign the token.
         :type secret_key: str
-        :param algorithm: The algorithm used to sign the token.
-        :type algorithm: str
+        :param algorithms: The algorithms used to sign the token (default: ["HS256"]).
+        :type algorithms: list
         :returns: An object with the me, client_id, and scope values from the access token.
         :rtype: DecodedAuthToken
     """
     
     try:
-        decoded_authorization_code = jwt.decode(authorization_code, secret_key, algorithm=algorithm)
+        decoded_authorization_code = jwt.decode(authorization_code, secret_key, algorithms=algorithms)
     except:
         raise AuthenticationError("Authorization code is invalid.")
 
