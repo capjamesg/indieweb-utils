@@ -93,9 +93,6 @@ Here is the syntax for this function:
 
     ..autofunction:: indieweb_utils.validate_authorization_response
 
-Verify a decoded code
----------------------
-
 Redeem an IndieAuth code at a token endpoint
 --------------------------------------------
 
