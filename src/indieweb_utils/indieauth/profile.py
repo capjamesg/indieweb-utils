@@ -1,72 +1,79 @@
 from dataclasses import dataclass
+from typing import Optional
 
 import requests
-
 from bs4 import BeautifulSoup
+
+from . import constants
 
 
 class ProfileError(Exception):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Profile:
     name: str
-    photo: str
+    photo: Optional[str]
     url: str
-    email: str
+    email: Optional[str]
 
 
-def get_profile(
-        me: str
-    ) -> Profile:
+def get_profile(me: str) -> Profile:
 
     try:
-        me_profile = requests.get(me)
-    except:
+        me_profile = requests.get(me, timeout=10)
+    except requests.exceptions.RequestException:
         raise ProfileError("Request to retrieve profile URL did not return a valid response.")
 
     profile_item = BeautifulSoup(me_profile.text, "html.parser")
-    h_card = profile_item.select(".h-card")
-
-    if not h_card:
+    h_card_tag = profile_item.select(".h-card")
+    try:
+        h_card = h_card_tag[0]
+    except IndexError:
+        return Profile(name=me, photo=None, url=me, email=None)
+    else:
         return Profile(
-            name="",
-            photo="",
-            url="",
-            email=""
+            name=_extract_name(h_card=h_card) or me,
+            photo=_extract_photo(h_card=h_card),
+            url=_extract_url(h_card=h_card) or me,
+            email=_extract_email(h_card=h_card),
         )
-            
-    h_card = h_card[0]
-    name = h_card.select(".p-name")
-    photo = h_card.select(".u-photo")
-    url = h_card.select(".u-url")
-    email = h_card.select(".u-email")
 
-    profile = {}
 
-    if name and name[0].text.strip() != "":
-        profile["name"] = name[0].text
+def _extract_name(*, h_card) -> Optional[str]:
+    name_tag = h_card.select(constants.HCardProfileSelector.name.value)
+    try:
+        name = name_tag[0]
+    except IndexError:
+        return None
     else:
-        profile["name"] = me
+        return name.text.strip()
 
-    if photo:
-        profile["photo"] = photo[0].get("src")
-    
-    if url and url[0].get("href").strip() != "":
-        profile["url"] = url[0].get("href")
+
+def _extract_photo(*, h_card) -> Optional[str]:
+    photo = h_card.select(constants.HCardProfileSelector.photo.value)
+    try:
+        return photo[0].get("src")
+    except IndexError:
+        return None
+
+
+def _extract_url(*, h_card) -> Optional[str]:
+    url_tag = h_card.select(constants.HCardProfileSelector.url.value)
+    try:
+        url = url_tag[0]
+    except IndexError:
+        return None
     else:
-        profile["url"] = me
+        return url.get("href").strip()
 
-    if email:
-        profile["email"] = email[0].text.replace("mailto:", "")
+
+def _extract_email(*, h_card) -> Optional[str]:
+    email_tag = h_card.select(constants.HCardProfileSelector.email.value)
+    try:
+        email = email_tag[0].get("href", "")
+    except IndexError:
+        return None
     else:
-        profile["email"] = None
-
-    return Profile(
-        name=profile["name"],
-        photo=profile["photo"],
-        url=profile["url"],
-        email=profile["email"]
-    )
-    
+        return email.strip().replace("mailto:", "") or None
