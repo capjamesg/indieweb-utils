@@ -1,7 +1,7 @@
-import pytest
 import responses
 
 from indieweb_utils.indieauth import happ
+
 
 @responses.activate
 def test_handles_missing_name():

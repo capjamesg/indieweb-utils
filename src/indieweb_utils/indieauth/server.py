@@ -5,10 +5,11 @@ import binascii
 import os
 import jwt
 
+from dataclasses import dataclass
+
+
 def generate_token(*, size: int = 20) -> str:
     return binascii.hexlify(os.urandom(size)).decode()
-
-from dataclasses import dataclass
 
 
 class AuthenticationError(Exception):
@@ -28,7 +29,7 @@ class DecodedAuthToken:
     me: str
     client_id: str
     scope: str
-    decoded_authorization_code: str
+    decoded_authorization_code: dict
 
 
 @dataclass
@@ -47,14 +48,14 @@ class TokenEndpointResponse:
 
 
 def validate_authorization_response(
-        grant_type: str,
-        code: str,
-        client_id: str,
-        redirect_uri: str,
-        code_challenge: str,
-        code_challenge_method: str,
-        allowed_methods: list = ["S256"]
-    ) -> bool:
+    grant_type: str,
+    code: str,
+    client_id: str,
+    redirect_uri: str,
+    code_challenge: str,
+    code_challenge_method: str,
+    allowed_methods: list = ["S256"]
+) -> bool:
     """
         Conducts checks to validate the response from an IndieAuth authorization endpoint.
 
@@ -96,12 +97,12 @@ def validate_authorization_response(
 
 
 def _verify_decoded_code(
-        client_id: str,
-        redirect_uri: str,
-        decoded_client_id: str,
-        decoded_redirect_uri: str,
-        decoded_expires: int
-    ) -> bool:
+    client_id: str,
+    redirect_uri: str,
+    decoded_client_id: str,
+    decoded_redirect_uri: str,
+    decoded_expires: int
+) -> bool:
     """
         Conducts checks to validate the decoded code in an authorization request.
 
@@ -136,16 +137,16 @@ def _verify_decoded_code(
 
 
 def generate_auth_token(
-        me: str,
-        client_id: str,
-        redirect_uri: str,
-        response_type: str,
-        state: str,
-        code_challenge_method: str,
-        final_scope: str,
-        secret_key: str,
-        **kwargs
-    ) -> AuthTokenResponse:
+    me: str,
+    client_id: str,
+    redirect_uri: str,
+    response_type: str,
+    state: str,
+    code_challenge_method: str,
+    final_scope: str,
+    secret_key: str,
+    **kwargs
+) -> AuthTokenResponse:
     """
         Generates an IndieAuth authorization token.
 
@@ -207,15 +208,15 @@ def generate_auth_token(
 
 
 def redeem_code(
-        grant_type: str,
-        code: str,
-        client_id: str,
-        redirect_uri: str,
-        code_verifier: str,
-        secret_key: str,
-        algorithms: list = ["HS256"],
-        **kwargs
-    ) -> TokenEndpointResponse:
+    grant_type: str,
+    code: str,
+    client_id: str,
+    redirect_uri: str,
+    code_verifier: str,
+    secret_key: str,
+    algorithms: list = ["HS256"],
+    **kwargs
+) -> TokenEndpointResponse:
 
     """
         Redeems an IndieAuth code for an access token.
@@ -295,10 +296,10 @@ def redeem_code(
 
 
 def validate_access_token(
-        authorization_code: str,
-        secret_key: str,
-        algorithms: list = ["HS256"],
-    ) -> str:
+    authorization_code: str,
+    secret_key: str,
+    algorithms: list = ["HS256"],
+) -> str:
     """
         Validates an access token provided by a token endpoint.
 
@@ -311,7 +312,7 @@ def validate_access_token(
         :returns: An object with the me, client_id, and scope values from the access token.
         :rtype: DecodedAuthToken
     """
-    
+
     try:
         decoded_authorization_code = jwt.decode(authorization_code, secret_key, algorithms=algorithms)
     except:

@@ -83,6 +83,7 @@ def test_handles_missing_photo(name_tag):
     actual = profile.get_profile(me=url)
     assert actual.photo is None
 
+
 @responses.activate
 def test_handles_missingadasd(name_tag):
     url = "http://example.com"
@@ -90,7 +91,7 @@ def test_handles_missingadasd(name_tag):
         responses.Response(
             method="GET",
             url=url,
-            body=f'<div class="h-card"><a class="u-email"></a></div>',
+            body='<div class="h-card"><a class="u-email"></a></div>',
         )
     )
     actual = profile.get_profile(me=url)
@@ -105,7 +106,7 @@ def test_handles_missing_name():
         responses.Response(
             method="GET",
             url=url,
-            body=f'<div class="h-card"></div>',
+            body='<div class="h-card"></div>',
         )
     )
     actual = profile.get_profile(me=url)

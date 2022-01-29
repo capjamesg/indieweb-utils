@@ -13,10 +13,10 @@ class ApplicationInfo:
 
 
 def get_h_app_item(
-        web_page: str,
-        client_id: str,
-        redirect_uri: str,
-    ) -> ApplicationInfo:
+    web_page: str,
+    client_id: str,
+    redirect_uri: str,
+) -> ApplicationInfo:
     """
         Get the h-app item from the web page.
 
@@ -68,7 +68,7 @@ def get_h_app_item(
                 logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + "/" + logo[0].get("src")
 
             app_logo = logo_to_validate
-        
+
         if url and url[0].get("href").strip() != "":
             app_url = url[0].get("href")
         else:
@@ -83,4 +83,3 @@ def get_h_app_item(
         url=app_url,
         summary=app_summary
     )
-    

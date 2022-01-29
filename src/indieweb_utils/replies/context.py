@@ -9,11 +9,13 @@ from bs4 import BeautifulSoup
 from ..utils.urls import canonicalize_url
 from ..webmentions.discovery import discover_webmention_endpoint
 
+
 @dataclass
 class PostAuthor:
     name: str
     url: str
     photo: str
+
 
 @dataclass
 class ReplyContext:
@@ -31,9 +33,11 @@ class ReplyContextRetrievalError(Exception):
     def __init__(self, message):
         self.message = message
 
+
 class UnsupportedScheme(Exception):
     def __init__(self, message):
         self.message = message
+
 
 def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, domain: str, webmention_endpoint_url: str, summary_word_limit: int) -> ReplyContext:
     author_url = ""
@@ -42,6 +46,8 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
 
     p_name = ""
     post_body = ""
+
+    parsed_url = url_parse.urlsplit(parsed_url)
 
     if h_entry["properties"].get("author"):
         if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get(
@@ -89,7 +95,7 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
         if favicon and not author_image:
             photo_url = favicon["href"]
             if not photo_url.startswith("https://") or not photo_url.startswith("http://"):
-                author_image = "https://" + domain + photo_url
+                author_image = "https://" + domain + "/" + photo_url
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
     elif h_entry["properties"].get("content"):
@@ -105,7 +111,7 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
         not author_url.startswith("https://") and not author_url.startswith("http://")
     ):
         author_url = "https://" + author_url
-        
+
     if not author_name and author_url:
         author_name = url_parse.urlsplit(author_url).netloc
 
@@ -183,7 +189,13 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
     )
 
 
-def _generate_reply_context_from_main_page(url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int) -> ReplyContext:
+def _generate_reply_context_from_main_page(
+    url: str, 
+    http_headers: dict,
+    domain: str,
+    webmention_endpoint_url: str,
+    summary_word_limit: int
+) -> ReplyContext:
     request = requests.get(url, headers=http_headers)
 
     soup = BeautifulSoup(request.text, "lxml")
@@ -257,13 +269,18 @@ def _generate_reply_context_from_main_page(url: str, http_headers: dict, domain:
     )
 
 
-def get_reply_context(url: str, twitter_bearer_token: bool = "", summary_word_limit: int = 75) -> ReplyContext:
+def get_reply_context(
+    url: str,
+    twitter_bearer_token: str = "",
+    summary_word_limit: int = 75
+) -> ReplyContext:
     """
     Generate reply context for use on your website based on a URL.
 
     :param url: The URL of the post to generate reply context for.
     :type url: str
-    :param twitter_bearer_token: The optional Twitter bearer token to use. This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
+    :param twitter_bearer_token: The optional Twitter bearer token to use.
+        This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
     :type twitter_bearer_token: str
     :param summary_word_limit: The maximum number of words to include in the summary (default 75).
     :type summary_word_limit: int
@@ -294,7 +311,14 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "", summary_word_li
     if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
         h_entry = parsed["items"][0]
 
-        return _generate_h_entry_reply_context(h_entry, url, parsed_url, domain, webmention_endpoint_url, summary_word_limit)
+        return _generate_h_entry_reply_context(
+            h_entry,
+            url,
+            parsed_url,
+            domain,
+            webmention_endpoint_url,
+            summary_word_limit
+        )
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
         return _generate_tweet_reply_context(parsed_url, domain, url, twitter_bearer_token, webmention_endpoint_url)

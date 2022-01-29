@@ -1,7 +1,3 @@
-import time
-from wsgiref import validate
-import pytest
-
 from indieweb_utils.indieauth import server
 
 
@@ -42,7 +38,7 @@ class TestGenerateAuthToken:
             authorization_code=exchange_response.access_token,
             secret_key="test_secret_key"
         )
-        
+
         assert validate_response.me == "https://example.com/me"
         assert validate_response.client_id == "https://example.com/client"
         assert validate_response.scope == "read write"
@@ -58,4 +54,4 @@ class TestGenerateAuthToken:
             allowed_methods=["S256"]
         )
 
-        assert validate_auth_response == True
+        assert validate_auth_response is True
