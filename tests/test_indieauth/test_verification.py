@@ -1,4 +1,5 @@
 import time
+from wsgiref import validate
 import pytest
 
 from indieweb_utils.indieauth import server
@@ -37,26 +38,24 @@ class TestGenerateAuthToken:
         assert exchange_response.scope == "read write"
         assert exchange_response.me == "https://example.com/me"
     
+        validate_response = server.validate_access_token(
+            authorization_code=exchange_response.access_token,
+            secret_key="test_secret_key"
+        )
+        
+        assert validate_response.me == "https://example.com/me"
+        assert validate_response.client_id == "https://example.com/client"
+        assert validate_response.scope == "read write"
+        assert validate_response.decoded_authorization_code
 
-# class TestAuthorizationResponseValidation:
-#     def test_authorization_response_validation(self):
-#         assert validate_authorization_response(
-#             grant_type="authorization_code",
-#             code="12345",
-#             client_id="https://jamesg.blog",
-#             redirect_uri="https://jamesg.blog/authorize",
-#             code_challenge="12345",
-#             code_challenge_method="S256",
-#             allowed_methods=["S256"]
-#         ) == TokenValidationError
+        validate_auth_response = server.validate_authorization_response(
+            grant_type="authorization_code",
+            code="12345",
+            client_id="https://jamesg.blog",
+            redirect_uri="https://jamesg.blog/authorize",
+            code_challenge=response.code_challenge,
+            code_challenge_method="S256",
+            allowed_methods=["S256"]
+        )
 
-
-# class TestVerifyDecodedCode:
-#     def test_verify_decoded_code(self):
-#         assert verify_decoded_code(
-#             client_id="https://jamesg.blog",
-#             redirect_uri="https://jamesg.blog/authorize",
-#             decoded_client_id="https://jamesg.blog",
-#             decoded_redirect_uri="https://jamesg.blog/authorize",
-#             decoded_expires=int(time.time()) + 3600
-#         ) == True
+        assert validate_auth_response == True
