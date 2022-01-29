@@ -1,6 +1,4 @@
 import time
-import random
-import string
 import hashlib
 import base64
 import binascii
@@ -37,6 +35,7 @@ class DecodedAuthToken:
 class AuthTokenResponse:
     code: str
     code_verifier: str
+    code_challenge: str
 
 
 @dataclass
@@ -142,7 +141,6 @@ def generate_auth_token(
         redirect_uri: str,
         response_type: str,
         state: str,
-        code_challenge: str,
         code_challenge_method: str,
         final_scope: str,
         secret_key: str,
@@ -161,8 +159,6 @@ def generate_auth_token(
         :type response_type: str
         :param state: The state of the authorization request.
         :type state: str
-        :param code_challenge: The code challenge, used for PKCE.
-        :type code_challenge: str
         :param code_challenge_method: The code challenge method, used for PKCE.
         :type code_challenge_method: str
         :param final_scope: The scopes approved by the user.
@@ -175,13 +171,17 @@ def generate_auth_token(
         :rtype: str
     """
 
-    if all([client_id, redirect_uri, response_type, state]):
+    if not all([client_id, redirect_uri, response_type, state]):
         raise AuthenticationError("Token request is missing required parameters.")
 
     if response_type not in ["code", "id"]:
         raise AuthenticationError("Only code and id response types are supported.")
 
-    code_verifier = generate_token(10)
+    code_verifier = generate_token()
+
+    sha256_code = hashlib.sha256(code_verifier.encode('utf-8')).hexdigest()
+
+    code_challenge = base64.b64encode(sha256_code.encode('utf-8')).decode('utf-8')
 
     encoded_code = jwt.encode(
         {
@@ -201,7 +201,8 @@ def generate_auth_token(
 
     return AuthTokenResponse(
         code=encoded_code,
-        code_verifier=code_verifier
+        code_verifier=code_verifier,
+        code_challenge=code_challenge
     )
 
 
@@ -250,7 +251,7 @@ def redeem_code(
     except:
         raise AuthenticationError("Code is invalid.")
 
-    if code_verifier != None and decoded_code["code_challenge_method"] == "S256":
+    if code_verifier is not None and decoded_code["code_challenge_method"] == "S256":
         sha256_code = hashlib.sha256(code_verifier.encode('utf-8')).hexdigest()
 
         code_challenge = base64.b64encode(sha256_code.encode('utf-8')).decode('utf-8')
@@ -258,9 +259,15 @@ def redeem_code(
         if code_challenge != decoded_code["code_challenge"]:
             raise AuthenticationError("Code challenge in decoded code was invalid.")
 
-    message = _verify_decoded_code(client_id, redirect_uri, decoded_code)
+    message = _verify_decoded_code(
+        client_id,
+        redirect_uri,
+        decoded_code["client_id"],
+        decoded_code["redirect_uri"],
+        decoded_code["expires"]
+    )
 
-    if message != None:
+    if message is False:
         raise AuthenticationError(message)
 
     scope = decoded_code["scope"]
