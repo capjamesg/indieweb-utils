@@ -1,3 +1,4 @@
+from cgitb import text
 from dataclasses import dataclass
 from typing import List
 from urllib import parse as url_parse
@@ -47,7 +48,7 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
     p_name = ""
     post_body = ""
 
-    parsed_url = url_parse.urlsplit(parsed_url)
+    parsed_url = url_parse.urlsplit(url)
 
     if h_entry["properties"].get("author"):
         if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get(
@@ -61,14 +62,14 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
             if h_entry["properties"]["author"][0]["properties"].get("name"):
                 author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
 
-            if h_entry["properties"]["author"][0]["properties"].get("photo"):
-                author_image = h_entry["properties"]["author"][0]["properties"]["photo"][0]
+            if h_entry["properties"]["author"][0]["properties"].get("featured"):
+                author_image = h_entry["properties"]["author"][0]["properties"]["featured"][0]
 
         elif isinstance(h_entry["properties"]["author"][0], str):
             if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
                 author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
-            author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
+            author = mf2py.parse(doc=requests.get(author_url, timeout=10, verify=False).text)
 
             if author["items"] and author["items"][0]["type"] == ["h-card"]:
                 author_url = h_entry["properties"]["author"][0]
@@ -118,8 +119,8 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
     post_photo_url = ""
     post_video_url = ""
 
-    if h_entry["properties"].get("photo"):
-        post_photo_url = canonicalize_url(h_entry["properties"]["photo"][0], domain, url)
+    if h_entry["properties"].get("featured"):
+        post_photo_url = canonicalize_url(h_entry["properties"]["featured"][0], domain, url)
 
     if h_entry["properties"].get("video"):
         post_video_url = canonicalize_url(h_entry["properties"]["video"][0], domain, url)
@@ -304,7 +305,7 @@ def get_reply_context(
 
     webmention_endpoint_url, _ = discover_webmention_endpoint(url)
 
-    parsed = mf2py.parse(page_content.text)
+    parsed = mf2py.parse(doc=page_content.text)
 
     domain = parsed_url.netloc
 
