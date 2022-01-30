@@ -55,7 +55,7 @@ def validate_authorization_response(
     code_challenge: str,
     code_challenge_method: str,
     allowed_methods: list = ["S256"]
-) -> bool:
+) -> None:
     """
         Conducts checks to validate the response from an IndieAuth authorization endpoint.
 
@@ -92,9 +92,6 @@ def validate_authorization_response(
 
         if len(code_challenge) > 128:
             raise TokenValidationError("The challenge provided is too long.")
-
-    return True
-
 
 def _verify_decoded_code(
     client_id: str,
@@ -260,7 +257,7 @@ def redeem_code(
         if code_challenge != decoded_code["code_challenge"]:
             raise AuthenticationError("Code challenge in decoded code was invalid.")
 
-    message = _verify_decoded_code(
+    valid = _verify_decoded_code(
         client_id,
         redirect_uri,
         decoded_code["client_id"],
@@ -268,8 +265,8 @@ def redeem_code(
         decoded_code["expires"]
     )
 
-    if message is False:
-        raise AuthenticationError(message)
+    if not valid:
+        raise AuthenticationError(valid)
 
     scope = decoded_code["scope"]
     me = decoded_code["me"]

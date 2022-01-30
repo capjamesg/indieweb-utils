@@ -85,20 +85,6 @@ def test_handles_missing_photo(name_tag):
 
 
 @responses.activate
-def test_handles_missingadasd(name_tag):
-    url = "http://example.com"
-    responses.add(
-        responses.Response(
-            method="GET",
-            url=url,
-            body='<div class="h-card"><a class="u-email"></a></div>',
-        )
-    )
-    actual = profile.get_profile(me=url)
-    assert actual.photo is None
-
-
-@responses.activate
 def test_handles_missing_name():
     """Test name is set to the me url if no name found."""
     url = "http://example.com"

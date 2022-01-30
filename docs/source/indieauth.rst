@@ -93,6 +93,9 @@ Here is the syntax for this function:
 
 ..autofunction:: indieweb_utils.validate_authorization_response
 
+This function does not return a value if an authorization response is valid. If a response is invalid,
+an exception will be raised with a relevant error message.
+
 Redeem an IndieAuth code at a token endpoint
 --------------------------------------------
 
