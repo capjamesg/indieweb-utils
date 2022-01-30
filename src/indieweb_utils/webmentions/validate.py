@@ -58,7 +58,7 @@ def validate_headers(request_item):
     return True
 
 
-def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: List[str] = []) -> bool:        
+def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: List[str] = []) -> bool:
     """
     Check if a webmention is valid.
 
@@ -83,10 +83,10 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
 
     if source_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Source must use either a http:// or https:// URL scheme.")
-    
+
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
-    
+
     # Only allow 3 redirects before raising an error
     session = requests.Session()
     session.max_redirects = 3
@@ -107,7 +107,7 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
 
     try:
         get_source_for_validation = session.get(source)
-    except Exception as e:
+    except:
         raise WebmentionValidationError("Source could not be retrieved.")
 
     if validated_headers is False:
@@ -130,7 +130,7 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
 
     if check_source_size.status_code != 200:
         raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
-    
+
     soup = BeautifulSoup(get_source_for_validation.text, "html.parser")
 
     all_anchors = soup.find_all("a")
@@ -150,7 +150,7 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
     # Might want to comment out this if statement for testing
     if not contains_valid_link_to_target:
         raise WebmentionValidationError(f"Source does not contain a link to target.")
-    
+
     moderate = process_vouch(vouch, source, vouch_list)
 
     return True, moderate

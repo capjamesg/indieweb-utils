@@ -3,11 +3,10 @@ import responses
 
 from indieweb_utils.replies import context
 
+
 class TestReplyContext:
     def test_reply_context(self):
-        reply_context = context.get_reply_context(
-            url="https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
-        )
+        reply_context = context.get_reply_context(url="https://jamesg.blog/2022/01/28/integrated-indieweb-services/")
 
         assert reply_context.post_url == "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
         assert reply_context.authors[0].url == "https://jamesg.blog"

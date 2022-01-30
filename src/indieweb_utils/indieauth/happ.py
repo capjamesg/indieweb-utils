@@ -18,16 +18,16 @@ def get_h_app_item(
     redirect_uri: str,
 ) -> ApplicationInfo:
     """
-        Get the h-app item from the web page.
+    Get the h-app item from the web page.
 
-        :param web_page: The web page to parse.
-        :type web_page: str
-        :param client_id: The client id of your application.
-        :type client_id: str
-        :param redirect_uri: The redirect uri specified by the client.
-        :type redirect_uri: str
-        :return: The h-app item.
-        :rtype: ApplicationInfo
+    :param web_page: The web page to parse.
+    :type web_page: str
+    :param client_id: The client id of your application.
+    :type client_id: str
+    :param redirect_uri: The redirect uri specified by the client.
+    :type redirect_uri: str
+    :return: The h-app item.
+    :rtype: ApplicationInfo
     """
 
     redirect_uri_domain = parse_url(redirect_uri).netloc
@@ -77,9 +77,4 @@ def get_h_app_item(
         if summary and summary[0].text.strip() != "":
             app_summary = summary[0].text
 
-    return ApplicationInfo(
-        name=app_name,
-        logo=app_logo,
-        url=app_url,
-        summary=app_summary
-    )
+    return ApplicationInfo(name=app_name, logo=app_logo, url=app_url, summary=app_summary)
