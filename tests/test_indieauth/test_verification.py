@@ -56,4 +56,4 @@ class TestGenerateAuthToken:
             allowed_methods=["S256"]
         )
 
-        assert validate_auth_response is True
+        assert validate_auth_response is None
