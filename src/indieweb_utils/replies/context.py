@@ -196,13 +196,13 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
 
 def _generate_reply_context_from_main_page(
-    url: str, 
+    url: str,
     http_headers: dict,
     domain: str,
     webmention_endpoint_url: str,
     summary_word_limit: int
 ) -> ReplyContext:
-  
+
     try:
         request = requests.get(url, headers=http_headers)
     except requests.exceptions.RequestException:
@@ -329,7 +329,6 @@ def get_reply_context(
         return _generate_h_entry_reply_context(
             h_entry,
             url,
-            parsed_url,
             domain,
             webmention_endpoint_url,
             summary_word_limit

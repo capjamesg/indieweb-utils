@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Any, List
+from typing import List
 
 import requests
 
@@ -111,16 +111,16 @@ def indieauth_callback_handler(
             response={}
         )
 
-    if r.json().get("me").strip("/") != me.strip("/"):
+    if auth_request.json().get("me").strip("/") != me.strip("/"):
         message = "Your domain is not allowed to access this website."
         return IndieAuthCallbackResponse(
             message=message,
             response={}
         )
 
-    granted_scopes = r.json().get("scope").split(" ")
+    granted_scopes = auth_request.json().get("scope").split(" ")
 
-    if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
+    if auth_request.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
         message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
         return IndieAuthCallbackResponse(
             message=message,
@@ -131,7 +131,7 @@ def indieauth_callback_handler(
         message="Authentication was successful.",
         response={}
     )
- 
+
 
 def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:
     """

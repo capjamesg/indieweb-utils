@@ -35,7 +35,7 @@ class TestGenerateAuthToken:
         assert exchange_response.token_type == "bearer"
         assert exchange_response.scope == "read write"
         assert exchange_response.me == "https://example.com/me"
-    
+
         validate_response = server.validate_access_token(
             authorization_code=exchange_response.access_token,
             secret_key="test_secret_key"

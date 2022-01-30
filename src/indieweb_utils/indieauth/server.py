@@ -93,6 +93,7 @@ def validate_authorization_response(
         if len(code_challenge) > 128:
             raise TokenValidationError("The challenge provided is too long.")
 
+
 def _verify_decoded_code(
     client_id: str,
     redirect_uri: str,

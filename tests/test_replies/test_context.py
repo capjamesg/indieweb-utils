@@ -1,7 +1,5 @@
-import pytest
-import responses
-
 from indieweb_utils.replies import context
+
 
 class TestReplyContext:
     def test_reply_context(self):
