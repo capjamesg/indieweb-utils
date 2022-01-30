@@ -1,0 +1,16 @@
+SCOPE_DEFINITIONS = {
+    "create": "Give permission to create posts to your site",
+    "update": " Give permission to update posts to your site",
+    "delete": "Give permission to delete posts to your site",
+    "undelete": "Give permission to undelete posts",
+    "media": "Give permission to upload assets to your media endpoint",
+    "profile": "Share your email, photo, and name from your website homepage (if available)",
+    "email": "Share your email address",
+    "read": "Give read access to channels in your feed reader",
+    "follow": "Give permission to follow feeds",
+    "mute": "Give permission to mute and unmute feeds",
+    "block": "Give permission to block and unblock feeds",
+    "channels": "Give permission to manage channels",
+    "draft": "Give permission to create draft posts",
+    "post": "Give permission to post to your site",
+}

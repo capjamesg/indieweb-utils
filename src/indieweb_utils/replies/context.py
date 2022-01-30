@@ -63,8 +63,8 @@ def _generate_h_entry_reply_context(
             if h_entry["properties"]["author"][0]["properties"].get("name"):
                 author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
 
-            if h_entry["properties"]["author"][0]["properties"].get("photo"):
-                author_image = h_entry["properties"]["author"][0]["properties"]["photo"][0]
+            if h_entry["properties"]["author"][0]["properties"].get("featured"):
+                author_image = h_entry["properties"]["author"][0]["properties"]["featured"][0]
 
         elif isinstance(h_entry["properties"]["author"][0], str):
             if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
@@ -100,7 +100,7 @@ def _generate_h_entry_reply_context(
         if favicon and not author_image:
             photo_url = favicon["href"]
             if not photo_url.startswith("https://") or not photo_url.startswith("http://"):
-                author_image = "https://" + domain + photo_url
+                author_image = "https://" + domain + "/" + photo_url
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
     elif h_entry["properties"].get("content"):
@@ -121,8 +121,8 @@ def _generate_h_entry_reply_context(
     post_photo_url = ""
     post_video_url = ""
 
-    if h_entry["properties"].get("photo"):
-        post_photo_url = canonicalize_url(h_entry["properties"]["photo"][0], domain, url)
+    if h_entry["properties"].get("featured"):
+        post_photo_url = canonicalize_url(h_entry["properties"]["featured"][0], domain, url)
 
     if h_entry["properties"].get("video"):
         post_video_url = canonicalize_url(h_entry["properties"]["video"][0], domain, url)
@@ -196,8 +196,13 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
 
 def _generate_reply_context_from_main_page(
-    url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+    url: str, 
+    http_headers: dict,
+    domain: str,
+    webmention_endpoint_url: str,
+    summary_word_limit: int
 ) -> ReplyContext:
+  
     try:
         request = requests.get(url, headers=http_headers)
     except requests.exceptions.RequestException:
@@ -277,7 +282,11 @@ def _generate_reply_context_from_main_page(
     )
 
 
-def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75) -> ReplyContext:
+def get_reply_context(
+    url: str,
+    twitter_bearer_token: str = "",
+    summary_word_limit: int = 75
+) -> ReplyContext:
     """
     Generate reply context for use on your website based on a URL.
 
@@ -310,7 +319,7 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
 
     webmention_endpoint_url = webmention_endpoint_url_response.endpoint
 
-    parsed = mf2py.parse(page_content.text)
+    parsed = mf2py.parse(doc=page_content.text)
 
     domain = parsed_url.netloc
 
@@ -318,7 +327,12 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
         h_entry = parsed["items"][0]
 
         return _generate_h_entry_reply_context(
-            h_entry, url, domain, webmention_endpoint_url, summary_word_limit
+            h_entry,
+            url,
+            parsed_url,
+            domain,
+            webmention_endpoint_url,
+            summary_word_limit
         )
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:

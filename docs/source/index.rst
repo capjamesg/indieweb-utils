@@ -17,6 +17,7 @@ Contents
 .. toctree::
 
    usage
+   indieauth
    api
 
 Feature Set

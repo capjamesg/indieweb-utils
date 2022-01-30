@@ -4,9 +4,10 @@ from typing import Dict, Any, List
 import requests
 
 
-@dataclass
-class IndieAuthResponse:
-    endpoint_response: Dict[str, Any]
+@dataclass()
+class IndieAuthCallbackResponse:
+    message: str
+    response: dict
 
 
 class AuthenticationError(Exception):
@@ -40,7 +41,7 @@ def indieauth_callback_handler(
     callback_url: str,
     client_id: str,
     required_scopes: List[str],
-) -> IndieAuthResponse:
+) -> IndieAuthCallbackResponse:
     """
     Exchange a callback 'code' for an authentication token.
 
@@ -61,16 +62,19 @@ def indieauth_callback_handler(
     :param client_id: The client ID used in the original authentication request.
     :type client_id: str
     :param required_scopes: The scopes required for the application to work.
-            This list should not include optional scopes.
+        This list should not include optional scopes.
     :type required_scopes: list[str]
     :return: A message indicating the result of the callback (success or failure) and the token endpoint response.
-            The endpoint response will be equal to None if the callback failed.
+        The endpoint response will be equal to None if the callback failed.
     :rtype: tuple[str, dict]
     """
 
     if state != session_state:
         message = "The provided state value did not match the session state. Please try again."
-        raise AuthenticationError(message)
+        return IndieAuthCallbackResponse(
+            message=message,
+            response={}
+        )
 
     data = {
         "code": code,
@@ -86,16 +90,48 @@ def indieauth_callback_handler(
         auth_request = requests.post(token_endpoint, data=data, headers=headers)
     except requests.exceptions.RequestException:
         message = "Your token endpoint server could not be accessed."
-        raise AuthenticationError(message)
+        return IndieAuthCallbackResponse(
+            message=message,
+            response={}
+        )
 
     if auth_request.status_code != 200:
         message = "There was an error with your token endpoint server."
-        raise AuthenticationError(message)
+        return IndieAuthCallbackResponse(
+            message=message,
+            response={}
+        )
 
-    _validate_indieauth_response(me, auth_request, required_scopes)
+    # remove code verifier from session because the authentication flow has finished
 
-    return IndieAuthResponse(auth_request.json())
+    if me is None:
+        message = "An invalid me value was provided."
+        return IndieAuthCallbackResponse(
+            message=message,
+            response={}
+        )
 
+    if r.json().get("me").strip("/") != me.strip("/"):
+        message = "Your domain is not allowed to access this website."
+        return IndieAuthCallbackResponse(
+            message=message,
+            response={}
+        )
+
+    granted_scopes = r.json().get("scope").split(" ")
+
+    if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
+        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
+        return IndieAuthCallbackResponse(
+            message=message,
+            response={}
+        )
+
+    return IndieAuthCallbackResponse(
+        message="Authentication was successful.",
+        response={}
+    )
+ 
 
 def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:
     """

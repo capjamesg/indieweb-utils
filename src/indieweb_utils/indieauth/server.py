@@ -93,25 +93,28 @@ def validate_authorization_response(
         if len(code_challenge) > 128:
             raise TokenValidationError("The challenge provided is too long.")
 
-
 def _verify_decoded_code(
-    client_id: str, redirect_uri: str, decoded_client_id: str, decoded_redirect_uri: str, decoded_expires: int
+    client_id: str,
+    redirect_uri: str,
+    decoded_client_id: str,
+    decoded_redirect_uri: str,
+    decoded_expires: int
 ) -> bool:
     """
-    Conducts checks to validate the decoded code in an authorization request.
+        Conducts checks to validate the decoded code in an authorization request.
 
-    :param client_id: The client ID of the authorization request.
-    :rtype: str
-    :param redirect_uri: The redirect URI of the authorization request.
-    :rtype: str
-    :param decoded_client_id: The decoded client ID of the authorization request.
-    :rtype: str
-    :param decoded_redirect_uri: The decoded redirect URI of the authorization request.
-    :rtype: str
-    :param decoded_expires: The decoded expiration time of the authorization request.
-    :rtype: int
-    :returns: True if the decoded code is valid, False otherwise.
-    :rtype: bool
+        :param client_id: The client ID of the authorization request.
+        :rtype: str
+        :param redirect_uri: The redirect URI of the authorization request.
+        :rtype: str
+        :param decoded_client_id: The decoded client ID of the authorization request.
+        :rtype: str
+        :param decoded_redirect_uri: The decoded redirect URI of the authorization request.
+        :rtype: str
+        :param decoded_expires: The decoded expiration time of the authorization request.
+        :rtype: int
+        :returns: True if the decoded code is valid, False otherwise.
+        :rtype: bool
     """
 
     if int(time.time()) > decoded_expires:
@@ -123,7 +126,9 @@ def _verify_decoded_code(
         )
 
     if client_id != decoded_client_id:
-        raise TokenValidationError("The client ID provided does not match the client ID in the authorization token.")
+        raise TokenValidationError(
+            "The client ID provided does not match the client ID in the authorization token."
+        )
 
     return True
 
@@ -172,9 +177,9 @@ def generate_auth_token(
 
     code_verifier = generate_token()
 
-    sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
+    sha256_code = hashlib.sha256(code_verifier.encode('utf-8')).hexdigest()
 
-    code_challenge = base64.b64encode(sha256_code.encode("utf-8")).decode("utf-8")
+    code_challenge = base64.b64encode(sha256_code.encode('utf-8')).decode('utf-8')
 
     encoded_code = jwt.encode(
         {
@@ -186,13 +191,17 @@ def generate_auth_token(
             "scope": final_scope,
             "code_challenge": code_challenge,
             "code_challenge_method": code_challenge_method,
-            **kwargs,
+            **kwargs
         },
         secret_key,
-        algorithm="HS256",
+        algorithm="HS256"
     )
 
-    return AuthTokenResponse(code=encoded_code, code_verifier=code_verifier, code_challenge=code_challenge)
+    return AuthTokenResponse(
+        code=encoded_code,
+        code_verifier=code_verifier,
+        code_challenge=code_challenge
+    )
 
 
 def redeem_code(
@@ -249,7 +258,11 @@ def redeem_code(
             raise AuthenticationError("Code challenge in decoded code was invalid.")
 
     valid = _verify_decoded_code(
-        client_id, redirect_uri, decoded_code["client_id"], decoded_code["redirect_uri"], decoded_code["expires"]
+        client_id,
+        redirect_uri,
+        decoded_code["client_id"],
+        decoded_code["redirect_uri"],
+        decoded_code["expires"]
     )
 
     if not valid:
@@ -265,13 +278,18 @@ def redeem_code(
             "client_id": client_id,
             "redirect_uri": redirect_uri,
             "scope": scope,
-            **kwargs,
+            **kwargs
         },
         secret_key,
-        algorithm="HS256",
+        algorithm="HS256"
     )
 
-    return TokenEndpointResponse(access_token=access_token, token_type="bearer", scope=scope, me=me)
+    return TokenEndpointResponse(
+        access_token=access_token,
+        token_type="bearer",
+        scope=scope,
+        me=me
+    )
 
 
 def validate_access_token(
@@ -305,5 +323,8 @@ def validate_access_token(
     scope = decoded_authorization_code["scope"]
 
     return DecodedAuthToken(
-        me=me, client_id=client_id, scope=scope, decoded_authorization_code=decoded_authorization_code
+        me=me,
+        client_id=client_id,
+        scope=scope,
+        decoded_authorization_code=decoded_authorization_code
     )
