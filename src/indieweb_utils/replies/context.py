@@ -1,4 +1,3 @@
-from cgitb import text
 from dataclasses import dataclass
 from typing import List
 from urllib import parse as url_parse
@@ -69,7 +68,10 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
             if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
                 author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
-            author = mf2py.parse(doc=requests.get(author_url, timeout=10, verify=False).text)
+            try:
+                author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
+            except:
+                author = {}
 
             if author["items"] and author["items"][0]["type"] == ["h-card"]:
                 author_url = h_entry["properties"]["author"][0]
@@ -153,12 +155,15 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
     headers = {"Authorization": f"Bearer {twitter_bearer_token}"}
 
-    r = requests.get(
-        f"https://api.twitter.com/2/tweets/{tweet_uid}?tweet.fields=author_id",
-        headers=headers,
-        timeout=10,
-        verify=False,
-    )
+    try:
+        r = requests.get(
+            f"https://api.twitter.com/2/tweets/{tweet_uid}?tweet.fields=author_id",
+            headers=headers,
+            timeout=10,
+            verify=False,
+        )
+    except:
+        raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if r and r.status_code != 200:
         raise Exception(f"Twitter API returned {r.status_code}")
@@ -197,7 +202,11 @@ def _generate_reply_context_from_main_page(
     webmention_endpoint_url: str,
     summary_word_limit: int
 ) -> ReplyContext:
-    request = requests.get(url, headers=http_headers)
+  
+    try:
+        request = requests.get(url, headers=http_headers)
+    except:
+        raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
 
     soup = BeautifulSoup(request.text, "lxml")
 
@@ -248,7 +257,10 @@ def _generate_reply_context_from_main_page(
         if not photo_url.startswith("https://") and not photo_url.startswith("http://"):
             photo_url = "https://" + domain + photo_url
 
-        r = requests.get(photo_url, timeout=10, verify=False)
+        try:
+            r = requests.get(photo_url, timeout=10, verify=False)
+        except:
+            photo_url = ""
 
         if r.status_code != 200:
             photo_url = ""
