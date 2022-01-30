@@ -3,7 +3,9 @@ from indieweb_utils.indieauth import server
 
 class TestGenerateAuthToken:
     def test_generate_auth_token(self):
-        """Test function to generate an authentication token."""
+        """A end-to-end happy path test to confirm the entire indieauth flow is working properly.
+         It will: generate an auth token, redeem the token, validate access, and validate authorization.
+        """
 
         response = server.generate_auth_token(
             me="https://example.com/me",
