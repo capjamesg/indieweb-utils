@@ -11,6 +11,41 @@ class PostDiscoveryError(Exception):
     pass
 
 
+def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post: BeautifulSoup) -> str:
+    try:
+        request = requests.get(candidate_url, timeout=5)
+    except requests.exceptions.RequestException:
+        raise PostDiscoveryError("Could not get candidate url")
+
+    parsed_candidate_url = BeautifulSoup(request.text, "lxml")
+
+    all_hyperlinks = parsed_candidate_url.select("a")
+
+    posse_domain = url_parse.urlsplit(posse_permalink).netloc
+
+    for link in all_hyperlinks:
+        if "u-syndication" in link.get("class"):
+            url_to_check = link.get("href")
+
+            original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+
+            if original_post_url:
+                return original_post_url
+
+    all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
+
+    for header in all_syndication_link_headers:
+        if header.get("href") == posse_permalink:
+            url_to_check = header.get("href")
+
+            original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+
+            if original_post_url:
+                return original_post_url
+
+    return ""
+
+
 def discover_original_post(posse_permalink: str) -> str:
     """
     Find the original version of a post per the Original Post Discovery algorithm.
@@ -30,84 +65,59 @@ def discover_original_post(posse_permalink: str) -> str:
 
     original_post_url = None
 
-    if post_h_entry:
-        post_h_entry = post_h_entry[0]
+    if not post_h_entry:
+        raise PostDiscoveryError("Could not find h-entry")
 
-        # select with u-url and u-uid
-        if post_h_entry.select(".u-url .u-uid"):
-            original_post_url = post_h_entry.select(".u-url .u-uid")[0].get("href")
+    post_h_entry = post_h_entry[0]
+
+    # select with u-url and u-uid
+    if post_h_entry.select(".u-url .u-uid"):
+        original_post_url = post_h_entry.select(".u-url .u-uid")[0].get("href")
+        return original_post_url
+
+    canonical_links = parsed_post.select("link[rel='canonical']")
+
+    if canonical_links:
+        original_post_url = canonical_links[0].get("href")
+        return original_post_url
+
+    # look for text with see original anchor text
+
+    for link in parsed_post.select("a"):
+        if link.text.lower() == "see original".lower() and link.get("href"):
+            original_post_url = link.get("href")
+
             return original_post_url
 
-        canonical_links = parsed_post.select("link[rel='canonical']")
+    candidate_url = None
 
-        if canonical_links:
-            original_post_url = canonical_links[0].get("href")
-            return original_post_url
+    last_text = post_h_entry.select(".e-content")
 
-        # look for text with see original anchor text
+    if last_text:
+        last_text = last_text[0].select("p")[-1]
 
-        for link in parsed_post.select("a"):
-            if link.text.lower() == "see original".lower():
-                if link.get("href"):
-                    original_post_url = link.get("href")
+        # if permashortlink citation
+        # format = (url.com id)
 
-                    return original_post_url
+        if re.search(r"\((.*?)\)", last_text.text):
+            permashortlink = re.search(r"\((.*?)\)", last_text.text)
 
-        candidate_url = None
+        if permashortlink is not None:
+            permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
 
-        last_text = post_h_entry.select(".e-content")
+            candidate_url = permashortlink_value
+        else:
+            # check for url at end
+            split_text = last_text.text.split(" ")
 
-        if last_text:
-            last_text = last_text[0].select("p")[-1]
+            if split_text[-1].startswith("http://") or split_text[-1].startswith("https://"):
+                candidate_url = split_text[-1]
 
-            # if permashortlink citation
-            # format = (url.com id)
+    if candidate_url:
+        post_url = _process_candidate_url(candidate_url, posse_permalink, parsed_post)
 
-            if re.search(r"\((.*?)\)", last_text.text):
-                permashortlink = re.search(r"\((.*?)\)", last_text.text)
-
-                if permashortlink is not None:
-                    permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
-
-                    candidate_url = permashortlink_value
-                else:
-                    # check for url at end
-                    split_text = last_text.text.split(" ")
-
-                    if split_text[-1].startswith("http://") or split_text[-1].startswith("https://"):
-                        candidate_url = split_text[-1]
-
-        if candidate_url:
-            try:
-                request = requests.get(candidate_url, timeout=5)
-            except requests.exceptions.RequestException:
-                raise PostDiscoveryError("Could not get candidate url")
-
-            parsed_candidate_url = BeautifulSoup(request.text, "lxml")
-
-            all_hyperlinks = parsed_candidate_url.select("a")
-
-            posse_domain = url_parse.urlsplit(posse_permalink).netloc
-
-            for link in all_hyperlinks:
-                if "u-syndication" in link.get("class"):
-                    url_to_check = link.get("href")
-
-                    original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
-
-                    if original_post_url:
-                        return original_post_url
-
-            all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
-
-            for header in all_syndication_link_headers:
-                if header.get("href") == posse_permalink:
-                    url_to_check = header.get("href")
-
-                    original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
-
-                    if original_post_url:
-                        return original_post_url
+        if post_url != "":
+            return post_url
 
     return ""
 

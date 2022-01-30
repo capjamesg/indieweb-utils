@@ -65,6 +65,26 @@ def validate_headers(request_item):
     return True
 
 
+def _check_for_link_to_target(validation_source: requests.Response, target) -> bool:
+    soup = BeautifulSoup(validation_source.text, "html.parser")
+
+    all_anchors = soup.find_all("a")
+    contains_valid_link_to_target = False
+
+    target_domain = url_parse.urlparse(target).netloc
+
+    for anchor in all_anchors:
+        if anchor.get("href"):
+            canoncalized = canonicalize_url(anchor["href"], target_domain, target)
+            if canoncalized == target:
+                contains_valid_link_to_target = True
+
+    if target in validation_source.text:
+        contains_valid_link_to_target = True
+
+    return contains_valid_link_to_target
+
+
 def validate_webmention(
     source: str,
     target: str,
@@ -143,21 +163,7 @@ def validate_webmention(
     if check_source_size.status_code != 200:
         raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
 
-    soup = BeautifulSoup(get_source_for_validation.text, "html.parser")
-
-    all_anchors = soup.find_all("a")
-    contains_valid_link_to_target = False
-
-    target_domain = url_parse.urlparse(target).netloc
-
-    for anchor in all_anchors:
-        if anchor.get("href"):
-            canoncalized = canonicalize_url(anchor["href"], target_domain, target)
-            if canoncalized == target:
-                contains_valid_link_to_target = True
-
-    if target in get_source_for_validation.text:
-        contains_valid_link_to_target = True
+    contains_valid_link_to_target = _check_for_link_to_target(parse_page, target)
 
     # Might want to comment out this if statement for testing
     if not contains_valid_link_to_target:
