@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, List, Optional
+from typing import List, Optional
 from urllib import parse as url_parse
 
 import requests
@@ -28,10 +28,10 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     elif url.startswith("//"):
         url = "https:" + url
     try:
-        web_page = requests.get(url, timeout=10, allow_redirects=True)
+        web_page_request = requests.get(url, timeout=10, allow_redirects=True)
 
-        web_page = web_page.text
-    except:
+        web_page = web_page_request.text
+    except requests.exceptions.RequestException:
         return []
 
     soup = BeautifulSoup(web_page, "lxml")

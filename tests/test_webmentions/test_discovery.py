@@ -12,9 +12,9 @@ class TestWebmentionEndpointDiscovery:
     @responses.activate
     def test_webmention_searches_html(self, target, article, article_url):
         responses.add(responses.Response(method="GET", url=article_url, body=article))
-        endpoints = target(article_url)
-        assert len(endpoints) > 0
-        assert endpoints[0] == "https://webmention.jamesg.blog/endpoint"
+        get_endpoint = target(article_url)
+
+        assert get_endpoint.endpoint == "https://webmention.jamesg.blog/endpoint"
 
     @responses.activate
     def test_webmention_searches_header(self, target, article_url):
@@ -31,6 +31,6 @@ class TestWebmentionEndpointDiscovery:
                 },
             )
         )
-        endpoints = target(article_url)
-        assert len(endpoints) > 0
-        assert endpoints[0] == "https://webmention.jamesg.blog/endpoint"
+        get_endpoint = target(article_url)
+
+        assert get_endpoint.endpoint == "https://webmention.jamesg.blog/endpoint"

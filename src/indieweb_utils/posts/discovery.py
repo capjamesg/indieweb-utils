@@ -1,9 +1,14 @@
 import re
 from urllib import parse as url_parse
+from typing import List, Tuple
 
 import mf2py
 import requests
 from bs4 import BeautifulSoup
+
+
+class PostDiscoveryError(Exception):
+    pass
 
 
 def discover_original_post(posse_permalink: str) -> str:
@@ -61,42 +66,48 @@ def discover_original_post(posse_permalink: str) -> str:
             if re.search(r"\((.*?)\)", last_text.text):
                 permashortlink = re.search(r"\((.*?)\)", last_text.text)
 
-                permashortlink = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
+                if permashortlink is not None:
+                    permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
 
-                candidate_url = permashortlink
+                    candidate_url = permashortlink_value
+                else:
+                    # check for url at end
+                    split_text = last_text.text.split(" ")
 
-        try:
-            request = requests.get(candidate_url)
-        except:
-            # return a blank string if URL could not be retrieved for verification
-            # TODO: Create a custom exception for this error
-            return ""
+                    if split_text[-1].startswith("http://") or split_text[-1].startswith("https://"):
+                        candidate_url = split_text[-1]
 
-        parsed_candidate_url = BeautifulSoup(request.text, "lxml")
+        if candidate_url:
+            try:
+                request = requests.get(candidate_url, timeout=5)
+            except requests.exceptions.RequestException:
+                raise PostDiscoveryError("Could not get candidate url")
 
-        all_hyperlinks = parsed_candidate_url.select("a")
+            parsed_candidate_url = BeautifulSoup(request.text, "lxml")
 
-        posse_domain = url_parse.urlsplit(posse_permalink).netloc
+            all_hyperlinks = parsed_candidate_url.select("a")
 
-        for link in all_hyperlinks:
-            if "u-syndication" in link.get("class"):
-                url_to_check = link.get("href")
+            posse_domain = url_parse.urlsplit(posse_permalink).netloc
 
-                original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+            for link in all_hyperlinks:
+                if "u-syndication" in link.get("class"):
+                    url_to_check = link.get("href")
 
-                if original_post_url:
-                    return original_post_url
+                    original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
 
-        all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
+                    if original_post_url:
+                        return original_post_url
 
-        for header in all_syndication_link_headers:
-            if header.get("href") == posse_permalink:
-                url_to_check = header.get("href")
+            all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
 
-                original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+            for header in all_syndication_link_headers:
+                if header.get("href") == posse_permalink:
+                    url_to_check = header.get("href")
 
-                if original_post_url:
-                    return original_post_url
+                    original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+
+                    if original_post_url:
+                        return original_post_url
 
     return ""
 
@@ -107,7 +118,8 @@ def discover_author(url: str, page_contents=None) -> dict:
 
     :param url: The URL of the post.
     :type url: str
-    :param page_contents: The optional page contents to use. Specifying this value prevents a HTTP request being made to the URL.
+    :param page_contents: The optional page contents to use.
+        Specifying this value prevents a HTTP request being made to the URL.
     :type page_contents: str
     :return: A h-card of the post.
     :rtype: dict
@@ -138,7 +150,13 @@ def discover_author(url: str, page_contents=None) -> dict:
             author_page_url = preliminary_author
         else:
             # author is name
-            return preliminary_author
+            return {
+                "type": ["h-card"],
+                "properties": {
+                    "name": [preliminary_author],
+                    "url": [url],
+                },
+            }
 
     if preliminary_author and type(preliminary_author) == dict:
         # author is h-card so the value can be returned
@@ -194,10 +212,10 @@ def discover_author(url: str, page_contents=None) -> dict:
                         return h_card
 
     # no author found, return None
-    return None
+    return {}
 
 
-def get_post_type(h_entry: str, custom_properties: list = []) -> str:
+def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) -> str:
     """
     Return the type of a h-entry per the Post Type Discovery algorithm.
 
@@ -224,7 +242,7 @@ def get_post_type(h_entry: str, custom_properties: list = []) -> str:
     ]
 
     for prop in custom_properties:
-        if len(prop) == 2 and type(prop) == tuple:
+        if len(prop) == 2 and isinstance(prop, tuple) and isinstance(prop[0], str) and isinstance(prop[1], str):
             values_to_check.append(prop)
         else:
             raise Exception("custom_properties must be a list of tuples")
@@ -261,7 +279,7 @@ def _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domai
     if url_to_check and url_parse.urlsplit(url_to_check).netloc == posse_domain:
         try:
             r = requests.get(url_to_check, timeout=10, allow_redirects=True)
-        except:
+        except requests.exceptions.RequestException:
             # handler will prevent exception due to timeout, if one occurs
             pass
 

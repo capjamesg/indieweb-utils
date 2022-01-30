@@ -3,6 +3,7 @@ from typing import Dict, Any, List
 
 import requests
 
+
 @dataclass
 class IndieAuthResponse:
     endpoint_response: Dict[str, Any]
@@ -12,7 +13,7 @@ class AuthenticationError(Exception):
     pass
 
 
-def _validate_indieauth_response(me: str, response: dict, required_scopes: List[str]) -> None:
+def _validate_indieauth_response(me: str, response: requests.Response, required_scopes: List[str]) -> None:
     if me is None:
         message = "An invalid me value was provided."
         raise AuthenticationError(message)
@@ -38,7 +39,7 @@ def indieauth_callback_handler(
     me: str,
     callback_url: str,
     client_id: str,
-    required_scopes: List[str]
+    required_scopes: List[str],
 ) -> IndieAuthResponse:
     """
     Exchange a callback 'code' for an authentication token.
@@ -83,7 +84,7 @@ def indieauth_callback_handler(
 
     try:
         auth_request = requests.post(token_endpoint, data=data, headers=headers)
-    except:
+    except requests.exceptions.RequestException:
         message = "Your token endpoint server could not be accessed."
         raise AuthenticationError(message)
 
@@ -96,12 +97,7 @@ def indieauth_callback_handler(
     return IndieAuthResponse(auth_request.json())
 
 
-def is_authenticated(
-        token_endpoint: str,
-        headers: dict,
-        session: dict,
-        approved_user: bool = None
-    ) -> bool:
+def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:
     """
     Check if a user has provided a valid Authorization header or access token in session. Designed for use with Flask.
 
@@ -113,7 +109,11 @@ def is_authenticated(
     :rtype: bool
     """
     if headers.get("Authorization") is not None:
-        access_token = headers.get("Authorization").split(" ")[-1]
+        access_token_header = headers.get("Authorization")
+
+        if access_token_header:
+            access_token = access_token_header.split(" ")[-1]
+
     elif session.get("access_token"):
         access_token = session.get("access_token")
     else:

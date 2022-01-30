@@ -9,11 +9,13 @@ from bs4 import BeautifulSoup
 from ..utils.urls import canonicalize_url
 from ..webmentions.discovery import discover_webmention_endpoint
 
+
 @dataclass
 class PostAuthor:
     name: str
     url: str
     photo: str
+
 
 @dataclass
 class ReplyContext:
@@ -31,11 +33,15 @@ class ReplyContextRetrievalError(Exception):
     def __init__(self, message):
         self.message = message
 
+
 class UnsupportedScheme(Exception):
     def __init__(self, message):
         self.message = message
 
-def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, domain: str, webmention_endpoint_url: str, summary_word_limit: int) -> ReplyContext:
+
+def _generate_h_entry_reply_context(
+    h_entry: dict, url: str, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+) -> ReplyContext:
     author_url = ""
     author_name = ""
     author_image = ""
@@ -43,10 +49,12 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
     p_name = ""
     post_body = ""
 
+    parsed_url = url_parse.urlsplit(url)
+
     if h_entry["properties"].get("author"):
-        if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get(
-            "type"
-        ) == ["h-card"]:
+        if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get("type") == [
+            "h-card"
+        ]:
             if h_entry["properties"]["author"][0]["properties"].get("url"):
                 author_url = h_entry["properties"]["author"][0]["properties"]["url"][0]
             else:
@@ -64,17 +72,17 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
 
             try:
                 author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
-            except:
+            except requests.exceptions.RequestException:
                 author = {}
 
-            if author["items"] and author["items"][0]["type"] == ["h-card"]:
-                author_url = h_entry["properties"]["author"][0]
+            if author.get("items") and author["items"][0]["type"] == ["h-card"]:
+                author_url = author["properties"]["author"][0]
 
                 if author["items"][0]["properties"].get("name"):
-                    author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
+                    author_name = author["properties"]["author"][0]["properties"]["name"][0]
 
                 if author["items"]["properties"].get("photo"):
-                    author_image = h_entry["properties"]["author"][0]["properties"]["photo"][0]
+                    author_image = author["properties"]["author"][0]["properties"]["photo"][0]
 
         if author_url is not None and author_url.startswith("/"):
             author_url = parsed_url.scheme + "://" + domain + author_url
@@ -104,11 +112,9 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
     if h_entry["properties"].get("name"):
         p_name = h_entry["properties"]["name"][0]
 
-    if author_url is not None and (
-        not author_url.startswith("https://") and not author_url.startswith("http://")
-    ):
+    if author_url is not None and (not author_url.startswith("https://") and not author_url.startswith("http://")):
         author_url = "https://" + author_url
-        
+
     if not author_name and author_url:
         author_name = url_parse.urlsplit(author_url).netloc
 
@@ -140,7 +146,7 @@ def _generate_h_entry_reply_context(h_entry: dict, url: str, parsed_url: str, do
         authors=[PostAuthor(url=author_url, name=author_name, photo=author_image)],
         photo=post_photo_url,
         video=post_video_url,
-        webmention_endpoint=webmention_endpoint_url
+        webmention_endpoint=webmention_endpoint_url,
     )
 
 
@@ -156,7 +162,7 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
             timeout=10,
             verify=False,
         )
-    except:
+    except requests.exceptions.RequestException:
         raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if r and r.status_code != 200:
@@ -185,14 +191,16 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
         authors=[PostAuthor(url=author_url, name=author_name, photo=photo_url)],
         photo=photo_url,
         video="",
-        webmention_endpoint=webmention_endpoint_url
+        webmention_endpoint=webmention_endpoint_url,
     )
 
 
-def _generate_reply_context_from_main_page(url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int) -> ReplyContext:
+def _generate_reply_context_from_main_page(
+    url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+) -> ReplyContext:
     try:
         request = requests.get(url, headers=http_headers)
-    except:
+    except requests.exceptions.RequestException:
         raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
 
     soup = BeautifulSoup(request.text, "lxml")
@@ -246,7 +254,7 @@ def _generate_reply_context_from_main_page(url: str, http_headers: dict, domain:
 
         try:
             r = requests.get(photo_url, timeout=10, verify=False)
-        except:
+        except requests.exceptions.RequestException:
             photo_url = ""
 
         if r.status_code != 200:
@@ -265,17 +273,18 @@ def _generate_reply_context_from_main_page(url: str, http_headers: dict, domain:
         authors=[PostAuthor(url=author_url, name="", photo=photo_url)],
         photo=post_photo_url,
         video="",
-        webmention_endpoint=webmention_endpoint_url
+        webmention_endpoint=webmention_endpoint_url,
     )
 
 
-def get_reply_context(url: str, twitter_bearer_token: bool = "", summary_word_limit: int = 75) -> ReplyContext:
+def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75) -> ReplyContext:
     """
     Generate reply context for use on your website based on a URL.
 
     :param url: The URL of the post to generate reply context for.
     :type url: str
-    :param twitter_bearer_token: The optional Twitter bearer token to use. This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
+    :param twitter_bearer_token: The optional Twitter bearer token to use.
+        This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
     :type twitter_bearer_token: str
     :param summary_word_limit: The maximum number of words to include in the summary (default 75).
     :type summary_word_limit: int
@@ -291,13 +300,15 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "", summary_word_li
 
     try:
         page_content = requests.get(url, timeout=10, verify=False, headers=http_headers)
-    except:
+    except requests.exceptions.RequestException:
         raise ReplyContextRetrievalError("Could not retrieve page content.")
 
     if page_content.status_code != 200:
         raise ReplyContextRetrievalError(f"Page returned a {page_content.status_code} response.")
 
-    webmention_endpoint_url, _ = discover_webmention_endpoint(url)
+    webmention_endpoint_url_response = discover_webmention_endpoint(url)
+
+    webmention_endpoint_url = webmention_endpoint_url_response.endpoint
 
     parsed = mf2py.parse(page_content.text)
 
@@ -306,9 +317,17 @@ def get_reply_context(url: str, twitter_bearer_token: bool = "", summary_word_li
     if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
         h_entry = parsed["items"][0]
 
-        return _generate_h_entry_reply_context(h_entry, url, parsed_url, domain, webmention_endpoint_url, summary_word_limit)
+        return _generate_h_entry_reply_context(
+            h_entry, url, domain, webmention_endpoint_url, summary_word_limit
+        )
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
-        return _generate_tweet_reply_context(parsed_url, domain, url, twitter_bearer_token, webmention_endpoint_url)
+        return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
 
-    return _generate_reply_context_from_main_page(parsed, domain, url, webmention_endpoint_url, summary_word_limit)
+    return _generate_reply_context_from_main_page(
+        url,
+        http_headers,
+        domain,
+        webmention_endpoint_url,
+        summary_word_limit
+    )

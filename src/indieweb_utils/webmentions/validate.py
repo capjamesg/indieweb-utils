@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from urllib import parse as url_parse
 from typing import List
 
@@ -13,6 +14,12 @@ class WebmentionValidationError(Exception):
 
 class WebmentionIsGone(Exception):
     pass
+
+
+@dataclass
+class WebmentionCheckResponse:
+    webmention_is_valid: bool
+    vouch_check_has_passed: bool
 
 
 def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
@@ -31,8 +38,8 @@ def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
         if moderate:
             if vouch_domain in vouch_list:
                 try:
-                    r = requests.get(vouch)
-                except:
+                    r = requests.get(vouch, timeout=5)
+                except requests.exceptions.RequestException:
                     return moderate
 
                 soup = BeautifulSoup(r.text, "html.parser")
@@ -58,7 +65,12 @@ def validate_headers(request_item):
     return True
 
 
-def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: List[str] = []) -> bool:        
+def validate_webmention(
+    source: str,
+    target: str,
+    vouch: str = "",
+    vouch_list: List[str] = []
+) -> WebmentionCheckResponse:
     """
     Check if a webmention is valid.
 
@@ -83,10 +95,10 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
 
     if source_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Source must use either a http:// or https:// URL scheme.")
-    
+
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
-    
+
     # Only allow 3 redirects before raising an error
     session = requests.Session()
     session.max_redirects = 3
@@ -101,13 +113,13 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
         raise WebmentionValidationError("Source redirected too many times.")
     except requests.exceptions.Timeout:
         raise WebmentionValidationError("Source timed out.")
-    except:
+    except requests.exceptions.RequestException:
         # pass because HEAD request might not be recognised / processed by the client
         pass
 
     try:
         get_source_for_validation = session.get(source)
-    except Exception as e:
+    except requests.exceptions.RequestException:
         raise WebmentionValidationError("Source could not be retrieved.")
 
     if validated_headers is False:
@@ -130,7 +142,7 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
 
     if check_source_size.status_code != 200:
         raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
-    
+
     soup = BeautifulSoup(get_source_for_validation.text, "html.parser")
 
     all_anchors = soup.find_all("a")
@@ -144,13 +156,13 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
             if canoncalized == target:
                 contains_valid_link_to_target = True
 
-    if target in get_source_for_validation:
+    if target in get_source_for_validation.text:
         contains_valid_link_to_target = True
 
     # Might want to comment out this if statement for testing
     if not contains_valid_link_to_target:
-        raise WebmentionValidationError(f"Source does not contain a link to target.")
-    
+        raise WebmentionValidationError("Source does not contain a link to target.")
+
     moderate = process_vouch(vouch, source, vouch_list)
 
-    return True, moderate
+    return WebmentionCheckResponse(webmention_is_valid=True, vouch_check_has_passed=moderate)

@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import ipaddress
 from typing import Dict, List
 from urllib import parse as url_parse
@@ -8,7 +9,14 @@ from bs4 import BeautifulSoup
 _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 
 
-def discover_webmention_endpoint(target: str) -> list:
+@dataclass
+class WebmentionDiscoveryResponse:
+    endpoint: str
+    message: str
+    success: bool
+
+
+def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     """
     Return the webmention endpoint for the given target.
 
@@ -18,7 +26,7 @@ def discover_webmention_endpoint(target: str) -> list:
     :rtype: str
     """
     if not target:
-        return None, "No target specified."
+        return WebmentionDiscoveryResponse(endpoint="", message="Error: A target was not provided.", success=False)
 
     endpoints = _discover_endpoints(target, [_WEBMENTION])
 
@@ -26,7 +34,7 @@ def discover_webmention_endpoint(target: str) -> list:
 
     if endpoint is None:
         message = "No webmention endpoint could be found for this resource."
-        return None, message
+        return WebmentionDiscoveryResponse(endpoint="", message=message, success=False)
 
     # verify if IP address is not allowed
     try:
@@ -41,13 +49,13 @@ def discover_webmention_endpoint(target: str) -> list:
             or endpoint_as_ip.is_link_local is True
         ):
             message = "The endpoint does not connect to an accepted IP address."
-            return message, None
+            return WebmentionDiscoveryResponse(endpoint="", message=message, success=False)
     except ValueError:
         pass
 
     if endpoint == "localhost":
         message = "This resource is not supported."
-        return None, message
+        return WebmentionDiscoveryResponse(endpoint="", message=message, success=False)
 
     if endpoint == "":
         endpoint = target
@@ -60,7 +68,7 @@ def discover_webmention_endpoint(target: str) -> list:
     if endpoint.startswith("/"):
         endpoint = "https://" + url_parse.urlsplit(target).scheme + endpoint
 
-    return endpoint, ""
+    return WebmentionDiscoveryResponse(endpoint=endpoint, message="Webmention endpoint found.", success=True)
 
 
 def _discover_endpoints(url: str, headers_to_find: List[str]):
