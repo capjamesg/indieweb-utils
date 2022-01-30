@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, List, Optional
+from typing import List, Optional
 from urllib import parse as url_parse
 
 import requests
