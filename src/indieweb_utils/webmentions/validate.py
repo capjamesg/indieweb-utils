@@ -156,9 +156,8 @@ def validate_webmention(
     for link in meta_links:
         # use meta http-equiv status spec to detect 410s https://indieweb.org/meta_http-equiv_status
         # detecting http-equiv status 410s is required by the webmention spec
-        if link.get("http-equiv", "") == "Status":
-            if link.get("content", "") == "410 Gone":
-                raise WebmentionIsGone("Webmention source returned 410 Gone code.")
+        if link.get("http-equiv", "") == "Status" and link.get("content", "") == "410 Gone":
+            raise WebmentionIsGone("Webmention source returned 410 Gone code.")
 
     if check_source_size.status_code != 200:
         raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")

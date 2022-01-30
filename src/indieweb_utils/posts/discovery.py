@@ -122,7 +122,7 @@ def discover_original_post(posse_permalink: str) -> str:
     return ""
 
 
-def discover_author(url: str, page_contents=None) -> dict:
+def discover_author(url: str, page_contents: str = "") -> dict:
     """
     Discover the author of a post per the IndieWeb Authorship specification.
 
@@ -135,7 +135,7 @@ def discover_author(url: str, page_contents=None) -> dict:
     :rtype: dict
 
     """
-    if page_contents:
+    if page_contents != "":
         full_page = mf2py.parse(doc=page_contents)
     else:
         full_page = mf2py.parse(url=url)
