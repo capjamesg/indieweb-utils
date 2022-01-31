@@ -20,6 +20,14 @@ class Profile:
 
 
 def get_profile(me: str) -> Profile:
+    """
+    Return the profile information for the given me URL.
+
+    :param me: The me URL to get the profile information for.
+    :type me: str
+    :return: The profile information.
+    :rtype: Profile
+    """
 
     try:
         me_profile = requests.get(me, timeout=10)
