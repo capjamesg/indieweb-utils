@@ -71,10 +71,7 @@ def indieauth_callback_handler(
 
     if state != session_state:
         message = "The provided state value did not match the session state. Please try again."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+        raise AuthenticationError(message)
 
     data = {
         "code": code,
@@ -90,42 +87,15 @@ def indieauth_callback_handler(
         auth_request = requests.post(token_endpoint, data=data, headers=headers)
     except requests.exceptions.RequestException:
         message = "Your token endpoint server could not be accessed."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+        raise AuthenticationError(message)
 
     if auth_request.status_code != 200:
         message = "There was an error with your token endpoint server."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+        raise AuthenticationError(message)
 
     # remove code verifier from session because the authentication flow has finished
 
-    if me is None:
-        message = "An invalid me value was provided."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
-
-    if auth_request.json().get("me").strip("/") != me.strip("/"):
-        message = "Your domain is not allowed to access this website."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
-
-    granted_scopes = auth_request.json().get("scope").split(" ")
-
-    if auth_request.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
-        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+    _validate_indieauth_response(me, auth_request, required_scopes)
 
     return IndieAuthCallbackResponse(
         message="Authentication was successful.",
