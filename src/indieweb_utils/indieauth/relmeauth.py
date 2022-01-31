@@ -22,7 +22,7 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
     """
     domain = parse_url(url).netloc
 
-    canonical_url = canonicalize_url(url, domain)
+    canonical_url = canonicalize_url(url, domain).strip("/")
 
     mf2_data = mf2py.parse(url=canonical_url)
 
@@ -43,18 +43,24 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
 
         page_links = parsed_page.find_all("a") + parsed_page.find_all("link")
 
+        link_domain = parse_url(link).netloc
+
         for item in page_links:
             # check if link is a rel me link
             # if it is, add the link to the list of valid rel me links
 
             if not item.get("rel"):
                 continue
-            
-            if not "me" in item.get("rel"):
+
+            if "me" not in item.get("rel"):
                 continue
 
-            if item == canonical_url:
-                valid_rel_me_links.append(link)
-                continue
+            if item.get("href") == canonical_url:
+                canonical_link = canonicalize_url(link, link_domain)
+
+                valid_rel_me_links.append(canonical_link)
+
+    # remove any duplicate links
+    valid_rel_me_links = list(set(valid_rel_me_links))
 
     return valid_rel_me_links
