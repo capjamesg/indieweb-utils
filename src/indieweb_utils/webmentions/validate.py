@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from urllib import parse as url_parse
 from typing import List
+from urllib import parse as url_parse
 
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
 from ..utils.urls import canonicalize_url
 
@@ -85,40 +85,7 @@ def _check_for_link_to_target(validation_source: requests.Response, target) -> b
     return contains_valid_link_to_target
 
 
-def validate_webmention(
-    source: str,
-    target: str,
-    vouch: str = "",
-    vouch_list: List[str] = []
-) -> WebmentionCheckResponse:
-    """
-    Check if a webmention is valid.
-
-    :param source: The source URL of the webmention.
-    :type source: str
-    :param target: The target URL of the webmention.
-    :type target: str
-    :param vouch: The vouch URL of the webmention.
-    :type vouch: str
-    :param vouch_list: A list of vouch domains.
-    :type vouch_list: list
-    :return: Boolean to indicate webmention is valid, boolean
-        stating whether the vouch check has passed.
-    :rtype: bool, bool
-    """
-
-    if source.strip("/") == target.strip("/"):
-        raise WebmentionValidationError("Source and target cannot be the same URL.")
-
-    source_protocol = url_parse.urlparse(source).scheme
-    target_protocol = url_parse.urlparse(target).scheme
-
-    if source_protocol not in ["http", "https"]:
-        raise WebmentionValidationError("Source must use either a http:// or https:// URL scheme.")
-
-    if target_protocol not in ["http", "https"]:
-        raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
-
+def _retrieve_webmention_target(source: str) -> BeautifulSoup:
     # Only allow 3 redirects before raising an error
     session = requests.Session()
     session.max_redirects = 3
@@ -148,10 +115,49 @@ def validate_webmention(
     if get_source_for_validation.status_code == 410:
         raise WebmentionIsGone("Webmention source returned 410 Gone code.")
 
+    if check_source_size.status_code != 200:
+        raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
+
     parse_page = BeautifulSoup(get_source_for_validation.text, "html.parser")
 
+    return parse_page
+
+
+def validate_webmention(
+    source: str, target: str, vouch: str = "", vouch_list: List[str] = []
+) -> WebmentionCheckResponse:
+    """
+    Check if a webmention is valid.
+
+    :param source: The source URL of the webmention.
+    :type source: str
+    :param target: The target URL of the webmention.
+    :type target: str
+    :param vouch: The vouch URL of the webmention.
+    :type vouch: str
+    :param vouch_list: A list of vouch domains.
+    :type vouch_list: list
+    :return: Boolean to indicate webmention is valid, boolean
+        stating whether the vouch check has passed.
+    :rtype: bool, bool
+    """
+
+    if source.strip("/") == target.strip("/"):
+        raise WebmentionValidationError("Source and target cannot be the same URL.")
+
+    source_protocol = url_parse.urlparse(source).scheme
+    target_protocol = url_parse.urlparse(target).scheme
+
+    if source_protocol not in ["http", "https"]:
+        raise WebmentionValidationError("Source must use either a http:// or https:// URL scheme.")
+
+    if target_protocol not in ["http", "https"]:
+        raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
+
+    parsed_page = _retrieve_webmention_target(source)
+
     # get all <link> tags
-    meta_links = parse_page.find_all("link")
+    meta_links = parsed_page.find_all("link")
 
     for link in meta_links:
         # use meta http-equiv status spec to detect 410s https://indieweb.org/meta_http-equiv_status
@@ -159,10 +165,7 @@ def validate_webmention(
         if link.get("http-equiv", "") == "Status" and link.get("content", "") == "410 Gone":
             raise WebmentionIsGone("Webmention source returned 410 Gone code.")
 
-    if check_source_size.status_code != 200:
-        raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
-
-    contains_valid_link_to_target = _check_for_link_to_target(parse_page, target)
+    contains_valid_link_to_target = _check_for_link_to_target(parsed_page, target)
 
     # Might want to comment out this if statement for testing
     if not contains_valid_link_to_target:

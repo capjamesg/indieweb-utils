@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 from urllib import parse as url_parse
 
 import mf2py
 import requests
 from bs4 import BeautifulSoup
 
-from ..utils.urls import canonicalize_url, _is_http_url
+from ..utils.urls import _is_http_url, canonicalize_url
 from ..webmentions.discovery import discover_webmention_endpoint
 
 
@@ -39,57 +39,54 @@ class UnsupportedScheme(Exception):
         self.message = message
 
 
-def _generate_h_entry_reply_context(
-    h_entry: dict, url: str, domain: str, webmention_endpoint_url: str, summary_word_limit: int
-) -> ReplyContext:
-    author_url = ""
-    author_name = ""
+def _get_author_properties(author_url: str, h_entry: dict) -> Tuple[str, str, str]:
     author_image = ""
+    author_name = ""
 
-    p_name = ""
-    post_body = ""
+    if h_entry["properties"]["author"][0]["properties"].get("url"):
+        author_url = h_entry["properties"]["author"][0]["properties"]["url"][0]
 
+    if h_entry["properties"]["author"][0]["properties"].get("name"):
+        author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
+
+    if h_entry["properties"]["author"][0]["properties"].get("featured"):
+        author_image = h_entry["properties"]["author"][0]["properties"]["featured"][0]
+
+    return author_url, author_name, author_image
+
+
+def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, str, str]:
     parsed_url = url_parse.urlsplit(url)
 
-    if h_entry["properties"].get("author"):
-        if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get("type") == [
-            "h-card"
-        ]:
-            if h_entry["properties"]["author"][0]["properties"].get("url"):
-                author_url = h_entry["properties"]["author"][0]["properties"]["url"][0]
-            else:
-                author_url = url
+    author_url = url
 
-            if h_entry["properties"]["author"][0]["properties"].get("name"):
-                author_name = h_entry["properties"]["author"][0]["properties"]["name"][0]
+    if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get("type") == [
+        "h-card"
+    ]:
+        author_url, author_name, author_image = _get_author_properties(author_url, h_entry)
 
-            if h_entry["properties"]["author"][0]["properties"].get("featured"):
-                author_image = h_entry["properties"]["author"][0]["properties"]["featured"][0]
+    elif isinstance(h_entry["properties"]["author"][0], str):
+        if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
+            author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
-        elif isinstance(h_entry["properties"]["author"][0], str):
-            if h_entry["properties"].get("author") and h_entry["properties"]["author"][0].startswith("/"):
-                author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
+        try:
+            author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
+        except requests.exceptions.RequestException:
+            author = {}
 
-            try:
-                author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
-            except requests.exceptions.RequestException:
-                author = {}
+        if author.get("items") and author["items"][0]["type"] == ["h-card"]:
+            author_url, author_name, author_image = _get_author_properties(author_url, author["items"][0])
 
-            if author.get("items") and author["items"][0]["type"] == ["h-card"]:
-                author_url = author["properties"]["author"][0]
+    if author_url is not None and author_url.startswith("/"):
+        author_url = parsed_url.scheme + "://" + domain + author_url
 
-                if author["items"][0]["properties"].get("name"):
-                    author_name = author["properties"]["author"][0]["properties"]["name"][0]
+    if author_image is not None and author_image.startswith("/"):
+        author_image = parsed_url.scheme + "://" + domain + author_image
 
-                if author["items"]["properties"].get("photo"):
-                    author_image = author["properties"]["author"][0]["properties"]["photo"][0]
+    return author_url, author_image, author_name
 
-        if author_url is not None and author_url.startswith("/"):
-            author_url = parsed_url.scheme + "://" + domain + author_url
 
-        if author_image is not None and author_image.startswith("/"):
-            author_image = parsed_url.scheme + "://" + domain + author_image
-
+def _process_post_contents(h_entry: dict, domain: str, author_image: str, summary_word_limit: int) -> Tuple[str, str]:
     if h_entry["properties"].get("content") and h_entry["properties"].get("content")[0].get("html"):
         post_body = h_entry["properties"]["content"][0]["html"]
         soup = BeautifulSoup(post_body, "html.parser")
@@ -97,16 +94,36 @@ def _generate_h_entry_reply_context(
 
         favicon = soup.find("link", rel="icon")
 
-        if favicon and not author_image:
-            photo_url = favicon["href"]
-            if not _is_http_url(photo_url):
-                author_image = "https://" + domain + "/" + photo_url
+        new_photo_url = ""
+
+        if favicon:
+            new_photo_url = _get_favicon(favicon["href"], domain)
+
+        if not author_image and new_photo_url:
+            author_image = new_photo_url
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
     elif h_entry["properties"].get("content"):
         post_body = h_entry["properties"]["content"]
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
+
+    return author_image, post_body
+
+
+def _generate_h_entry_reply_context(
+    h_entry: dict, url: str, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+) -> ReplyContext:
+    p_name = ""
+    post_body = ""
+
+    if h_entry["properties"].get("author"):
+        author_url, author_image, author_name = _process_h_entry_author(h_entry, url, domain)
+
+    author_image, post_body = _process_post_contents(h_entry, domain, author_image, summary_word_limit)
+
+    if h_entry["properties"].get("name"):
+        p_name = h_entry["properties"]["name"][0]
 
     # get article name
     if h_entry["properties"].get("name"):
@@ -115,6 +132,7 @@ def _generate_h_entry_reply_context(
     if author_url is not None and not _is_http_url(author_url):
         author_url = "https://" + author_url
 
+    # use domain name as author name if no author name is found
     if not author_name and author_url:
         author_name = url_parse.urlsplit(author_url).netloc
 
@@ -129,14 +147,7 @@ def _generate_h_entry_reply_context(
 
     # look for featured image to display in reply context
     if post_photo_url is None:
-        meta_og_image = soup.find("meta", property="og:image")
-        meta_twitter_image = soup.find("meta", property="twitter:image")
-
-        if meta_og_image and meta_og_image.get("content"):
-            post_photo_url = meta_og_image["content"]
-
-        elif meta_twitter_image and meta_twitter_image.get("content"):
-            post_photo_url = meta_twitter_image["content"]
+        post_photo_url = _get_featured_image(post_body)
 
     return ReplyContext(
         name=p_name,
@@ -195,32 +206,13 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
     )
 
 
-def _generate_reply_context_from_main_page(
-    url: str,
-    http_headers: dict,
-    domain: str,
-    webmention_endpoint_url: str,
-    summary_word_limit: int
-) -> ReplyContext:
-
-    try:
-        request = requests.get(url, headers=http_headers)
-    except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
-
-    soup = BeautifulSoup(request.text, "lxml")
-
-    page_title = soup.find("title")
-
-    if page_title:
-        page_title = page_title.text
-
+def _get_content_from_html_page(soup: BeautifulSoup, summary_word_limit: int) -> str:
     # get body tag
     main_tag = soup.find("body")
 
     if main_tag:
         p_tag = main_tag.find("h1")
-        
+
         if p_tag:
             p_tag = p_tag.text
         else:
@@ -241,6 +233,10 @@ def _generate_reply_context_from_main_page(
         else:
             p_tag = ""
 
+    return p_tag
+
+
+def _get_featured_image(soup: BeautifulSoup):
     post_photo_url = ""
 
     # look for featured image to display in reply context
@@ -251,22 +247,50 @@ def _generate_reply_context_from_main_page(
     elif soup.find("meta", property="twitter:image") and soup.find("meta", property="twitter:image")["content"]:
         post_photo_url = soup.find("meta", property="twitter:image")["content"]
 
+    return post_photo_url
+
+
+def _get_favicon(photo_url: str, domain: str) -> str:
+    if not _is_http_url(photo_url):
+        photo_url = "https://" + domain + photo_url
+
+    try:
+        r = requests.get(photo_url, timeout=10, verify=False)
+    except requests.exceptions.RequestException:
+        photo_url = ""
+
+    if r.status_code != 200:
+        photo_url = ""
+
+    return photo_url
+
+
+def _generate_reply_context_from_main_page(
+    url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+) -> ReplyContext:
+
+    try:
+        request = requests.get(url, headers=http_headers)
+    except requests.exceptions.RequestException:
+        raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
+
+    soup = BeautifulSoup(request.text, "lxml")
+
+    page_title = soup.find("title")
+
+    if page_title:
+        page_title = page_title.text
+
+    p_tag = _get_content_from_html_page(soup, summary_word_limit)
+
+    post_photo_url = _get_featured_image(soup)
+
     favicon = soup.find("link", rel="icon")
 
+    photo_url = ""
+
     if favicon:
-        photo_url = favicon["href"]
-        if not _is_http_url(photo_url):
-            photo_url = "https://" + domain + photo_url
-
-        try:
-            r = requests.get(photo_url, timeout=10, verify=False)
-        except requests.exceptions.RequestException:
-            photo_url = ""
-
-        if r.status_code != 200:
-            photo_url = ""
-    else:
-        photo_url = ""
+        photo_url = _get_favicon(favicon["href"], domain)
 
     if not _is_http_url(domain):
         author_url = "https://" + domain
@@ -283,11 +307,7 @@ def _generate_reply_context_from_main_page(
     )
 
 
-def get_reply_context(
-    url: str,
-    twitter_bearer_token: str = "",
-    summary_word_limit: int = 75
-) -> ReplyContext:
+def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75) -> ReplyContext:
     """
     Generate reply context for use on your website based on a URL.
 
@@ -327,21 +347,11 @@ def get_reply_context(
     if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
         h_entry = parsed["items"][0]
 
-        return _generate_h_entry_reply_context(
-            h_entry,
-            url,
-            domain,
-            webmention_endpoint_url,
-            summary_word_limit
-        )
+        return _generate_h_entry_reply_context(h_entry, url, domain, webmention_endpoint_url, summary_word_limit)
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
         return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
 
     return _generate_reply_context_from_main_page(
-        url,
-        http_headers,
-        domain,
-        webmention_endpoint_url,
-        summary_word_limit
+        url, http_headers, domain, webmention_endpoint_url, summary_word_limit
     )

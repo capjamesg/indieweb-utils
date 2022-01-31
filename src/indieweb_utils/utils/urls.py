@@ -72,6 +72,7 @@ def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = 
 
     return final_url
 
+
 def _is_http_url(url: str) -> bool:
     """
     Determine if URL is http or not

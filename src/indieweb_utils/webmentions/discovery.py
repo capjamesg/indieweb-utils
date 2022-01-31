@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import ipaddress
+from dataclasses import dataclass
 from typing import Dict, List
 from urllib import parse as url_parse
 

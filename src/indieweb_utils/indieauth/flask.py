@@ -97,10 +97,7 @@ def indieauth_callback_handler(
 
     _validate_indieauth_response(me, auth_request, required_scopes)
 
-    return IndieAuthCallbackResponse(
-        message="Authentication was successful.",
-        response={}
-    )
+    return IndieAuthCallbackResponse(message="Authentication was successful.", response={})
 
 
 def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:

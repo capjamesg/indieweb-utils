@@ -1,13 +1,12 @@
 import re
-from urllib import parse as url_parse
 from typing import List, Tuple
+from urllib import parse as url_parse
 
 import mf2py
 import requests
 from bs4 import BeautifulSoup
 
-from ..utils.urls import _is_http_url
-
+from ..utils.urls import _is_http_url, canonicalize_url
 
 # This regex identifies permashortlink citations in the form of (example.com slug)
 # Permashortlink citations may be used as a link to a post that does not contain a hyperlink
@@ -53,6 +52,33 @@ def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post
                 return original_post_url
 
     return ""
+
+
+def _check_for_link_in_post(last_text: BeautifulSoup) -> str:
+    last_text = last_text[0].select("p")[-1]
+
+    # if permashortlink citation
+    # format = (url.com id)
+
+    permashortlink_citation = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
+
+    if permashortlink_citation is not None:
+        permashortlink = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
+
+    if permashortlink is not None:
+        permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
+
+        candidate_url = permashortlink_value
+    else:
+        # check for url at end
+        split_text = last_text.text.split(" ")
+
+        if _is_http_url(split_text[-1]):
+            candidate_url = split_text[-1]
+        else:
+            candidate_url = ""
+
+    return candidate_url
 
 
 def discover_original_post(posse_permalink: str) -> str:
@@ -103,34 +129,48 @@ def discover_original_post(posse_permalink: str) -> str:
     last_text = post_h_entry.select(".e-content")
 
     if last_text:
-        last_text = last_text[0].select("p")[-1]
+        candidate_url = _check_for_link_in_post(last_text)
 
-        # if permashortlink citation
-        # format = (url.com id)
-
-        permashortlink_citation = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
-
-        if permashortlink_citation is not None:
-            permashortlink = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
-
-        if permashortlink is not None:
-            permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
-
-            candidate_url = permashortlink_value
-        else:
-            # check for url at end
-            split_text = last_text.text.split(" ")
-
-            if _is_http_url(split_text[-1]):
-                candidate_url = split_text[-1]
-
-    if candidate_url:
+    if candidate_url and candidate_url != "":
         post_url = _process_candidate_url(candidate_url, posse_permalink, parsed_post)
 
         if post_url != "":
             return post_url
 
     return ""
+
+
+def _discover_h_card_from_author_page(author_url: str, rel_author: str) -> dict:
+    new_h_card = mf2py.parse(url=author_url)
+
+    # get rel me values from parsed object
+    if new_h_card.get("rels") and new_h_card.get("rels").get("me"):
+        rel_mes = new_h_card["rels"]["me"]
+    else:
+        rel_mes = []
+
+    final_h_card = [e for e in new_h_card["items"] if e["type"] == "h-card"]
+
+    for card in final_h_card:
+        for j in card["items"]:
+            if (
+                j.get("type")
+                and j.get("type") == ["h-card"]
+                and j["properties"]["url"] == rel_author
+                and j["properties"].get("uid") == j["properties"]["url"]
+            ):
+                h_card = j
+                return h_card
+
+            if j.get("type") and j.get("type") == ["h-card"] and j["properties"].get("url") in rel_mes:
+                h_card = j
+                return h_card
+
+            if j.get("type") and j.get("type") == ["h-card"] and j["properties"]["url"] == rel_author:
+                h_card = j
+                return h_card
+
+    return {}
 
 
 def discover_author(url: str, page_contents: str = "") -> dict:
@@ -192,47 +232,14 @@ def discover_author(url: str, page_contents: str = "") -> dict:
 
     # canonicalize author page
     if author_page_url:
-        if author_page_url.startswith("//"):
-            author_page_url = "http:" + author_page_url
-        elif author_page_url.startswith("/"):
-            author_page_url = url + author_page_url
-        elif author_page_url.startswith("http"):
-            author_page_url = author_page_url
-        else:
-            author_page_url = None
+        domain = url_parse.urlsplit(url).netloc
 
-    if author_page_url is not None:
-        new_h_card = mf2py.parse(url=author_page_url)
+        author_url = canonicalize_url(author_page_url, domain)
 
-        # get rel me values from parsed object
-        if new_h_card.get("rels") and new_h_card.get("rels").get("me"):
-            rel_mes = new_h_card["rels"]["me"]
-        else:
-            rel_mes = []
+        h_card = _discover_h_card_from_author_page(author_url, rel_author)
 
-        final_h_card = [e for e in new_h_card["items"] if e["type"] == "h-card"]
+        return h_card
 
-        if len(final_h_card) > 0:
-            for card in final_h_card:
-                for j in card["items"]:
-                    if (
-                        j.get("type")
-                        and j.get("type") == ["h-card"]
-                        and j["properties"]["url"] == rel_author
-                        and j["properties"].get("uid") == j["properties"]["url"]
-                    ):
-                        h_card = j
-                        return h_card
-
-                    if j.get("type") and j.get("type") == ["h-card"] and j["properties"].get("url") in rel_mes:
-                        h_card = j
-                        return h_card
-
-                    if j.get("type") and j.get("type") == ["h-card"] and j["properties"]["url"] == rel_author:
-                        h_card = j
-                        return h_card
-
-    # no author found, return None
     return {}
 
 

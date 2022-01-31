@@ -1,11 +1,10 @@
-import requests
-
 from dataclasses import dataclass
 from urllib import parse as url_parse
 
-from . import discovery
+import requests
 
 from ..utils.urls import _is_http_url
+from . import discovery
 
 
 @dataclass
@@ -25,7 +24,7 @@ def send_webmention(source: str, target: str, me: str = ""):
             success=False,
         )
 
-    if not is_http_url(source) or not is_http_url(target):
+    if not _is_http_url(source) or not _is_http_url(target):
         return SendWebmentionResponse(
             title="Error: Source and target must use a http:// or https:// protocol.",
             description="Error: Source and target must use a http:// or https:// protocol.",
