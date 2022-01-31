@@ -41,9 +41,18 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
 
         parsed_page = BeautifulSoup(link_valid.text, "html.parser")
 
-        page_links = parsed_page.find_all("a")
+        page_links = parsed_page.find_all("a") + parsed_page.find_all("link")
 
         for item in page_links:
+            # check if link is a rel me link
+            # if it is, add the link to the list of valid rel me links
+
+            if not item.get("rel"):
+                continue
+            
+            if not "me" in item.get("rel"):
+                continue
+
             if item == canonical_url:
                 valid_rel_me_links.append(link)
                 continue

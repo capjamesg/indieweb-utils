@@ -134,3 +134,20 @@ If the code can be decoded, the me, client_id, and scope values will be returned
 Here is the syntax for the function:
 
 ..autofunction:: indieweb_utils.validate_access_token
+
+Retrieve Valid Links for Use in RelMeAuth
+-----------------------------------------
+
+To authenticate a user with RelMeAuth, you need to validate that there is a two-way link between two resources.
+
+IndieWeb Utils implements a helper function that checks whether the URLs linked with rel=me on a web page contain a
+link back to the source.
+
+To check whether there is a two-way rel=me link between two resources, you can use this function:
+
+..autofunction:: indieweb_utils.get_valid_rel_me_links
+
+This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
+rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
+if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user,
+even if the get_valid_rel_me_links() function found a valid two-way rel=me link.
