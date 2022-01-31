@@ -253,6 +253,20 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
     :type custom_properties: list[tuple[str, str]]
     :return: The type of the h-entry.
     :rtype: str
+
+    Here is an example of the function in action:
+
+    .. highlight:: python
+    .. code-block:: python
+
+        import mf2py
+        import indieweb_utils
+
+        parsed_page = mf2py.parse(url="https://jamesg.blog/2022/01/27/some-things-on-my-mind/")
+
+        h_entry = [e for e in parsed_page["items"] if e["type"] == ["h-entry"]][0]
+
+        indieweb_utils.get_post_type(h_entry)
     """
     post = h_entry.get("properties")
 
