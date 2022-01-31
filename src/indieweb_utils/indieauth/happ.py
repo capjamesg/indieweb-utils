@@ -14,11 +14,7 @@ class ApplicationInfo:
     summary: str
 
 
-def get_h_app_item(
-    web_page: str,
-    client_id: str,
-    redirect_uri: str,
-) -> ApplicationInfo:
+def get_h_app_item(web_page: str, client_id: str) -> ApplicationInfo:
     """
     Get the h-app item from the web page.
 
@@ -26,14 +22,27 @@ def get_h_app_item(
     :type web_page: str
     :param client_id: The client id of your application.
     :type client_id: str
-    :param redirect_uri: The redirect uri specified by the client.
-    :type redirect_uri: str
     :return: The h-app item.
     :rtype: ApplicationInfo
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        app_url = "https://quill.p3k.io/"
+        client_id = "https://quill.p3k.io/"
+
+        h_app_item = indieweb_utils.get_h_app_item(
+            app_url, client_id
+        )
+
+        print(h_app_item.name) # Quill
     """
 
-    redirect_uri_domain = parse_url(redirect_uri).netloc
-    redirect_uri_scheme = parse_url(redirect_uri).scheme
+    client_id_domain = parse_url(client_id).netloc
+    client_id_scheme = parse_url(client_id).scheme
 
     app_name = ""
     app_url = ""
@@ -61,13 +70,13 @@ def get_h_app_item(
         if logo and len(logo) > 0 and logo[0].get("src"):
             logo_to_validate = logo[0].get("src")
             if logo[0].get("src").startswith("/"):
-                logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + logo[0].get("src")
+                logo_to_validate = client_id_scheme + client_id_domain.strip("/") + logo[0].get("src")
             elif logo[0].get("src").startswith("//"):
-                logo_to_validate = redirect_uri_scheme + logo[0].get("src")
+                logo_to_validate = client_id_scheme + logo[0].get("src")
             elif _is_http_url(logo[0].get("src")):
                 logo_to_validate = logo[0].get("src")
             else:
-                logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + "/" + logo[0].get("src")
+                logo_to_validate = client_id_scheme + client_id_domain.strip("/") + "/" + logo[0].get("src")
 
             app_logo = logo_to_validate
 

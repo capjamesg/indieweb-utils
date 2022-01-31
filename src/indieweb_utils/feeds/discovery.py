@@ -5,6 +5,7 @@ from urllib import parse as url_parse
 import requests
 from bs4 import BeautifulSoup
 
+from ..webmentions.discovery import _find_links_in_headers
 from ..utils.urls import _is_http_url, canonicalize_url
 
 
@@ -20,6 +21,20 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     Get all feeds on a web page.
     :param url: The URL of the page whose associated feeds you want to retrieve.
     :type url: str
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog/"
+
+        feeds = indieweb_utils.discover_web_page_feeds(url)
+
+        # print the url of all feeds to the console
+        for f in feeds:
+            print(f.url)
     """
     user_mime_types = user_mime_types or []
 
@@ -65,5 +80,19 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
 
     if h_feed:
         feeds.append(FeedUrl(url=url, mime_type="text/html", title=page_title.text))
+
+    http_headers = _find_links_in_headers(headers=web_page_request.headers, target_headers=["alternate", "feed"])
+
+    for rel, url in http_headers.items():
+        if rel == "feed" or rel == "alternate":
+            feed_title = http_headers.get(rel, "")
+            feed_url = canonicalize_url(url, page_domain)
+
+            try:
+                feed_mime_type = requests.get(feed_url, timeout=10).headers["content-type"]
+            except requests.exceptions.RequestException:
+                feed_mime_type = ""
+
+            feeds.append(FeedUrl(url=feed_url, mime_type=feed_mime_type, title=feed_title))
 
     return feeds

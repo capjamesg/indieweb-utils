@@ -26,6 +26,18 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     :type target: str
     :return: The discovered webmention endpoint.
     :rtype: str
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        target = "https://jamesg.blog/"
+
+        webmention_endpoint = indieweb_utils.discover_webmention_endpoint(
+            target
+        )
+
+        print(webmention_endpoint) # https://webmention.jamesg.blog/webmention
     """
     if not target:
         return WebmentionDiscoveryResponse(endpoint="", message="Error: A target was not provided.", success=False)
@@ -80,9 +92,26 @@ def _discover_endpoints(url: str, headers_to_find: List[str]):
     :param url: The URL to discover endpoints for.
     :type url: str
     :param headers_to_find: The headers to find.
+        Common values you may want to use include: microsub, micropub, token_endpoint,
+        authorization_endpoint, webmention.
     :type headers_to_find: dict[str, str]
     :return: The discovered endpoints.
     :rtype: dict[str, str]
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog/"
+
+        # find the webmention header on a web page
+        headers_to_find = ["webmention"]
+
+        endpoints = indieweb_utils._discover_endpoints(
+            url
+        )
+
+        print(webmention_endpoint) # {'webmention': 'https://webmention.jamesg.blog/webmention'}
     """
     response: Dict[str, str] = {}
 
