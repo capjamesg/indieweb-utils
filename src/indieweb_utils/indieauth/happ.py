@@ -3,6 +3,8 @@ from urllib.parse import urlparse as parse_url
 
 from bs4 import BeautifulSoup
 
+from ..utils.urls import _is_http_url
+
 
 @dataclass
 class ApplicationInfo:
@@ -18,16 +20,16 @@ def get_h_app_item(
     redirect_uri: str,
 ) -> ApplicationInfo:
     """
-        Get the h-app item from the web page.
+    Get the h-app item from the web page.
 
-        :param web_page: The web page to parse.
-        :type web_page: str
-        :param client_id: The client id of your application.
-        :type client_id: str
-        :param redirect_uri: The redirect uri specified by the client.
-        :type redirect_uri: str
-        :return: The h-app item.
-        :rtype: ApplicationInfo
+    :param web_page: The web page to parse.
+    :type web_page: str
+    :param client_id: The client id of your application.
+    :type client_id: str
+    :param redirect_uri: The redirect uri specified by the client.
+    :type redirect_uri: str
+    :return: The h-app item.
+    :rtype: ApplicationInfo
     """
 
     redirect_uri_domain = parse_url(redirect_uri).netloc
@@ -62,7 +64,7 @@ def get_h_app_item(
                 logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + logo[0].get("src")
             elif logo[0].get("src").startswith("//"):
                 logo_to_validate = redirect_uri_scheme + logo[0].get("src")
-            elif logo[0].get("src").startswith("http://") or logo[0].get("src").startswith("https://"):
+            elif _is_http_url(logo[0].get("src")):
                 logo_to_validate = logo[0].get("src")
             else:
                 logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + "/" + logo[0].get("src")
@@ -77,9 +79,4 @@ def get_h_app_item(
         if summary and summary[0].text.strip() != "":
             app_summary = summary[0].text
 
-    return ApplicationInfo(
-        name=app_name,
-        logo=app_logo,
-        url=app_url,
-        summary=app_summary
-    )
+    return ApplicationInfo(name=app_name, logo=app_logo, url=app_url, summary=app_summary)

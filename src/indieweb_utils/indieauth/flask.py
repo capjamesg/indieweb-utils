@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import Dict, Any, List
+from typing import List
 
 import requests
 
 
-@dataclass()
+@dataclass
 class IndieAuthCallbackResponse:
     message: str
     response: dict
@@ -14,7 +14,7 @@ class AuthenticationError(Exception):
     pass
 
 
-def _validate_indieauth_response(me: str, response: dict, required_scopes: List[str]) -> None:
+def _validate_indieauth_response(me: str, response: requests.Response, required_scopes: List[str]) -> None:
     if me is None:
         message = "An invalid me value was provided."
         raise AuthenticationError(message)
@@ -40,7 +40,7 @@ def indieauth_callback_handler(
     me: str,
     callback_url: str,
     client_id: str,
-    required_scopes: str
+    required_scopes: List[str],
 ) -> IndieAuthCallbackResponse:
     """
     Exchange a callback 'code' for an authentication token.
@@ -71,10 +71,7 @@ def indieauth_callback_handler(
 
     if state != session_state:
         message = "The provided state value did not match the session state. Please try again."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+        raise AuthenticationError(message)
 
     data = {
         "code": code,
@@ -88,57 +85,22 @@ def indieauth_callback_handler(
 
     try:
         auth_request = requests.post(token_endpoint, data=data, headers=headers)
-    except:
+    except requests.exceptions.RequestException:
         message = "Your token endpoint server could not be accessed."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+        raise AuthenticationError(message)
 
     if auth_request.status_code != 200:
         message = "There was an error with your token endpoint server."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+        raise AuthenticationError(message)
 
     # remove code verifier from session because the authentication flow has finished
 
-    if me is None:
-        message = "An invalid me value was provided."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+    _validate_indieauth_response(me, auth_request, required_scopes)
 
-    if r.json().get("me").strip("/") != me.strip("/"):
-        message = "Your domain is not allowed to access this website."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
+    return IndieAuthCallbackResponse(message="Authentication was successful.", response={})
 
-    granted_scopes = r.json().get("scope").split(" ")
 
-    if r.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
-        message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
-        return IndieAuthCallbackResponse(
-            message=message,
-            response={}
-        )
-
-    return IndieAuthCallbackResponse(
-        message="Authentication was successful.",
-        response={}
-    )
- 
-
-def is_authenticated(
-        token_endpoint: str,
-        headers: dict,
-        session: dict,
-        approved_user: bool = None
-    ) -> bool:
+def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:
     """
     Check if a user has provided a valid Authorization header or access token in session. Designed for use with Flask.
 
@@ -150,7 +112,8 @@ def is_authenticated(
     :rtype: bool
     """
     if headers.get("Authorization") is not None:
-        access_token = headers.get("Authorization").split(" ")[-1]
+        access_token = headers["Authorization"].split(" ")[-1]
+
     elif session.get("access_token"):
         access_token = session.get("access_token")
     else:

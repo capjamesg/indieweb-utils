@@ -1,8 +1,9 @@
-from urllib import parse as url_parse
+from dataclasses import dataclass
 from typing import List
+from urllib import parse as url_parse
 
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
 from ..utils.urls import canonicalize_url
 
@@ -13,6 +14,12 @@ class WebmentionValidationError(Exception):
 
 class WebmentionIsGone(Exception):
     pass
+
+
+@dataclass
+class WebmentionCheckResponse:
+    webmention_is_valid: bool
+    vouch_check_has_passed: bool
 
 
 def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
@@ -31,8 +38,8 @@ def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
         if moderate:
             if vouch_domain in vouch_list:
                 try:
-                    r = requests.get(vouch)
-                except:
+                    r = requests.get(vouch, timeout=5)
+                except requests.exceptions.RequestException:
                     return moderate
 
                 soup = BeautifulSoup(r.text, "html.parser")
@@ -58,7 +65,67 @@ def validate_headers(request_item):
     return True
 
 
-def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: List[str] = []) -> bool:        
+def _check_for_link_to_target(validation_source: requests.Response, target) -> bool:
+    soup = BeautifulSoup(validation_source.text, "html.parser")
+
+    all_anchors = soup.find_all("a")
+    contains_valid_link_to_target = False
+
+    target_domain = url_parse.urlparse(target).netloc
+
+    for anchor in all_anchors:
+        if anchor.get("href"):
+            canoncalized = canonicalize_url(anchor["href"], target_domain, target)
+            if canoncalized == target:
+                contains_valid_link_to_target = True
+
+    if target in validation_source.text:
+        contains_valid_link_to_target = True
+
+    return contains_valid_link_to_target
+
+
+def _retrieve_webmention_target(source: str) -> BeautifulSoup:
+    # Only allow 3 redirects before raising an error
+    session = requests.Session()
+    session.max_redirects = 3
+
+    validated_headers = False
+
+    try:
+        check_source_size = session.head(source, timeout=5)
+
+        validated_headers = validate_headers(check_source_size)
+    except requests.exceptions.TooManyRedirects:
+        raise WebmentionValidationError("Source redirected too many times.")
+    except requests.exceptions.Timeout:
+        raise WebmentionValidationError("Source timed out.")
+    except requests.exceptions.RequestException:
+        # pass because HEAD request might not be recognised / processed by the client
+        pass
+
+    try:
+        get_source_for_validation = session.get(source)
+    except requests.exceptions.RequestException:
+        raise WebmentionValidationError("Source could not be retrieved.")
+
+    if validated_headers is False:
+        validated_headers = validate_headers(check_source_size)
+
+    if get_source_for_validation.status_code == 410:
+        raise WebmentionIsGone("Webmention source returned 410 Gone code.")
+
+    if check_source_size.status_code != 200:
+        raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
+
+    parse_page = BeautifulSoup(get_source_for_validation.text, "html.parser")
+
+    return parse_page
+
+
+def validate_webmention(
+    source: str, target: str, vouch: str = "", vouch_list: List[str] = []
+) -> WebmentionCheckResponse:
     """
     Check if a webmention is valid.
 
@@ -83,74 +150,27 @@ def validate_webmention(source: str, target: str, vouch: str = "", vouch_list: L
 
     if source_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Source must use either a http:// or https:// URL scheme.")
-    
+
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
-    
-    # Only allow 3 redirects before raising an error
-    session = requests.Session()
-    session.max_redirects = 3
 
-    validated_headers = False
-
-    try:
-        check_source_size = session.head(source, timeout=5)
-
-        validated_headers = validate_headers(check_source_size)
-    except requests.exceptions.TooManyRedirects:
-        raise WebmentionValidationError("Source redirected too many times.")
-    except requests.exceptions.Timeout:
-        raise WebmentionValidationError("Source timed out.")
-    except:
-        # pass because HEAD request might not be recognised / processed by the client
-        pass
-
-    try:
-        get_source_for_validation = session.get(source)
-    except Exception as e:
-        raise WebmentionValidationError("Source could not be retrieved.")
-
-    if validated_headers is False:
-        validated_headers = validate_headers(check_source_size)
-
-    if get_source_for_validation.status_code == 410:
-        raise WebmentionIsGone("Webmention source returned 410 Gone code.")
-
-    parse_page = BeautifulSoup(get_source_for_validation.text, "html.parser")
+    parsed_page = _retrieve_webmention_target(source)
 
     # get all <link> tags
-    meta_links = parse_page.find_all("link")
+    meta_links = parsed_page.find_all("link")
 
     for link in meta_links:
         # use meta http-equiv status spec to detect 410s https://indieweb.org/meta_http-equiv_status
         # detecting http-equiv status 410s is required by the webmention spec
-        if link.get("http-equiv", "") == "Status":
-            if link.get("content", "") == "410 Gone":
-                raise WebmentionIsGone("Webmention source returned 410 Gone code.")
+        if link.get("http-equiv", "") == "Status" and link.get("content", "") == "410 Gone":
+            raise WebmentionIsGone("Webmention source returned 410 Gone code.")
 
-    if check_source_size.status_code != 200:
-        raise WebmentionValidationError(f"Webmention source returned {check_source_size.status_code} code.")
-    
-    soup = BeautifulSoup(get_source_for_validation.text, "html.parser")
-
-    all_anchors = soup.find_all("a")
-    contains_valid_link_to_target = False
-
-    target_domain = url_parse.urlparse(target).netloc
-
-    for anchor in all_anchors:
-        if anchor.get("href"):
-            canoncalized = canonicalize_url(anchor["href"], target_domain, target)
-            if canoncalized == target:
-                contains_valid_link_to_target = True
-
-    if target in get_source_for_validation:
-        contains_valid_link_to_target = True
+    contains_valid_link_to_target = _check_for_link_to_target(parsed_page, target)
 
     # Might want to comment out this if statement for testing
     if not contains_valid_link_to_target:
-        raise WebmentionValidationError(f"Source does not contain a link to target.")
-    
+        raise WebmentionValidationError("Source does not contain a link to target.")
+
     moderate = process_vouch(vouch, source, vouch_list)
 
-    return True, moderate
+    return WebmentionCheckResponse(webmention_is_valid=True, vouch_check_has_passed=moderate)

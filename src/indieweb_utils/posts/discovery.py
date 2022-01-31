@@ -1,9 +1,84 @@
 import re
+from typing import List, Tuple
 from urllib import parse as url_parse
 
 import mf2py
 import requests
 from bs4 import BeautifulSoup
+
+from ..utils.urls import _is_http_url, canonicalize_url
+
+# This regex identifies permashortlink citations in the form of (example.com slug)
+# Permashortlink citations may be used as a link to a post that does not contain a hyperlink
+# Checking for a permashortlink citation is a step in the Original Post Discovery algorithm
+# More on permashortlink citations: https://indieweb.org/permashortcitation
+PERMASHORTLINK_CITATION_BRACKET_MATCHING = r"\((.*?)\)"
+
+
+class PostDiscoveryError(Exception):
+    pass
+
+
+def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post: BeautifulSoup) -> str:
+    try:
+        request = requests.get(candidate_url, timeout=5)
+    except requests.exceptions.RequestException:
+        raise PostDiscoveryError("Could not get candidate url")
+
+    parsed_candidate_url = BeautifulSoup(request.text, "lxml")
+
+    all_hyperlinks = parsed_candidate_url.select("a")
+
+    posse_domain = url_parse.urlsplit(posse_permalink).netloc
+
+    for link in all_hyperlinks:
+        if "u-syndication" in link.get("class"):
+            url_to_check = link.get("href")
+
+            original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+
+            if original_post_url:
+                return original_post_url
+
+    all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
+
+    for header in all_syndication_link_headers:
+        if header.get("href") == posse_permalink:
+            url_to_check = header.get("href")
+
+            original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
+
+            if original_post_url:
+                return original_post_url
+
+    return ""
+
+
+def _check_for_link_in_post(last_text: BeautifulSoup) -> str:
+    last_text = last_text[0].select("p")[-1]
+
+    # if permashortlink citation
+    # format = (url.com id)
+
+    permashortlink_citation = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
+
+    if permashortlink_citation is not None:
+        permashortlink = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
+
+    if permashortlink is not None:
+        permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
+
+        candidate_url = permashortlink_value
+    else:
+        # check for url at end
+        split_text = last_text.text.split(" ")
+
+        if _is_http_url(split_text[-1]):
+            candidate_url = split_text[-1]
+        else:
+            candidate_url = ""
+
+    return candidate_url
 
 
 def discover_original_post(posse_permalink: str) -> str:
@@ -25,95 +100,93 @@ def discover_original_post(posse_permalink: str) -> str:
 
     original_post_url = None
 
-    if post_h_entry:
-        post_h_entry = post_h_entry[0]
+    if not post_h_entry:
+        raise PostDiscoveryError("Could not find h-entry")
 
-        # select with u-url and u-uid
-        if post_h_entry.select(".u-url .u-uid"):
-            original_post_url = post_h_entry.select(".u-url .u-uid")[0].get("href")
+    post_h_entry = post_h_entry[0]
+
+    # select with u-url and u-uid
+    if post_h_entry.select(".u-url .u-uid"):
+        original_post_url = post_h_entry.select(".u-url .u-uid")[0].get("href")
+        return original_post_url
+
+    canonical_links = parsed_post.select("link[rel='canonical']")
+
+    if canonical_links:
+        original_post_url = canonical_links[0].get("href")
+        return original_post_url
+
+    # look for text with see original anchor text
+
+    for link in parsed_post.select("a"):
+        if link.text.lower() == "see original".lower() and link.get("href"):
+            original_post_url = link.get("href")
+
             return original_post_url
 
-        canonical_links = parsed_post.select("link[rel='canonical']")
+    candidate_url = None
 
-        if canonical_links:
-            original_post_url = canonical_links[0].get("href")
-            return original_post_url
+    last_text = post_h_entry.select(".e-content")
 
-        # look for text with see original anchor text
+    if last_text:
+        candidate_url = _check_for_link_in_post(last_text)
 
-        for link in parsed_post.select("a"):
-            if link.text.lower() == "see original".lower():
-                if link.get("href"):
-                    original_post_url = link.get("href")
+    if candidate_url and candidate_url != "":
+        post_url = _process_candidate_url(candidate_url, posse_permalink, parsed_post)
 
-                    return original_post_url
-
-        candidate_url = None
-
-        last_text = post_h_entry.select(".e-content")
-
-        if last_text:
-            last_text = last_text[0].select("p")[-1]
-
-            # if permashortlink citation
-            # format = (url.com id)
-
-            if re.search(r"\((.*?)\)", last_text.text):
-                permashortlink = re.search(r"\((.*?)\)", last_text.text)
-
-                permashortlink = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
-
-                candidate_url = permashortlink
-
-        try:
-            request = requests.get(candidate_url)
-        except:
-            # return a blank string if URL could not be retrieved for verification
-            # TODO: Create a custom exception for this error
-            return ""
-
-        parsed_candidate_url = BeautifulSoup(request.text, "lxml")
-
-        all_hyperlinks = parsed_candidate_url.select("a")
-
-        posse_domain = url_parse.urlsplit(posse_permalink).netloc
-
-        for link in all_hyperlinks:
-            if "u-syndication" in link.get("class"):
-                url_to_check = link.get("href")
-
-                original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
-
-                if original_post_url:
-                    return original_post_url
-
-        all_syndication_link_headers = parsed_post.select("link[rel='syndication']")
-
-        for header in all_syndication_link_headers:
-            if header.get("href") == posse_permalink:
-                url_to_check = header.get("href")
-
-                original_post_url = _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain)
-
-                if original_post_url:
-                    return original_post_url
+        if post_url != "":
+            return post_url
 
     return ""
 
 
-def discover_author(url: str, page_contents=None) -> dict:
+def _discover_h_card_from_author_page(author_url: str, rel_author: str) -> dict:
+    new_h_card = mf2py.parse(url=author_url)
+
+    # get rel me values from parsed object
+    if new_h_card.get("rels") and new_h_card.get("rels").get("me"):
+        rel_mes = new_h_card["rels"]["me"]
+    else:
+        rel_mes = []
+
+    final_h_card = [e for e in new_h_card["items"] if e["type"] == "h-card"]
+
+    for card in final_h_card:
+        for j in card["items"]:
+            if (
+                j.get("type")
+                and j.get("type") == ["h-card"]
+                and j["properties"]["url"] == rel_author
+                and j["properties"].get("uid") == j["properties"]["url"]
+            ):
+                h_card = j
+                return h_card
+
+            if j.get("type") and j.get("type") == ["h-card"] and j["properties"].get("url") in rel_mes:
+                h_card = j
+                return h_card
+
+            if j.get("type") and j.get("type") == ["h-card"] and j["properties"]["url"] == rel_author:
+                h_card = j
+                return h_card
+
+    return {}
+
+
+def discover_author(url: str, page_contents: str = "") -> dict:
     """
     Discover the author of a post per the IndieWeb Authorship specification.
 
     :param url: The URL of the post.
     :type url: str
-    :param page_contents: The optional page contents to use. Specifying this value prevents a HTTP request being made to the URL.
+    :param page_contents: The optional page contents to use.
+        Specifying this value prevents a HTTP request being made to the URL.
     :type page_contents: str
     :return: A h-card of the post.
     :rtype: dict
 
     """
-    if page_contents:
+    if page_contents != "":
         full_page = mf2py.parse(doc=page_contents)
     else:
         full_page = mf2py.parse(url=url)
@@ -138,7 +211,13 @@ def discover_author(url: str, page_contents=None) -> dict:
             author_page_url = preliminary_author
         else:
             # author is name
-            return preliminary_author
+            return {
+                "type": ["h-card"],
+                "properties": {
+                    "name": [preliminary_author],
+                    "url": [url],
+                },
+            }
 
     if preliminary_author and type(preliminary_author) == dict:
         # author is h-card so the value can be returned
@@ -153,51 +232,18 @@ def discover_author(url: str, page_contents=None) -> dict:
 
     # canonicalize author page
     if author_page_url:
-        if author_page_url.startswith("//"):
-            author_page_url = "http:" + author_page_url
-        elif author_page_url.startswith("/"):
-            author_page_url = url + author_page_url
-        elif author_page_url.startswith("http"):
-            author_page_url = author_page_url
-        else:
-            author_page_url = None
+        domain = url_parse.urlsplit(url).netloc
 
-    if author_page_url is not None:
-        new_h_card = mf2py.parse(url=author_page_url)
+        author_url = canonicalize_url(author_page_url, domain)
 
-        # get rel me values from parsed object
-        if new_h_card.get("rels") and new_h_card.get("rels").get("me"):
-            rel_mes = new_h_card["rels"]["me"]
-        else:
-            rel_mes = []
+        h_card = _discover_h_card_from_author_page(author_url, rel_author)
 
-        final_h_card = [e for e in new_h_card["items"] if e["type"] == "h-card"]
+        return h_card
 
-        if len(final_h_card) > 0:
-            for card in final_h_card:
-                for j in card["items"]:
-                    if (
-                        j.get("type")
-                        and j.get("type") == ["h-card"]
-                        and j["properties"]["url"] == rel_author
-                        and j["properties"].get("uid") == j["properties"]["url"]
-                    ):
-                        h_card = j
-                        return h_card
-
-                    if j.get("type") and j.get("type") == ["h-card"] and j["properties"].get("url") in rel_mes:
-                        h_card = j
-                        return h_card
-
-                    if j.get("type") and j.get("type") == ["h-card"] and j["properties"]["url"] == rel_author:
-                        h_card = j
-                        return h_card
-
-    # no author found, return None
-    return None
+    return {}
 
 
-def get_post_type(h_entry: str, custom_properties: list = []) -> str:
+def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) -> str:
     """
     Return the type of a h-entry per the Post Type Discovery algorithm.
 
@@ -224,7 +270,7 @@ def get_post_type(h_entry: str, custom_properties: list = []) -> str:
     ]
 
     for prop in custom_properties:
-        if len(prop) == 2 and type(prop) == tuple:
+        if len(prop) == 2 and isinstance(prop, tuple) and isinstance(prop[0], str) and isinstance(prop[1], str):
             values_to_check.append(prop)
         else:
             raise Exception("custom_properties must be a list of tuples")
@@ -261,7 +307,7 @@ def _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domai
     if url_to_check and url_parse.urlsplit(url_to_check).netloc == posse_domain:
         try:
             r = requests.get(url_to_check, timeout=10, allow_redirects=True)
-        except:
+        except requests.exceptions.RequestException:
             # handler will prevent exception due to timeout, if one occurs
             pass
 

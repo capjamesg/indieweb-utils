@@ -1,32 +1,33 @@
-import requests
-
 from dataclasses import dataclass
 from urllib import parse as url_parse
 
 import requests
 
+from ..utils.urls import _is_http_url
 from . import discovery
+
 
 @dataclass
 class SendWebmentionResponse:
     title: str
     description: str
     url: str
-    status: bool
+    success: bool
+
 
 def send_webmention(source: str, target: str, me: str = ""):
     if not source and not target:
         return SendWebmentionResponse(
-            title=f"Error: A source or target was not provided.",
-            description=f"Error: A source or target was not provided.",
+            title="Error: A source or target was not provided.",
+            description="Error: A source or target was not provided.",
             url=target,
             success=False,
         )
 
-    if not target.startswith("https://") or not target.startswith("http://"):
+    if not _is_http_url(source) or not _is_http_url(target):
         return SendWebmentionResponse(
-            title=f"Error: Target must use a http:// or https:// protocol.",
-            description=f"Error: Target must use a http:// or https:// protocol.",
+            title="Error: Source and target must use a http:// or https:// protocol.",
+            description="Error: Source and target must use a http:// or https:// protocol.",
             url=target,
             success=False,
         )
@@ -48,19 +49,19 @@ def send_webmention(source: str, target: str, me: str = ""):
                 success=False,
             )
 
-    endpoint, message = discovery.discover_webmention_endpoint(target)
+    response = discovery.discover_webmention_endpoint(target)
 
-    if endpoint is None:
+    if response.endpoint == "":
         return SendWebmentionResponse(
-            title=f"Error: {message}",
-            description=message,
+            title=f"Error: {response.message}",
+            description=response.endpoint,
             url=target,
             success=False,
         )
 
     # make post request to endpoint with source and target as values
     r = requests.post(
-        endpoint,
+        response.endpoint,
         data={"source": source, "target": target},
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
@@ -77,9 +78,4 @@ def send_webmention(source: str, target: str, me: str = ""):
             success=False,
         )
 
-    return SendWebmentionResponse(
-        title=message,
-        description=message,
-        url=target,
-        success=True
-    )
+    return SendWebmentionResponse(title=message, description=message, url=target, success=True)
