@@ -116,7 +116,7 @@ a token for a token endpoint.
 
 Here is the syntax for this function:
 
-.. autofunction:: indieweb_utils.indieauth.redeem_code
+.. autofunction:: indieweb_utils.redeem_code
 
 Validate an access token created by a token endpoint
 ----------------------------------------------------
@@ -133,4 +133,4 @@ If the code can be decoded, the me, client_id, and scope values will be returned
 
 Here is the syntax for the function:
 
-.. autofunction:: indieweb_utils.indieauth.validate_access_token
+.. autofunction:: indieweb_utils.validate_access_token
