@@ -5,9 +5,6 @@ Usage
 
 .. toctree::
 
-   :ref:"Installation"
-   :ref:"Custom Properties"
-
 Installation
 ------------------------
 
@@ -114,7 +111,7 @@ Canonicalization turns a relative URL into a complete URL.
 
 To canonicalize a URL, use this function:
 
-.. autofunction:: indieweb_utils.canonicalize
+.. autofunction:: indieweb_utils.canonicalize_url
 
 This function requires two arguments.
 
@@ -203,9 +200,9 @@ Otherwise, set "me" to the URL of the profile that should be able to access your
 
 Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
 
-If successful, this function will return an IndieAuthResponse object that looks like this:
+If successful, this function will return an IndieAuthCallbackResponse object that looks like this:
 
-.. autoclass:: indieweb_utils.IndieAuthResponse
+.. class:: indieweb_utils.IndieAuthCallbackResponse
 
 This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
 
@@ -268,7 +265,7 @@ To discover the feeds on a page, use this function:
 
 .. autofunction:: indieweb_utils.discover_web_page_feeds
 
-This function returns a dictionary with all feeds on a page.
+This function returns a list with all feeds on a page.
 
 Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
 
@@ -278,7 +275,7 @@ Get a Representative h-card
 ---------------------------
 
 To find the h-card that is considered representative of a web resource per the
-`Representative h-card Parsing Algorithm <>https://microformats.org/wiki/representative-h-card-parsing`_,
+`Representative h-card Parsing Algorithm <https://microformats.org/wiki/representative-h-card-parsing>`_,
 use the following function:
 
 .. autofunction:: indieweb_utils.get_representative_h_card
