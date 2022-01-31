@@ -272,4 +272,15 @@ This function returns a dictionary with all feeds on a page.
 
 Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
 
-.. autoclass:; indieweb_utils.FeedUrl
+.. autoclass:: indieweb_utils.FeedUrl
+
+Get a Representative h-card
+---------------------------
+
+To find the h-card that is considered representative of a web resource per the
+`Representative h-card Parsing Algorithm <>https://microformats.org/wiki/representative-h-card-parsing`_,
+use the following function:
+
+.. autofunction:: indieweb_utils.get_representative_h_card
+
+This function returns a dictionary with the h-card found on a web page.

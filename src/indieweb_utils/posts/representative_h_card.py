@@ -1,7 +1,9 @@
 import mf2py
 
+
 class RepresentativeHCardParsingError(Exception):
     pass
+
 
 def get_representative_h_card(url: str) -> dict:
     """
