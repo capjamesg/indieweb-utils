@@ -5,6 +5,8 @@ from urllib import parse as url_parse
 
 from . import discovery
 
+from ..utils.urls import _is_http_url
+
 
 @dataclass
 class SendWebmentionResponse:
@@ -23,10 +25,10 @@ def send_webmention(source: str, target: str, me: str = ""):
             success=False,
         )
 
-    if not target.startswith("https://") or not target.startswith("http://"):
+    if not is_http_url(source) or not is_http_url(target):
         return SendWebmentionResponse(
-            title="Error: Target must use a http:// or https:// protocol.",
-            description="Error: Target must use a http:// or https:// protocol.",
+            title="Error: Source and target must use a http:// or https:// protocol.",
+            description="Error: Source and target must use a http:// or https:// protocol.",
             url=target,
             success=False,
         )

@@ -4,7 +4,7 @@ from typing import List
 import requests
 
 
-@dataclass()
+@dataclass
 class IndieAuthCallbackResponse:
     message: str
     response: dict
@@ -145,10 +145,7 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
     :rtype: bool
     """
     if headers.get("Authorization") is not None:
-        access_token_header = headers.get("Authorization")
-
-        if access_token_header:
-            access_token = access_token_header.split(" ")[-1]
+        access_token = headers["Authorization"].split(" ")[-1]
 
     elif session.get("access_token"):
         access_token = session.get("access_token")

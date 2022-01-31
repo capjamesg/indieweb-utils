@@ -6,6 +6,15 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
+from ..utils.urls import _is_http_url
+
+
+# This regex identifies permashortlink citations in the form of (example.com slug)
+# Permashortlink citations may be used as a link to a post that does not contain a hyperlink
+# Checking for a permashortlink citation is a step in the Original Post Discovery algorithm
+# More on permashortlink citations: https://indieweb.org/permashortcitation
+PERMASHORTLINK_CITATION_BRACKET_MATCHING = r"\((.*?)\)"
+
 
 class PostDiscoveryError(Exception):
     pass
@@ -99,8 +108,10 @@ def discover_original_post(posse_permalink: str) -> str:
         # if permashortlink citation
         # format = (url.com id)
 
-        if re.search(r"\((.*?)\)", last_text.text):
-            permashortlink = re.search(r"\((.*?)\)", last_text.text)
+        permashortlink_citation = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
+
+        if permashortlink_citation is not None:
+            permashortlink = re.search(PERMASHORTLINK_CITATION_BRACKET_MATCHING, last_text.text)
 
         if permashortlink is not None:
             permashortlink_value = "http://" + permashortlink.group(0) + "/" + permashortlink.group(1)
@@ -110,7 +121,7 @@ def discover_original_post(posse_permalink: str) -> str:
             # check for url at end
             split_text = last_text.text.split(" ")
 
-            if split_text[-1].startswith("http://") or split_text[-1].startswith("https://"):
+            if _is_http_url(split_text[-1]):
                 candidate_url = split_text[-1]
 
     if candidate_url:

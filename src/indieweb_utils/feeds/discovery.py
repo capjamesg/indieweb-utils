@@ -5,7 +5,7 @@ from urllib import parse as url_parse
 import requests
 from bs4 import BeautifulSoup
 
-from ..utils.urls import canonicalize_url
+from ..utils.urls import canonicalize_url, _is_http_url
 
 
 @dataclasses.dataclass
@@ -23,7 +23,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     """
     user_mime_types = user_mime_types or []
 
-    if not url.startswith("http://") and not url.startswith("https://"):
+    if not _is_http_url(url):
         url = "https://" + url
     elif url.startswith("//"):
         url = "https:" + url

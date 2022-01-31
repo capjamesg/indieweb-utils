@@ -6,6 +6,8 @@ from urllib import parse as url_parse
 import requests
 from bs4 import BeautifulSoup
 
+from ..utils.urls import _is_http_url
+
 _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 
 
@@ -123,10 +125,3 @@ def _find_links_html(*, body: str, target_headers: List[str]) -> Dict[str, str]:
         if _is_http_url(href) and rel in target_headers:
             found[rel] = href
     return found
-
-
-def _is_http_url(url: str) -> bool:
-    """
-    Determine if URL is http or not
-    """
-    return url_parse.urlsplit(url).scheme in ["http", "https"]

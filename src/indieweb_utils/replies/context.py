@@ -6,7 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
-from ..utils.urls import canonicalize_url
+from ..utils.urls import canonicalize_url, _is_http_url
 from ..webmentions.discovery import discover_webmention_endpoint
 
 
@@ -99,7 +99,7 @@ def _generate_h_entry_reply_context(
 
         if favicon and not author_image:
             photo_url = favicon["href"]
-            if not photo_url.startswith("https://") or not photo_url.startswith("http://"):
+            if not _is_http_url(photo_url):
                 author_image = "https://" + domain + "/" + photo_url
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
@@ -112,7 +112,7 @@ def _generate_h_entry_reply_context(
     if h_entry["properties"].get("name"):
         p_name = h_entry["properties"]["name"][0]
 
-    if author_url is not None and (not author_url.startswith("https://") and not author_url.startswith("http://")):
+    if author_url is not None and not _is_http_url(author_url):
         author_url = "https://" + author_url
 
     if not author_name and author_url:
@@ -255,7 +255,7 @@ def _generate_reply_context_from_main_page(
 
     if favicon:
         photo_url = favicon["href"]
-        if not photo_url.startswith("https://") and not photo_url.startswith("http://"):
+        if not _is_http_url(photo_url):
             photo_url = "https://" + domain + photo_url
 
         try:
@@ -268,7 +268,7 @@ def _generate_reply_context_from_main_page(
     else:
         photo_url = ""
 
-    if not domain.startswith("https://") and not domain.startswith("http://"):
+    if not _is_http_url(domain):
         author_url = "https://" + domain
 
     return ReplyContext(

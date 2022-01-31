@@ -3,6 +3,8 @@ from urllib.parse import urlparse as parse_url
 
 from bs4 import BeautifulSoup
 
+from ..utils.urls import _is_http_url
+
 
 @dataclass
 class ApplicationInfo:
@@ -62,7 +64,7 @@ def get_h_app_item(
                 logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + logo[0].get("src")
             elif logo[0].get("src").startswith("//"):
                 logo_to_validate = redirect_uri_scheme + logo[0].get("src")
-            elif logo[0].get("src").startswith("http://") or logo[0].get("src").startswith("https://"):
+            elif _is_http_url(logo[0].get("src")):
                 logo_to_validate = logo[0].get("src")
             else:
                 logo_to_validate = redirect_uri_scheme + redirect_uri_domain.strip("/") + "/" + logo[0].get("src")

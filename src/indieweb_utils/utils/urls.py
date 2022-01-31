@@ -17,7 +17,7 @@ def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = 
     :rtype: str
     """
 
-    if url.startswith("http://") or url.startswith("https://"):
+    if _is_http_url(url):
         domain = url_parse.urlsplit(url).netloc
 
         # remove port from domain
@@ -71,3 +71,9 @@ def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = 
     final_url = protocol + "://" + domain + "/" + url_after_replacing_dots.lstrip("/")
 
     return final_url
+
+def _is_http_url(url: str) -> bool:
+    """
+    Determine if URL is http or not
+    """
+    return url_parse.urlsplit(url).scheme in ["http", "https"]
