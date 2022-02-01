@@ -82,28 +82,19 @@ def validate_authorization_response(
 
         import indieweb_utils
 
-        grant_type = "authorization_code"
-        code = "12345"
-        client_id = "https://example.com"
-        redirect_uri = "https://example.com/callback"
-        code_challenge = "12345"
-        code_challenge_method = "S256"
-        allowed_methods = ["S256"]
-
         # validate authorization response
         # if response is invalid, an exception will be raised
         try:
             indieweb_utils.validate_authorization_response(
-                grant_type,
-                code,
-                client_id,
-                redirect_uri,
-                code_challenge,
-                code_challenge_method,
-                allowed_methods
+                grant_type="authorization_code",
+                code="12345",
+                client_id="https://example.com",
+                redirect_uri="https://example.com/callback",
+                code_challenge="12345",
+                code_challenge_method="S256",
+                allowed_methods=["S256"]
             )
-        except Exception as e:
-            # The code above will raise an exception because the code challenge is too short.
+        except indieweb_utils.TokenValidationError as e:
             print(e)
     """
 
@@ -155,18 +146,17 @@ def _verify_decoded_code(
         decoded_redirect_uri = "https://example.com/callback"
         decoded_expires = 3600
 
-        code_is_valid = indieweb_utils.indieauth.server._verify_decoded_code(
-            client_id,
-            redirect_uri,
-            decoded_client_id,
-            decoded_redirect_uri,
-            decoded_expires
-        )
-
         try:
-            print(code_is_valid)
-        except Exception as e:
-            # The code above will raise an exception because the auth code has expired.
+            code_is_valid = indieweb_utils.indieauth.server._verify_decoded_code(
+                client_id,
+                redirect_uri,
+                decoded_client_id,
+                decoded_redirect_uri,
+                decoded_expires
+            )
+        except indieweb_utils.AuthorizationCodeExpiredError:
+            print(e)
+        except indieweb_utils.TokenValidationError as e:
             print(e)
     """
 
@@ -227,32 +217,23 @@ def generate_auth_token(
         import random
         import string
 
-        me = "https://test.example.com/user"
-        client_id = "https://example.com"
-        redirect_uri = "https://example.com/callback"
-        response_type = "code"
-        state = "".join(random.choice(string.ascii_letters) for _ in range(32))
-        code_challenge_method = "S256"
-        final_scope = "read write"
-        secret_key = "secret"
-
         token = indieweb_utils.indieauth.server.generate_auth_token(
-            me,
-            client_id,
-            redirect_uri,
-            response_type,
-            state,
-            code_challenge_method,
-            final_scope,
-            secret_key
+            me="https://test.example.com/user",
+            client_id="https://example.com",
+            redirect_uri="https://example.com/callback",
+            response_type="code",
+            state="".join(random.choice(string.ascii_letters) for _ in range(32)),
+            code_challenge_method="S256",
+            final_scope="read write",
+            secret_key="secret"
         )
 
         try:
             auth_code = token.code
             print(auth_code)
-        except Exception as e:
-            # If an invalid request is made, an exception will be raised.
+        except indieweb_utils.AuthenticationError as e:
             print(e)
+        
     """
 
     if not all([client_id, redirect_uri, response_type, state]):
