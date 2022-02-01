@@ -233,7 +233,7 @@ def generate_auth_token(
             print(auth_code)
         except indieweb_utils.AuthenticationError as e:
             print(e)
-        
+
     """
 
     if not all([client_id, redirect_uri, response_type, state]):

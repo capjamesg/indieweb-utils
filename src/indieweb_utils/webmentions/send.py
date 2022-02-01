@@ -66,7 +66,7 @@ def send_webmention(source: str, target: str, me: str = ""):
             data={"source": source, "target": target},
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
-    except:
+    except requests.exceptions.RequestException:
         return SendWebmentionResponse(
             title="Error: Could not connect to the receiver's endpoint.",
             description="Error: Could not connect to the receiver's endpoint.",
