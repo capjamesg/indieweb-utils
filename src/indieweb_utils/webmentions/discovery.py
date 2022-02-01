@@ -115,7 +115,10 @@ def _discover_endpoints(url: str, headers_to_find: List[str]):
     """
     response: Dict[str, str] = {}
 
-    endpoint_request = requests.get(url)
+    try:
+        endpoint_request = requests.get(url, timeout=5)
+    except requests.exceptions.RequestException:
+        raise Exception("Could not connect to the specified URL.")
 
     link_headers = _find_links_in_headers(headers=endpoint_request.headers, target_headers=headers_to_find)
 

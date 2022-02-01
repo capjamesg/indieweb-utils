@@ -190,9 +190,12 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
     base_url = f"https://api.twitter.com/2/users/{r.json()['data'].get('author_id')}"
 
-    get_author = requests.get(
-        f"{base_url}?user.fields=url,name,profile_image_url,username", headers=headers, timeout=10, verify=False
-    )
+    try:
+        get_author = requests.get(
+            f"{base_url}?user.fields=url,name,profile_image_url,username", headers=headers, timeout=10, verify=False
+        )
+    except:
+        raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if get_author and get_author.status_code == 200:
         photo_url = get_author.json()["data"].get("profile_image_url")
