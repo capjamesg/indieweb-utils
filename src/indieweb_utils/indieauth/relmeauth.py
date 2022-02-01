@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from ..utils.urls import canonicalize_url
 
 
-def get_valid_relmeauth_links(url: str) -> List[str]:
+def get_valid_relmeauth_links(url: str, require_rel_me_link_back: bool = True) -> List[str]:
     """
     Get the valid links on a page that point back to a rel=me URL per RelMeAuth.
 
@@ -17,8 +17,27 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
 
     :url: The url to parse.
     :type url: str
+    :require_rel_me_link_back: Whether to require a rel=me link back to the specified URL.
+        If this property is set to False, this function will return all sites that link back
+        to the specified URL, even if they do not have a rel=me attribute. If this property is
+        set to True (the default), this function will only return sites that have a rel=me link
+        pointing back to your URL.
+    :type require_rel_me_link_back: bool
     :return: The valid relmeauth links.
     :rtype: dict
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog"
+
+        valid_relmeauth_links = indieweb_utils.get_valid_relmeauth_links(url)
+
+        for link in valid_relmeauth_links:
+            print(link)
     """
     domain = parse_url(url).netloc
 
@@ -49,10 +68,10 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
             # check if link is a rel me link
             # if it is, add the link to the list of valid rel me links
 
-            if not item.get("rel"):
+            if not item.get("rel") and require_rel_me_link_back == False:
                 continue
 
-            if "me" not in item.get("rel"):
+            if "me" not in item.get("rel") and require_rel_me_link_back == False:
                 continue
 
             if item.get("href") == canonical_url:
