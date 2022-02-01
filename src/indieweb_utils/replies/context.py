@@ -98,6 +98,9 @@ def _process_post_contents(h_entry: dict, domain: str, author_image: str, summar
 
         favicon = soup.find("link", rel="icon")
 
+        if not favicon:
+            favicon = soup.find("link", rel="shortcut icon")
+
         new_photo_url = ""
 
         if favicon:
@@ -304,6 +307,9 @@ def _generate_reply_context_from_main_page(
     post_photo_url = _get_featured_image(soup)
 
     favicon = soup.find("link", rel="icon")
+
+    if not favicon:
+        favicon = soup.find("link", rel="shortcut icon")
 
     photo_url = ""
 
