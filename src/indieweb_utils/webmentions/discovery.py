@@ -137,6 +137,15 @@ def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, s
         rel = header.get("rel", "")
         if _is_http_url(url) and rel in target_headers:
             found[rel] = url
+    
+    # Add check for x-pingback header
+    if "x-pingback" in target_headers:
+        pingback_url = headers.get("x-pingback")
+
+        if _is_http_url(pingback_url):
+            # assign as "pingback" key in dictionary
+            found["pingback"] = pingback_url
+
     return found
 
 
