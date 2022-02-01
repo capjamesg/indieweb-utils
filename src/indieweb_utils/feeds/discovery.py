@@ -5,8 +5,8 @@ from urllib import parse as url_parse
 import requests
 from bs4 import BeautifulSoup
 
-from ..webmentions.discovery import _find_links_in_headers
 from ..utils.urls import _is_http_url, canonicalize_url
+from ..webmentions.discovery import _find_links_in_headers
 
 
 @dataclasses.dataclass
@@ -83,16 +83,13 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
 
     http_headers = _find_links_in_headers(headers=web_page_request.headers, target_headers=["alternate", "feed"])
 
-    for rel, url in http_headers.items():
+    for rel, item in http_headers.items():
         if rel == "feed" or rel == "alternate":
+            mime_type = item.get("mime_type")
+
             feed_title = http_headers.get(rel, "")
             feed_url = canonicalize_url(url, page_domain)
 
-            try:
-                feed_mime_type = requests.get(feed_url, timeout=10).headers["content-type"]
-            except requests.exceptions.RequestException:
-                feed_mime_type = ""
-
-            feeds.append(FeedUrl(url=feed_url, mime_type=feed_mime_type, title=feed_title))
+            feeds.append(FeedUrl(url=feed_url, mime_type=mime_type, title=feed_title))
 
     return feeds
