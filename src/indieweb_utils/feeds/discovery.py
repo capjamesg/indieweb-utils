@@ -2,6 +2,7 @@ import dataclasses
 from typing import List, Optional
 from urllib import parse as url_parse
 
+import mf2py
 import requests
 from bs4 import BeautifulSoup
 
@@ -67,3 +68,42 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
         feeds.append(FeedUrl(url=url, mime_type="text/html", title=page_title.text))
 
     return feeds
+
+
+def discover_h_feed(url: str) -> dict:
+    """
+    Find the main h-feed that represents a web page as per the h-feed Discovery algorithm.
+
+    refs: https://microformats.org/wiki/h-feed#Discovery
+
+    :param url: The URL of the page whose associated feeds you want to retrieve.
+    :type url: str
+    :return: The h-feed data.
+    :rtype: dict
+    """
+
+    parsed_main_page_mf2 = mf2py.parse(url=url)
+
+    all_page_feeds = discover_web_page_feeds(url)
+
+    # check for h-feed
+    if all_page_feeds.get("text/mf2+html"):
+        # url has already been canonicalized by discover_web_page_feeds
+        # thus, no canonicalization is needed in this function
+
+        feed = all_page_feeds.get("text/mf2+html").url
+
+        parsed_feed = mf2py.parse(url=feed)
+
+        h_feed = [item for item in parsed_feed["items"] if item.get("type", [])[0] == "h-feed"]
+
+        if h_feed:
+            return h_feed[0]
+
+    h_feed = [item for item in parsed_main_page_mf2["items"] if item.get("type", [])[0] == "h-feed"]
+
+    if h_feed:
+        return h_feed[0]
+
+    
+
