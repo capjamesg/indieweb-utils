@@ -217,23 +217,19 @@ def generate_auth_token(
         import random
         import string
 
-        token = indieweb_utils.indieauth.server.generate_auth_token(
-            me="https://test.example.com/user",
-            client_id="https://example.com",
-            redirect_uri="https://example.com/callback",
-            response_type="code",
-            state="".join(random.choice(string.ascii_letters) for _ in range(32)),
-            code_challenge_method="S256",
-            final_scope="read write",
-            secret_key="secret"
-        )
-
         try:
-            auth_code = token.code
-            print(auth_code)
+            token = indieweb_utils.indieauth.server.generate_auth_token(
+                me="https://test.example.com/user",
+                client_id="https://example.com",
+                redirect_uri="https://example.com/callback",
+                response_type="code",
+                state="".join(random.choice(string.ascii_letters) for _ in range(32)),
+                code_challenge_method="S256",
+                final_scope="read write",
+                secret_key="secret"
+            )
         except indieweb_utils.AuthenticationError as e:
             print(e)
-
     """
 
     if not all([client_id, redirect_uri, response_type, state]):
@@ -299,6 +295,33 @@ def redeem_code(
     :type kwargs: dict
     :returns: A token endpoint response object.
     :rtype: TokenEndpointResponse
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        try:
+            token_response = indieweb_utils.indieauth.server.redeem_code(
+                grant_type="authorization_code",
+                code="code",
+                client_id="https://example.com",
+                redirect_uri="https://example.com/callback",
+                code_verifier="code_verifier",
+                secret_key="secret"
+            )
+
+            print(token_response.access_token)
+            print(token_response.token_type)
+            print(token_response.scope)
+            print(token_response.me)
+        except indieweb_utils.AuthorizationCodeExpiredError:
+            print(e)
+        except indieweb_utils.TokenValidationError as e:
+            print(e)
+        except indieweb_utils.AuthenticationError as e:
+            print(e)
     """
 
     if not code or not client_id or not redirect_uri or not grant_type:
@@ -363,6 +386,27 @@ def validate_access_token(
     :type algorithms: list
     :returns: An object with the me, client_id, and scope values from the access token.
     :rtype: DecodedAuthToken
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        try:
+            decoded_token = indieweb_utils.indieauth.server.validate_access_token(
+                authorization_code="code",
+                secret_key="secret"
+            )
+
+            print(decoded_token.me)
+            print(decoded_token.client_id)
+            print(decoded_token.scope)
+            print(decoded_token.decoded_authorization_code)
+        except indieweb_utils.AuthenticationError as e:
+            print(e)
+        except indieweb_utils.AuthorizationCodeExpiredError as e:
+            print(e)
     """
 
     try:
