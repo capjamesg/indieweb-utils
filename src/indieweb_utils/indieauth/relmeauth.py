@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 from urllib.parse import urlparse as parse_url
 
 import mf2py
@@ -28,7 +28,7 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
 
     rel_me_links = mf2_data["rels"].get("me", [])
 
-    valid_rel_me_links = []
+    valid_rel_me_links: Set[str] = set()
 
     for link in rel_me_links:
         try:
@@ -58,9 +58,6 @@ def get_valid_relmeauth_links(url: str) -> List[str]:
             if item.get("href") == canonical_url:
                 canonical_link = canonicalize_url(link, link_domain)
 
-                valid_rel_me_links.append(canonical_link)
+                valid_rel_me_links.add(canonical_link)
 
-    # remove any duplicate links
-    valid_rel_me_links = list(set(valid_rel_me_links))
-
-    return valid_rel_me_links
+    return list(valid_rel_me_links)

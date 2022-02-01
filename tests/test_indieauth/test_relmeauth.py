@@ -14,6 +14,4 @@ class TestRelMeAuthLinkDiscovery:
 
         links = target(url)
 
-        assert links == [
-            "https://indieweb.social/@capjamesg"
-        ]
+        assert links == ["https://indieweb.social/@capjamesg"]
