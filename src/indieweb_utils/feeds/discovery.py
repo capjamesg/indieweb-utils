@@ -86,7 +86,6 @@ def discover_h_feed(url: str) -> dict:
 
     all_page_feeds = discover_web_page_feeds(url)
 
-    # check for h-feed
     if all_page_feeds.get("text/mf2+html"):
         # url has already been canonicalized by discover_web_page_feeds
         # thus, no canonicalization is needed in this function
