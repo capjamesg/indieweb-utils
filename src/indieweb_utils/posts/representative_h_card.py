@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import mf2py
 
 
@@ -5,7 +7,7 @@ class RepresentativeHCardParsingError(Exception):
     pass
 
 
-def get_representative_h_card(url: str) -> dict:
+def get_representative_h_card(url: str) -> Dict[str, Any]:
     """
     Get the representative h-card on a page per the Representative h-card Parsing algorithm.
 
