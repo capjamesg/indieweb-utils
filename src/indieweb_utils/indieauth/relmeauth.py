@@ -68,10 +68,10 @@ def get_valid_relmeauth_links(url: str, require_rel_me_link_back: bool = True) -
             # check if link is a rel me link
             # if it is, add the link to the list of valid rel me links
 
-            if not item.get("rel") and require_rel_me_link_back == False:
+            if not item.get("rel") and require_rel_me_link_back is True:
                 continue
 
-            if "me" not in item.get("rel") and require_rel_me_link_back == False:
+            if "me" not in item.get("rel", "") and require_rel_me_link_back is True:
                 continue
 
             if item.get("href") == canonical_url:
