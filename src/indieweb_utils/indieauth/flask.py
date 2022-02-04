@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from os import access
 from typing import List
 
 import requests
@@ -120,7 +121,7 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
         return False
 
     try:
-        check_token = requests.get(token_endpoint, headers={"Authorization": "Bearer " + access_token}, timeout=5)
+        check_token = requests.get(token_endpoint, headers={"Authorization": f"Bearer {access_token}"}, timeout=5)
     except requests.exceptions.Timeout:
         raise AuthenticationError("The specified token endpoint timed out.")
     except requests.exceptions.RequestException:

@@ -41,8 +41,9 @@ def get_h_app_item(web_page: str, client_id: str) -> ApplicationInfo:
         print(h_app_item.name) # Quill
     """
 
-    client_id_domain = parse_url(client_id).netloc
-    client_id_scheme = parse_url(client_id).scheme
+    parsed_client_id = parse_url(client_id)
+    client_id_domain = parsed_client_id.netloc
+    client_id_scheme = parsed_client_id.scheme
 
     app_name = ""
     app_url = ""
