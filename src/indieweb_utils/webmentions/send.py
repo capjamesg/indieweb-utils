@@ -60,11 +60,19 @@ def send_webmention(source: str, target: str, me: str = ""):
         )
 
     # make post request to endpoint with source and target as values
-    r = requests.post(
-        response.endpoint,
-        data={"source": source, "target": target},
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
-    )
+    try:
+        r = requests.post(
+            response.endpoint,
+            data={"source": source, "target": target},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+    except requests.exceptions.RequestException:
+        return SendWebmentionResponse(
+            title="Error: Could not connect to the receiver's endpoint.",
+            description="Error: Could not connect to the receiver's endpoint.",
+            url=target,
+            success=False,
+        )
 
     message = str(r.json()["message"])
 

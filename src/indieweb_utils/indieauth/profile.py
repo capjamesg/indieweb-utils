@@ -20,6 +20,29 @@ class Profile:
 
 
 def get_profile(me: str) -> Profile:
+    """
+        Get a profile from a url.
+
+        :param me: The url to get the profile from.
+        :type me: str
+        :return: The profile.
+        :rtype: Profile
+
+        Example:
+
+        .. code-block:: python
+
+            import indieweb_utils
+
+            me = "https://jamesg.blog"
+
+            profile = indieweb_utils.get_profile(me)
+
+    assert profile.email == "james@jamesg.blog"
+    assert profile.name == "James"
+    assert profile.photo == "https://jamesg.blog/me.jpg"
+    assert profile.url == "https://jamesg.blog
+    """
 
     try:
         me_profile = requests.get(me, timeout=10)

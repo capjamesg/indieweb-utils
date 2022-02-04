@@ -185,6 +185,20 @@ def discover_author(url: str, page_contents: str = "") -> dict:
     :return: A h-card of the post.
     :rtype: dict
 
+    .. code-block:: python
+
+        import indieweb_utils
+        import mf2py
+
+        url = "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
+
+        parsed_mf2 = mf2py.parse(url=url)
+
+        post_author = indieweb_utils.get_post_type(
+            h_entry
+        )
+
+        print(post_author) # A h-card object representing the post author.
     """
     if page_contents != "":
         full_page = mf2py.parse(doc=page_contents)
@@ -253,6 +267,23 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
     :type custom_properties: list[tuple[str, str]]
     :return: The type of the h-entry.
     :rtype: str
+
+    .. code-block:: python
+
+        import indieweb_utils
+        import mf2py
+
+        url = "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
+
+        parsed_mf2 = mf2py.parse(url=url)
+
+        h_entry = [e for e in parsed_mf2["items"] if e["type"] == ["h-entry"]][0]
+
+        post_type = indieweb_utils.get_post_type(
+            h_entry
+        )
+
+        print(post_type) # article
     """
     post = h_entry.get("properties")
 
