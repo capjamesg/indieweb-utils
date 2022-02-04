@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from os import access
 from typing import List
 
 import requests
