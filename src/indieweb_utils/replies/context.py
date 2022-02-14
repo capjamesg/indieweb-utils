@@ -60,6 +60,8 @@ def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, 
     parsed_url = url_parse.urlsplit(url)
 
     author_url = url
+    author_image = ""
+    author_name = ""
 
     if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get("type") == [
         "h-card"
@@ -75,11 +77,10 @@ def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, 
         try:
             author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
         except requests.exceptions.RequestException:
-            author = {}
-
-        h_card = [item for item in author["items"] if item.get("type", []) == ["h-card"]][0]
-
-        author_url, author_name, author_image = _get_author_properties(author_url, h_card)
+            pass
+        else:
+            h_card = [item for item in author["items"] if item.get("type", []) == ["h-card"]][0]
+            author_url, author_name, author_image = _get_author_properties(author_url, h_card)
 
     if author_url is not None and author_url.startswith("/"):
         author_url = parsed_url.scheme + "://" + domain + author_url
