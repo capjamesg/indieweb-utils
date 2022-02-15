@@ -86,11 +86,10 @@ def discover_h_feed(url: str) -> dict:
 
     all_page_feeds = discover_web_page_feeds(url)
 
-    if all_page_feeds.get("text/mf2+html"):
-        # url has already been canonicalized by discover_web_page_feeds
-        # thus, no canonicalization is needed in this function
+    get_mf2_feed = [feed for feed in all_page_feeds if feed.mime_type == "text/mf2+html"]
 
-        feed = all_page_feeds.get("text/mf2+html").url
+    if len(get_mf2_feed) > 0:
+        feed = get_mf2_feed[0].url
 
         parsed_feed = mf2py.parse(url=feed)
 
@@ -103,3 +102,8 @@ def discover_h_feed(url: str) -> dict:
 
     if h_feed:
         return h_feed[0]
+
+    return {}
+
+
+
