@@ -26,7 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add X-Pingback support to feed parsing.
 - Use urllib to retrieve domain names, protocols, and paths throughout the library.
 - New function to send a webmention.
-- New function that implements the h-feed discovery algorithm.
 
 ### Changed
 
