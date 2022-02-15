@@ -11,8 +11,8 @@ author = "capjamesg"
 
 sys.path.insert(0, os.path.abspath("../../"))
 
-release = "0.1.2"
-version = "0.1.2"
+release = "0.2.0"
+version = "0.2.0"
 
 # -- General configuration
 
