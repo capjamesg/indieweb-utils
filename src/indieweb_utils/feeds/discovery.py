@@ -103,6 +103,3 @@ def discover_h_feed(url: str) -> dict:
 
     if h_feed:
         return h_feed[0]
-
-    
-
