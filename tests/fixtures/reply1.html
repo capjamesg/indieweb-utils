@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    
+      <title>Integrated IndieWeb Services | James' Coffee Blog</title>
+    
+
+    <link rel="stylesheet" href="/assets/styles/styles.css" />
+
+    <!--- Links to other social profiles I have online -->
+    <link href="mailto:jamesg@jamesg.blog" rel="me">
+    <link href="https://jamesg.coffee" rel="me">
+    <link href="https://twitter.com/capjamesg" rel="me">
+    <link href="https://micro.blog/capjamesg" rel="me">
+    <link href="https://indieweb.social/@capjamesg" rel="me">
+
+    <link rel="apple-touch-icon" sizes="256x256" href="/assets/coffeeshop.jpg">
+
+    <!--- Make my website a progressive web application
+          You can save my site to your home screen and it will show up like an application. -->
+    <link rel="manifest" href="/assets/manifest.json">
+
+    <!--- Tell browsers that you can search my site using IndieWeb Search -->
+    <link rel="search" type="application/opensearchdescription+xml" href="/assets/opensearch.xml" title="James' Coffee Blog">
+
+    <!--- Meta data for social platforms and search engines -->
+    
+      <meta name="description" content="A quick note: this post does contain quite a bit of IndieWeb jargon and may be confusing if you are only just getting started. Don't let my jargon deter you from the IndieWeb. This is an architectural discussion so I am asssuming readers have a good understanding of the standards incubated in the community." />
+      <meta name="twitter:description" content="A quick note: this post does contain quite a bit of IndieWeb jargon and may be confusing if you are only just getting started. Don't let my jargon deter you from the IndieWeb. This is an architectural discussion so I am asssuming readers have a good understanding of the standards incubated in the community." />
+      <meta name="og:description" content="A quick note: this post does contain quite a bit of IndieWeb jargon and may be confusing if you are only just getting started. Don't let my jargon deter you from the IndieWeb. This is an architectural discussion so I am asssuming readers have a good understanding of the standards incubated in the community." />
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Integrated IndieWeb Services" />
+    <meta name="twitter:url" content="https://jamesg.blog/2022/01/28/integrated-indieweb-services/" />
+    
+    
+      <meta property="og:image" content="/">
+      <meta name="twitter:image" content="/">
+    
+
+    <link rel="icon" href="/favicon.ico" />
+
+    <link rel="apple-touch-icon-precomposed" href="/assets/coffeeshop.jpg" />
+
+    
+      <meta property="og_type" content="article" />
+    
+
+    <!--- Feeds so you can follow me and my website using a feed reader -->
+    <link rel="alternate" type="application/atom+xml" title="RSS" href="/feeds/posts.xml"/>
+    <link rel="alternate" type="application/jf2feed+json" title="RSS" href="/feeds/posts.jf2"/>
+    <link rel="alternate" type="application/json" title="RSS" href="/feeds/posts.json"/>
+
+    
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+     <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Integrated IndieWeb Services | James' Coffee Blog">
+    <meta name="twitter:site" content="@capjamesg">
+    <meta name="twitter:creator" content="@capjamesg">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Integrated IndieWeb Services | James' Coffee Blog" />
+    <meta property="og:url" content="https://jamesg.blog/2022/01/28/integrated-indieweb-services/" />
+    <meta property="og:site_name" content="James' Coffee Blog" />
+
+    <!--- Links to services that I use with my site -->
+
+    <link rel="webmention" href="https://webmention.jamesg.blog/endpoint" />
+    <link rel="pingback" href="https://webmention.io/jamesg.blog/xmlrpc" />
+
+    <link rel="subscribe" href="https://microsub.jamesg.blog/discover-feed">
+
+    
+
+    <link rel="author" href="/" />
+
+    <style id="darkmode" media="none">
+      html, .citation_box, details, summary, .social li, .stub {
+        background-color: #1F2937;
+      }
+      .light_mode {
+        display: none;
+      }
+      .dark_mode {
+        display: block;
+      }
+      a {
+        color: lightgreen;
+        border-bottom: 2px dotted lightgreen;
+      }
+      a:hover {
+        color: #ccc;
+      }
+      h1, h2, h3 {
+        color: orange;
+      }
+      h1 a, h2 a, h3 a {
+        color: orange;
+      }
+      h1 a:hover, h2 a:hover, h3 a:hover {
+        border-bottom: 2px dotted orange;
+      }
+      a:hover {
+        color: #ccc;
+      }
+      h1, h2, h3 {
+        color: orange;
+      }
+      .social_interaction, .webmention {
+        background: none;
+      }
+      p, li, dt, dd, .indieweb_footer, input, label {
+        color: white;
+      }
+      input, textarea, code, pre, main {
+        background-color: #0c2548;
+        color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!--- Skip link so screen reader and keyboard users don't have to go through the navigation bar every time they load a page -->
+      <a href="#main" class="accessibility_label">Skip to main content</a>
+      <!--- Main site navigation bar -->
+    	<nav id="top_navigation">
+	<p><a href="https://jamesg.blog" rel="home">James' Coffee Blog <span aria-hidden="true">☕</span></a></p>
+	<ul>
+		<li><a href="/coffee-posts/">Coffee Posts</a></li>
+		<li><a href="/indieweb/">IndieWeb Posts</a></li>
+		<li><a href="/interviews/">Interviews</a></li>
+		<li><a href="/notes/">Notes</a></li>
+		<li><a href="https://indieweb-search.jamesg.blog/?q=site:%22jamesg.blog%22">Search</a></li>
+	</ul>
+</nav>
+      <!--- Support for light and dark mode and changing between modes -->
+      <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.getElementById('darkmode').media = "all";
+        }
+
+        if (localStorage.getItem('darkmode') == "true") {
+          document.getElementById('darkmode').media = "all";
+        } else if (localStorage.getItem('darkmode') == "false") {
+          document.getElementById('darkmode').media = "none";
+        }
+
+        var navigation = document.getElementById("top_navigation");
+        var ul = navigation.getElementsByTagName("ul")[0];
+        
+        var li = document.createElement("li");
+        var dark_style = document.getElementById("darkmode");
+  
+        if (dark_style.media === "all") {
+          li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+        } else {
+          li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+        }
+
+        ul.appendChild(li);
+  
+        function toggleTheme() {
+          if (dark_style.media === "all") {
+            dark_style.media = "none";
+            li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+            localStorage.setItem('darkmode', 'false');
+          } else {
+            dark_style.media = "all";
+            li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+            localStorage.setItem('darkmode', 'true');
+          }
+        }
+      </script>
+      <!--- Main page content -->
+      <div id="main">
+    	 <article class="h-entry">
+	<header>
+		<h1 class="p-name">Integrated IndieWeb Services</h1>
+		<p><em>Written by <a rel="author" class="p-author h-card" href="https://jamesg.blog">James</a>. Published on
+			<a href='/2022/01/1'><time class="dt-published" datetime="2022-01-28T00:00:00">January 28, 2022</time></a>
+			 under the <a href="/category/indieweb" class="p-category">IndieWeb</a> category.</em></p>
+		
+		
+			<img src="/assets/latte_1.jpeg" alt="A latte on a wooden table" class="u-featured">
+		
+	</header>
+	<section class="e-content social_interaction" style="border-radius: 10px; padding: 30px; border: 1px solid lightgrey;">
+		<p><em>A quick note: this post does contain quite a bit of IndieWeb jargon and may be confusing if you are only just getting started. Don't let my jargon deter you from the IndieWeb. This is an architectural discussion so I am asssuming readers have a good understanding of the standards incubated in the community.</em></p>
+<p>A few weeks ago (I like to start my blog posts with a sense of time!), I started to think about whether I should merge my IndieWeb applications into one big codebase. Specifically, I wanted to merge Webmentions (social comments and reactions), Micropub (publishing on the web), IndieAuth (authentication), and maybe, although I cannot fully remember this, Microsub (social reading). The goal would be to give me one service to authenticate with instead of four.</p>
+<p>All of the services above have complementary functions. IndieAuth is used to authenticate to the other three aforementioned services. Webmentions enhance my Microsub feed reader in terms of providing the mechanism through which reactions are sent, received, and verified. Webmentions are sent when I publish new content on my site using Micropub. There are plenty of these synergies.</p>
+<p>I did try to consolidate the above services into one codebase but I ran into a few problems. First, the codebase was going to be big. I'm not saying that monorepositories are a bad decision. I don't know enough about them. But at the time I knew there was going to be a lot of work ahead to merge the services. I took a step back and decided to keep them all separate.</p>
+<p>The advantage of integrating the aforementioned services -- Webmentions, IndieAuth, Microsub, and maybe even Micropub clients, although that is a separate discussion -- is to create a cohesive user experience. At the moment, I have to sign in with four services to do many IndieWeb things. Taking a leaf from the ease of use we associate with social media, I ask: is this an experience other people would want? If the IndieWeb is to become more mainstream, would the number of independent services cause issues with comprehension and an assumed commitment associated with setting up at least two different sites.</p>
+<p>I like the idea of a "one stop" IndieWeb service. We have a few examples of this already, implementing standards to varying degrees. micro.blog provides an all-in-one microblogging solution. They support many IndieWeb standards. Known, a hosted and open-source blog solution, also implements many IndieWeb features. But to the extent I am aware, both of these don't implement social reading outside their own networks (please prove me wrong if this is the case).</p>
+<p>There are many drawbacks to having a bundled IndieWeb service, too. First, the complexity associated with maintaining a codebase that implements various standards. Second, the IndieWeb is built upon a strong foundation of supporting building blocks. Thus, I would expect that a consolidated service provided a "build your own" sort of experience where you could choose which blocks provided by the service you could use. Want to change your webmention provider? You should be able to do that. Want to try a new reader interface? You should be able to do that too without having to completely migrate services.</p>
+<p>I realise, as I write, that what I am advocating for sounds like a centralised service but that's not the case. Such a solution could be self-hosted and/or open-source, allowing for multiple interoperable implementations. I haven't thought through the exact ramifications of consolidating services but I'd like to at least have a discussion about it.</p>
+<p>As a developer passionate about the web, I feel fine setting up (or even building!) a few services to let me take control over my data. But I want to ask a question that I think is really important: how can we cater to those who don't have the same level of interest and intent? How can we create interoperable, open, all-in-one solutions whose components can easily be interchanged, thus preventing vendor lock-in. I don't have an answer but this is a conversation I think needs to happen and continue as a narrative while we build services for the open web.</p>
+<p><a href="https://news.indieweb.org/en" class="u-syndication">Also posted on IndieNews</a>.</p>
+	</section>
+	<!--- posts_in_series -->
+	<script>
+	function add_element(type, title, node, count) {
+		if (count > 0) {
+			var h3 = document.createElement(type);
+			h3.innerHTML = title;
+			node.append(h3);
+		}
+	}
+	
+	var xhr = new XMLHttpRequest();
+
+	xhr.open('GET', 'https://webmention.jamesg.blog/received?target=https://jamesg.blog/2022/01/28/integrated-indieweb-services');
+
+	xhr.send();
+
+	xhr.onload = function() {
+		if (xhr.status === 200) {
+			var data = JSON.parse(xhr.responseText);
+			var content = document.getElementsByClassName('e-content')[1];
+			var likes_node = document.getElementById("likes");
+			var comment_node = document.getElementById("comments");
+			var repost_node = document.getElementById("reposts");
+			var reacji_node = document.getElementById("reacjis");
+			var like_count = data["count_by_property"]["like"] || 0;
+			var comment_count = data["count_by_property"]["reply"] || 0;
+			var repost_count = data["count_by_property"]["repost"] || 0;
+			var reacji_count = data["count_by_property"]["reacji"] || 0;
+			var bookmark_count = data["count_by_property"]["bookmark"] || 0;
+			
+			add_element("h3", "Comments", comment_node, comment_count);
+			add_element("h3", "Likes", likes_node, like_count);
+			add_element("h3", "Reposts", repost_node, repost_count);
+			add_element("h3", "Reactions", reacji_node, reacji_count);
+
+			var comment_level_properties = ["reply", "repost", "bookmark", "unknown"];
+			
+			for (var i = 0; i < data["webmentions"].length; i++) {
+				if (comment_level_properties.includes(data["webmentions"][i]["property"])) {
+					var new_comment = document.createElement("div");
+					if (data["webmentions"][i]) {
+						var image = data["webmentions"][i]["author_photo"] ? `<img src="${data["webmentions"][i]["author_photo"]}" class="u-photo webmention-photo" height="50" width="50" style="width:auto !important;" alt="${data["webmentions"][i]['author_name'] ? data["webmentions"][i]['author_name'] + " profile image" : "Profile image for commenter"}">` : "";
+					} else {
+						var image = "";
+					}
+					if (data["webmentions"][i]['contents']) {
+						new_comment.innerHTML = `<div class="u-author h-card" style="flex: 0 10%;">
+						${image}
+							<br />
+							<a href="${data["webmentions"][i]['author_url'] ? data["webmentions"][i]['author_url'] : ""}" class="u-url p-name" rel="nofollow">${data["webmentions"][i]['author_name'] ? data["webmentions"][i]['author_name'] : ""}</a>
+						</div>
+						<div class="e-content webmention-content flex_right_home">
+							<p>${data["webmentions"][i]['contents'].split(" ").slice(0, 50).join(" ")}${data["webmentions"][i]['contents'].split(" ").slice(0, 50).join(" ").length > 50 ? `... <a href="${data["webmentions"][i]['source']}" rel="nofollow">Read more</a>` : ""}</p>
+						</div>`
+					}
+					if (data["webmentions"][i]['property'] == "repost-of") {
+						repost_node.appendChild(new_comment);
+					} else {
+						comment_node.appendChild(new_comment);
+					}
+				} else if (data["webmentions"][i]['property'] == "like" && data["webmentions"][i]["author_photo"]) {
+					var image = document.createElement("div");
+					image.innerHTML = data["webmentions"][i]["author_photo"] ? `<a href="${data["webmentions"][i]["author_url"]}" rel="nofollow"><img src="${data["webmentions"][i]["author_photo"]}" class="u-photo webmention-photo like-photo" height="50" width="50" alt="${data["webmentions"][i]['author_name'] ? data["webmentions"][i]['author_name'] + " profile image" : "Profile image for commenter"}"></a>` : "";
+					likes_node.appendChild(image);
+				} else if (data["webmentions"][i]['property'] == "reacji") {
+					var image = document.createElement("div");
+					image.innerHTML = data["webmentions"][i]["author_photo"] ? `<a href="${data["webmentions"][i]["author_url"]}" rel="nofollow"><img src="${data["webmentions"][i]["author_photo"]}" class="u-photo webmention-photo like-photo" height="50" width="50" alt="${data["webmentions"][i]['author_name'] ? data["webmentions"][i]['author_name'] + " profile image" : "Profile image for commenter"}"> ${data["webmentions"][i]["contents"]}</a>` : "";
+					reacji_node.appendChild(image);
+				}
+			}
+			var new_element = document.createElement('p');
+			new_element.innerText = `This post has received ${like_count} like${like_count != 1 ? "s" : ""}, ${repost_count} repost${repost_count != 1 ? "s" : ""}, and ${comment_count} comment${comment_count != 1 ? "s" : ""}.`;
+			var heading = document.getElementById("comment-heading");
+			heading.parentNode.insertBefore(new_element, heading.nextSibling);
+		}
+	}
+</script>
+<section class="webmention">
+    <h2 id="comment-heading">Comments and reactions</h2>
+    <div id="reacjis" style="clear: left;"></div>
+    <div id="likes" style="clear: left;"></div>
+    <div id="reposts" style="clear: left;"></div>
+    <div id="comments"></div>
+    <h3>Respond</h3>
+    <p>Respond to this post by sending a Webmention.</p>
+    <form method="POST" action="https://webmention.jamesg.blog/send/open">
+        <input type="url" name="source" id="source" placeholder="Webmention URL">
+        <input type="hidden" name="target" id="target" value="https://jamesg.blog/2022/01/28/integrated-indieweb-services/">
+        <input type="submit" value="Send Webmention" />
+    </form>
+</section>
+	<footer>
+		<p>Link to this article: <a class="u-url" href="https://jamesg.blog/2022/01/28/integrated-indieweb-services/">https://jamesg.blog/2022/01/28/integrated-indieweb-services/</a></p>
+		<p>Have a comment? Email me at <a href="mailto:readers@jamesg.blog?subject=Integrated IndieWeb Services">readers@jamesg.blog</a>.</p>
+		<div class="bottom-navigation">
+			
+			
+		</div>
+	</footer>
+</article>
+      </div>
+      <!--- Make it easy for everyone to navigate back to the top of the page -->
+      <p class="accessibility_label_bottom"><a href="#main">Go Back to the Top</a></p>
+      <!--- Links to other pages on my site -->
+      <footer>
+	<ul>
+		<li><a href="/projects/">Projects</a></li>
+		<li><a href="/mugs/">Mugs</a></li>
+		<li><a href="/ratio/">Ratio Calculator</a></li>
+		<li><a href="/recipes/">Recipes</a></li>
+		<li><a href="/guestbook/">Guestbook</a></li>
+		<li><a href="https://retro.jamesg.blog">Retro Site</a></li>
+		<li><a href="/follow/">Follow My Site</a></li>
+		<li><a href="/sitemap/">Sitemap</a></li>
+		<li><a href="/archive/">Web Log Archive</a></li>
+		<li><a href="/feeds/posts.xml">RSS</a></li>
+	</ul>
+	<div class="indieweb_footer">
+		<a href="https://indieweb.org/Webmention" class="button-link"><img src="/assets/webmention_button.png" alt="Webmention logo indicating that you can send a webmention to this blog" width="80" height="15" /></a>
+		<a href="https://indieweb.org" class="button-link"><img src="/assets/indieweb_button.png" alt="IndieWeb logo" width="80" height="15" /></a><br />
+		<a href="https://microformats.org" class="button-link"><img src="/assets/microformats_button.png" alt="Microformats logo" width="80" height="15" /></a><br />
+		<p>
+			<a href="https://xn--sr8hvo.ws/%F0%9F%98%85%F0%9F%8F%BD%E3%8A%97%EF%B8%8F/previous">←</a>
+			IndieWeb Webring  
+			<a href="https://xn--sr8hvo.ws/%F0%9F%98%85%F0%9F%8F%BD%E3%8A%97%EF%B8%8F/next">→</a>
+		</p>
+		<p>
+			<a href="https://static-site-webring.jamesg.blog/previous">Previous</a>
+			Static Site Webring
+			<a href="https://static-site-webring.jamesg.blog/next">Next</a>
+		</p>
+	</div>
+</footer>
+      <script>
+        if (navigator.serviceWorker && !navigator.serviceWorker.controller) {
+          navigator.serviceWorker.register('/assets/serviceworker.js');
+        }
+      </script>
+    </main>
+  <style></style><style></style></body>
+</html>
