@@ -9,23 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Use tox, black, isort, flake8, and mypy to control quality of code.
-- New function that verifies whether a webmention is valid.
 - Constants that document different scopes one may want to use in an IndieAuth server.
-- New function that retrieve a h-app object from a web page.
-- New function that validates an IndieAuth authorization response.
-- New function that verifies a decoded code in an IndieAuth request.
-- New function to generate an authentication token as part of an IndieAuth server.
-- New function to handle token redemption in an IndieAuth server.
 - Test cases for all main library functions.
 - Web page feed discovery function now looks for more MIME types by default.
-- Type hints are used for all functions.
-- New documentation has been added for all functions in the library.
-- Code snippet examples to function docstrings.
 - New exceptions to throw various errors.
 - Add X-Pingback support to feed parsing.
 - Use urllib to retrieve domain names, protocols, and paths throughout the library.
-- New function to send a webmention.
+
+#### Development
+
+- Use tox, black, isort, flake8, and mypy to control quality of code.
+- Type hints are used for all functions.
+- New documentation has been added for all functions in the library.
+- New code snippet examples to function docstrings.
+
+#### Functions
+
+- `get_h_app_item` function to retrieve a h-app object from a web page.
+- `validate_authorization_response` function to validate an IndieAuth authorization response.
+- `_verify_decoded_code` function that verifies a decoded code in an IndieAuth request.
+- `generate_auth_token` function to generate an authentication token as part of an IndieAuth server.
+- `redeem_code` function to handle token redemption in an IndieAuth server.
+- `send_webmention` function to send a webmention.
+- `validate_webmention` to validate a webmention according to the Webmention specification. Vouch support is implemented as an optional feature to use during the validation process.
+- `get_profile` function to retrieve profile information from a h-card on a URL from a URL.
 
 ### Changed
 
