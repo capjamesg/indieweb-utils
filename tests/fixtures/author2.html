@@ -1,0 +1,1525 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aaron Parecki</title>
+    
+  <link rel="indieauth-metadata" href="https://aaronparecki.com/.well-known/oauth-authorization-server">
+  <link rel="authorization_endpoint" href="https://aaronparecki.com/auth">
+  <link rel="token_endpoint" href="https://aaronparecki.com/auth/token">
+  <link rel="micropub" href="https://aaronparecki.com/micropub">
+  <link rel="microsub" href="https://aperture.p3k.io/microsub/1">
+  <meta name='ir-site-verification-token' value='-1045890088' />
+  <link rel="feed" href="/syndicated">
+  <link rel="feed" href="/all">
+  <link rel="alternate" type="application/jf2feed+json" href="/primary.jf2">
+  <link rel="alternate" type="application/json" href="/feed.json">
+  <link rel="alternate" type="application/atom+xml" href="/feed.xml">
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "url": "https://aaronparecki.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://aaronparecki.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+    
+    <link rel="webmention" href="https://webmention.io/aaronpk/webmention">
+
+    <script src="/assets/jquery-1.12.0.min.js"></script>
+    <script src="/semantic/2.2.6/semantic.min.js"></script>
+    <script src="/assets/featherlight-1.5.0/featherlight.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/assets/font.css">
+
+    <link rel="stylesheet" type="text/css" href="/semantic/2.2.6/semantic.min.css">
+    <link rel="stylesheet" href="/assets/icomoon/style.css">
+    <link rel="stylesheet" href="/assets/weather-icons/css/weather-icons.css">
+    <link rel="stylesheet" href="/assets/featherlight-1.5.0/featherlight.min.css">
+
+
+    <link rel="stylesheet" href="/assets/admin.2.css">
+    <link rel="stylesheet" href="/assets/pulse.css">
+    <link rel="stylesheet" href="/assets/styles.8.css">
+    <link rel="stylesheet" href="/site/styles.2.css">
+    <link rel="stylesheet" href="/assets/carbon.css">
+
+    <link rel="stylesheet" href="/assets/story.css">
+
+    
+    <link rel="openid.delegate" href="https://aaronparecki.com/">
+    <link rel="openid.server" href="https://openid.indieauth.com/openid">
+
+
+  </head>
+  <body>
+
+  	<black-lives></black-lives>
+
+    <div class="sticky-footer-content">
+      <div class="top-bar ">
+        <div class="ui container">
+          <form action="/search" method="get" class="search item">
+            <div class="ui icon input">
+              <input type="text" name="q" placeholder="Search..." value="">
+              <i class="search icon"></i>
+            </div>
+          </form>
+                      <span class="item">47&deg;F</span>
+            <span class="weather item">
+              <i class="wi wi-owm-803" title="broken clouds in Portland"></i>
+            </span>
+                                <span class="time item"></span>
+                                <span class="battery item"></span>
+                    <div id="logged-in-menu">
+                      </div>
+        </div>
+      </div>
+        <div class="ui container">
+        
+
+<div class="h-card">
+  <div class="subfooter homepage-about">
+    <div class="site-header homepage-coverphoto">
+      <div></div>
+      <h1>Aaron Parecki</h1>
+    </div>
+    <div class="about">
+      <div class="image"><a href="/" class="u-url u-uid"><img src="/images/profile.jpg" class="u-photo"></a></div>
+      <div class="bio">
+        <div class="p-note">
+          <p>Hi, I'm <span class="p-name">Aaron<span style="display:none;"> Parecki</span></span>,  co-founder of
+<a class="p-org h-card" href="https://indieweb.org/">IndieWebCamp</a>.
+I maintain <a class="p-org h-card" href="https://oauth.net/">oauth.net</a>, <a href="/oauth/">write and consult about OAuth</a>, and
+am the editor of several <a href="/w3c/">W3C specifications</a>. I help people learn about <a href="https://youtube.com/aaronpk">video production and livestreaming</a> and dabble in <a href="https://pk1.tv">product design</a>.</p>
+
+<p>I've been <a href="/gps/">tracking my location</a> since 2008 and I wrote <a href="https://100.aaronparecki.com/">100 songs in 100 days</a>.
+I've <a href="/presentations">spoken</a> at conferences around the world about
+<a href="/presentations?tag=indieweb">owning your data</a>,
+<a href="/oauth/">OAuth</a>,
+<a href="/presentations?tag=quantifiedself">quantified self</a>,
+and explained <a href="https://www.youtube.com/watch?v=FGVJ0eXTRpw">why R is a vowel</a>. <a href="/about">Read more</a>.</p> <time class="dt-bday" datetime="--12-28"></time>
+
+<data class="p-street-address" value="818 SW 3rd Ave #437"></data>
+<data class="p-locality" value="Portland"></data>
+<data class="p-region" value="Oregon"></data>
+<data class="p-country-name" value="USA"></data>
+<data class="p-postal-code" value="97204"></data>        </div>
+      </div>
+      <div>
+        <div class="orgs">
+          <ul>
+            <li class="p-org h-card">
+              <img src="/images/okta.png" alt="" class="u-photo">
+              <a class="p-role" href="https://developer.okta.com/blog/2018/03/27/welcome-aaron-okta">Security Architect</a> at <a href="https://developer.okta.com/" class="u-url">
+                <span class="p-name">Okta</span>
+              </a> 
+            </li>
+            <li class="p-org h-card">
+              <img src="/images/indiewebcamp.png" alt="" class="u-photo">
+              <a href="https://indieweb.org/" class="u-url">
+                <span class="p-name">IndieWebCamp</span>
+              </a> 
+              <a class="p-role" href="https://indieweb.org/founders">Founder</a>
+            </li>
+            <li class="p-org h-card">
+              <img src="/images/ietf.ico" alt="" class="u-photo">
+              <a href="https://oauth.net" class="u-url">
+                <span class="p-name">OAuth WG</span>
+              </a> 
+              <a class="p-role" href="/oauth/">Member</a>
+            </li>
+
+<!--
+            <li class="p-org h-card">
+              <img src="/images/w3c.png" alt="" class="u-photo">
+              <a href="https://www.w3.org/" class="u-url">
+                <span class="p-name">W3C</span>
+              </a> 
+              <a class="p-role" href="/w3c/">Editor</a>
+            </li>
+            <li class="p-org h-card">
+              <img src="/images/streampdx.png" alt="" class="u-photo">
+              <a href="https://streampdx.com" class="u-url">
+                <span class="p-name">Stream PDX</span>
+              </a> 
+              <a class="p-role" href="https://streampdx.com/who">Co-Founder</a>
+            </li>
+            <li class="p-org h-card">
+              <img src="/images/backpedal.png" alt="" class="u-photo">
+              <a href="https://backpedal.tv" class="u-url">backpedal.tv</a> 
+            </li>
+-->
+            <li><br></li>
+            <!--
+            <li><img src="/images/spotify.ico" alt=""> <a href="/sunshine-indie-pop/">Sunshine Indie Pop</a></li>
+            <li>
+              <img src="/images/microphone.png" alt="">
+              <a class="p-callsign u-url" href="https://w7apk.com">W7APK</a>
+            </li>
+            -->
+            <li>⭐️ <a href="https://aaronparecki.com/life-stack/">Life Stack</a></li>
+            <li>⚙️ <a href="https://aaronparecki.com/home-automation/">Home Automation</a></li>
+            <li>🎥 <a href="https://youtube.com/aaronpk">YouTube</a></li>
+          </ul>
+
+<link rel="pgpkey" href="/key.txt">
+<link rel="me" href="sms:+15035678642">
+<link rel="me" href="https://micro.blog/aaronpk">        </div>
+        <div class="sparklines">
+          <ul>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="52"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,9 1.5,9 3.1,9 4.6,9 6.2,9 7.7,9 9.2,9 10.8,9 12.3,9 13.8,9 15.4,9 16.9,9 18.5,9 20,9 21.5,9 23.1,9 24.6,9 26.2,9 27.7,0 29.2,9 30.8,9 32.3,9 33.8,9 35.4,9 36.9,9 38.5,9 40,9 41.5,9 43.1,9 44.6,9 46.2,0 47.7,9 49.2,9 50.8,9 52.3,9 53.8,9 55.4,9 56.9,9 58.5,9 60,9 61.5,9 63.1,9 64.6,9 66.2,9 67.7,9 69.2,9 70.8,9 72.3,9 73.8,0 75.4,0 76.9,0 78.5,0"/></svg></span>
+                <a href="/articles">397 Articles</a>
+              </li>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="54"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,6.8 1.5,4.5 3,5.3 4.4,0 5.9,4.5 7.4,3 8.9,6 10.4,6.8 11.9,4.5 13.3,5.3 14.8,3.8 16.3,3 17.8,3.8 19.3,3 20.7,3.8 22.2,3.8 23.7,4.5 25.2,8.3 26.7,5.3 28.1,1.5 29.6,1.5 31.1,3.8 32.6,1.5 34.1,4.5 35.6,6 37,6 38.5,5.3 40,6.8 41.5,8.3 43,2.3 44.4,3 45.9,5.3 47.4,6 48.9,0.8 50.4,7.5 51.9,6 53.3,6 54.8,3.8 56.3,6.8 57.8,5.3 59.3,6.8 60.7,6 62.2,6.8 63.7,6.8 65.2,9 66.7,9 68.1,7.5 69.6,4.5 71.1,0 72.6,3.8 74.1,1.5 75.6,9 77,9 78.5,6.8"/></svg></span>
+                <a href="/bookmarks">4120 Bookmarks</a>
+              </li>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="52"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,8.5 1.5,8.5 3.1,8.7 4.6,8.2 6.2,8.5 7.7,8.7 9.2,8.7 10.8,8.3 12.3,8.6 13.8,8.7 15.4,8.6 16.9,8.5 18.5,8.3 20,8.4 21.5,8.8 23.1,8.4 24.6,8.2 26.2,3.9 27.7,8.7 29.2,7.5 30.8,7.7 32.3,6.4 33.8,8.6 35.4,6.2 36.9,3.1 38.5,7.6 40,8.4 41.5,6.9 43.1,8.3 44.6,8.3 46.2,8.4 47.7,8 49.2,6.2 50.8,8.4 52.3,8.2 53.8,8.5 55.4,8 56.9,6.3 58.5,1.4 60,8.2 61.5,8.1 63.1,6.6 64.6,0 66.2,8.1 67.7,8.4 69.2,8.4 70.8,8.7 72.3,8.7 73.8,8.8 75.4,8.6 76.9,8.7 78.5,8"/></svg></span>
+                <a href="/checkins">16316 Checkins</a>
+              </li>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="58"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,0 1.4,7.9 2.8,3.4 4.1,5.6 5.5,5.6 6.9,7.9 8.3,9 9.7,9 11,6.8 12.4,5.6 13.8,5.6 15.2,5.6 16.6,6.8 17.9,6.8 19.3,9 20.7,9 22.1,7.9 23.4,6.8 24.8,7.9 26.2,5.6 27.6,6.8 29,4.5 30.3,5.6 31.7,3.4 33.1,6.8 34.5,6.8 35.9,7.9 37.2,6.8 38.6,9 40,9 41.4,6.8 42.8,9 44.1,9 45.5,7.9 46.9,5.6 48.3,7.9 49.7,6.8 51,3.4 52.4,6.8 53.8,4.5 55.2,7.9 56.6,5.6 57.9,6.8 59.3,9 60.7,9 62.1,9 63.4,9 64.8,9 66.2,5.6 67.6,6.8 69,4.5 70.3,6.8 71.7,6.8 73.1,9 74.5,9 75.9,6.8 77.2,7.9 78.6,6.8"/></svg></span>
+                <a href="/notes">3440 Notes</a>
+              </li>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="58"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,7.8 1.4,9 2.8,9 4.1,8.4 5.5,8.4 6.9,8.4 8.3,9 9.7,9 11,9 12.4,7.8 13.8,8.7 15.2,9 16.6,9 17.9,8.7 19.3,8.4 20.7,8.4 22.1,9 23.4,9 24.8,9 26.2,8.7 27.6,7.8 29,4.1 30.3,8.7 31.7,8.1 33.1,8.7 34.5,8.4 35.9,8.4 37.2,8.7 38.6,8.1 40,8.1 41.4,8.7 42.8,8.1 44.1,8.7 45.5,8.7 46.9,8.7 48.3,8.4 49.7,7.8 51,8.4 52.4,8.7 53.8,8.7 55.2,9 56.6,9 57.9,8.7 59.3,6.4 60.7,8.7 62.1,8.7 63.4,8.4 64.8,0 66.2,9 67.6,9 69,8.4 70.3,8.7 71.7,8.7 73.1,8.7 74.5,8.7 75.9,8.7 77.2,8.7 78.6,8.7"/></svg></span>
+                <a href="/photos">2851 Photos</a>
+              </li>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="52"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,9 1.5,9 3.1,9 4.6,9 6.2,9 7.7,9 9.2,9 10.8,9 12.3,9 13.8,9 15.4,9 16.9,4.5 18.5,9 20,9 21.5,9 23.1,9 24.6,4.5 26.2,9 27.7,9 29.2,9 30.8,4.5 32.3,9 33.8,9 35.4,9 36.9,9 38.5,9 40,9 41.5,9 43.1,9 44.6,9 46.2,4.5 47.7,9 49.2,9 50.8,9 52.3,9 53.8,9 55.4,9 56.9,9 58.5,9 60,4.5 61.5,9 63.1,9 64.6,9 66.2,9 67.7,9 69.2,9 70.8,9 72.3,9 73.8,9 75.4,9 76.9,9 78.5,0"/></svg></span>
+                <a href="/presentations">92 Presentations</a>
+              </li>
+                          <li>
+                <span style="width:80px; display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" 
+                 xmlns:xlink="http://www.w3.org/1999/xlink" 
+                 xmlns:ev="http://www.w3.org/2001/xml-events" 
+                 version="1.1" 
+                 baseProfile="full" 
+                 width="100%" height="10" 
+                 viewBox="0 -0.5 80 10"
+                 preserveAspectRatio="none"
+                 numPoints="54"><polyline stroke="rgba(0,0,0,0.7)" fill="none" points="0,6.6 1.5,3.3 3,6.2 4.4,5.2 5.9,2.8 7.4,6.2 8.9,3.3 10.4,3.8 11.9,6.2 13.3,4.3 14.8,4.7 16.3,3.8 17.8,4.7 19.3,5.7 20.7,6.2 22.2,2.8 23.7,3.3 25.2,4.7 26.7,4.7 28.1,1.4 29.6,0 31.1,2.4 32.6,2.8 34.1,5.7 35.6,7.6 37,5.2 38.5,3.3 40,6.2 41.5,0.9 43,0.9 44.4,2.4 45.9,4.3 47.4,6.2 48.9,7.1 50.4,3.8 51.9,6.2 53.3,4.3 54.8,3.3 56.3,8.5 57.8,5.2 59.3,6.2 60.7,6.6 62.2,9 63.7,9 65.2,6.2 66.7,0.9 68.1,4.7 69.6,5.7 71.1,7.1 72.6,6.6 74.1,6.2 75.6,5.2 77,4.3 78.5,8.1"/></svg></span>
+                <a href="/rides">4228 Rides</a>
+              </li>
+                      </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="current-trip" class="featured-content-row hidden"></div>
+
+<style>
+.pixel-grid svg {
+  height: 100% !important;
+}
+</style>
+<div class="featured-content-row no-flex">
+  <div class="pixel-grid"><svg viewBox="0 0 621 94" style="width:100%; height:auto;" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"><defs><style type="text/css"><![CDATA[ rect[data-state="1"]{fill:#4183C4;} rect[data-state="0"]{fill:#9bd222;} ]]></style></defs><rect x="1" y="1" width="30" height="30" data-state="1" data-x="0" data-y="0" /><rect x="32" y="1" width="30" height="30" data-state="0" data-x="1" data-y="0" /><rect x="63" y="1" width="30" height="30" data-state="1" data-x="2" data-y="0" /><rect x="94" y="1" width="30" height="30" data-state="0" data-x="3" data-y="0" /><rect x="125" y="1" width="30" height="30" data-state="1" data-x="4" data-y="0" /><rect x="156" y="1" width="30" height="30" data-state="1" data-x="5" data-y="0" /><rect x="187" y="1" width="30" height="30" data-state="1" data-x="6" data-y="0" /><rect x="218" y="1" width="30" height="30" data-state="0" data-x="7" data-y="0" /><rect x="249" y="1" width="30" height="30" data-state="1" data-x="8" data-y="0" /><rect x="280" y="1" width="30" height="30" data-state="1" data-x="9" data-y="0" /><rect x="311" y="1" width="30" height="30" data-state="1" data-x="10" data-y="0" /><rect x="342" y="1" width="30" height="30" data-state="1" data-x="11" data-y="0" /><rect x="373" y="1" width="30" height="30" data-state="1" data-x="12" data-y="0" /><rect x="404" y="1" width="30" height="30" data-state="0" data-x="13" data-y="0" /><rect x="435" y="1" width="30" height="30" data-state="1" data-x="14" data-y="0" /><rect x="466" y="1" width="30" height="30" data-state="1" data-x="15" data-y="0" /><rect x="497" y="1" width="30" height="30" data-state="1" data-x="16" data-y="0" /><rect x="528" y="1" width="30" height="30" data-state="0" data-x="17" data-y="0" /><rect x="559" y="1" width="30" height="30" data-state="0" data-x="18" data-y="0" /><rect x="590" y="1" width="30" height="30" data-state="0" data-x="19" data-y="0" /><rect x="1" y="32" width="30" height="30" data-state="1" data-x="0" data-y="1" /><rect x="32" y="32" width="30" height="30" data-state="1" data-x="1" data-y="1" /><rect x="63" y="32" width="30" height="30" data-state="1" data-x="2" data-y="1" /><rect x="94" y="32" width="30" height="30" data-state="0" data-x="3" data-y="1" /><rect x="125" y="32" width="30" height="30" data-state="1" data-x="4" data-y="1" /><rect x="156" y="32" width="30" height="30" data-state="0" data-x="5" data-y="1" /><rect x="187" y="32" width="30" height="30" data-state="1" data-x="6" data-y="1" /><rect x="218" y="32" width="30" height="30" data-state="0" data-x="7" data-y="1" /><rect x="249" y="32" width="30" height="30" data-state="1" data-x="8" data-y="1" /><rect x="280" y="32" width="30" height="30" data-state="0" data-x="9" data-y="1" /><rect x="311" y="32" width="30" height="30" data-state="1" data-x="10" data-y="1" /><rect x="342" y="32" width="30" height="30" data-state="0" data-x="11" data-y="1" /><rect x="373" y="32" width="30" height="30" data-state="1" data-x="12" data-y="1" /><rect x="404" y="32" width="30" height="30" data-state="0" data-x="13" data-y="1" /><rect x="435" y="32" width="30" height="30" data-state="1" data-x="14" data-y="1" /><rect x="466" y="32" width="30" height="30" data-state="1" data-x="15" data-y="1" /><rect x="497" y="32" width="30" height="30" data-state="0" data-x="16" data-y="1" /><rect x="528" y="32" width="30" height="30" data-state="0" data-x="17" data-y="1" /><rect x="559" y="32" width="30" height="30" data-state="0" data-x="18" data-y="1" /><rect x="590" y="32" width="30" height="30" data-state="0" data-x="19" data-y="1" /><rect x="1" y="63" width="30" height="30" data-state="1" data-x="0" data-y="2" /><rect x="32" y="63" width="30" height="30" data-state="0" data-x="1" data-y="2" /><rect x="63" y="63" width="30" height="30" data-state="1" data-x="2" data-y="2" /><rect x="94" y="63" width="30" height="30" data-state="0" data-x="3" data-y="2" /><rect x="125" y="63" width="30" height="30" data-state="1" data-x="4" data-y="2" /><rect x="156" y="63" width="30" height="30" data-state="1" data-x="5" data-y="2" /><rect x="187" y="63" width="30" height="30" data-state="1" data-x="6" data-y="2" /><rect x="218" y="63" width="30" height="30" data-state="0" data-x="7" data-y="2" /><rect x="249" y="63" width="30" height="30" data-state="1" data-x="8" data-y="2" /><rect x="280" y="63" width="30" height="30" data-state="0" data-x="9" data-y="2" /><rect x="311" y="63" width="30" height="30" data-state="1" data-x="10" data-y="2" /><rect x="342" y="63" width="30" height="30" data-state="0" data-x="11" data-y="2" /><rect x="373" y="63" width="30" height="30" data-state="1" data-x="12" data-y="2" /><rect x="404" y="63" width="30" height="30" data-state="0" data-x="13" data-y="2" /><rect x="435" y="63" width="30" height="30" data-state="1" data-x="14" data-y="2" /><rect x="466" y="63" width="30" height="30" data-state="1" data-x="15" data-y="2" /><rect x="497" y="63" width="30" height="30" data-state="1" data-x="16" data-y="2" /><rect x="528" y="63" width="30" height="30" data-state="0" data-x="17" data-y="2" /><rect x="559" y="63" width="30" height="30" data-state="0" data-x="18" data-y="2" /><rect x="590" y="63" width="30" height="30" data-state="0" data-x="19" data-y="2" /></svg></div>
+  <div class="pixel-grid-disclosure hidden">clicking on this  grid will change the color of the pixel, and the country of your ip address will be logged. <a href="/grid">more info &rarr;</a></div>
+</div>
+
+<div class="featured-content-row "><!-- 
+<a href="https://youtu.be/TDoqwTvutX8" style="line-height: 0;"><img src="https://media.aaronpk.com/2020-04-30-livestream.jpg" style="width:100%; height: auto;"></a>
+-->
+
+<!--
+<a href="https://aaronparecki.com/2020/04/28/12/" style="line-height: 0;"><img src="https://aaronparecki.com/2020/04/27/24/goto-chicago-how-to-hack-oauth.png" style="width:100%; height: auto;"></a>
+-->
+
+<!--
+<a href="https://oauth2simplified.com/" style="line-height: 0;"><img src="https://oauth2simplified.com/images/book-cover-large.jpg" style="width:100%;height:auto;"></a>
+-->
+
+<!--
+<a href="https://www.udemy.com/course/oauth-2-simplified/?referralCode=B04F59AED67B8DA74FA7" style="line-height: 0;"><img src="https://oauth2simplified.com/images/course-image-with-text.png" style="width:100%;height:auto;"></a>
+-->
+
+<!--
+  <div class="featured-content-section">
+    <h3>OAuth 2.0 Simplified</h3>
+    <a href="/oauth/"><img src="/images/oauth-thin.jpg" style="width: 100%;"></a>
+  </div>
+  <div class="featured-content-section">
+    <h3>Backpedal Productions</h3>
+    <a href="https://backpedal.tv/"><img src="/images/youtube-players.png" style="width: 100%;"></a>
+  </div>
+-->
+
+<audio data-theme="night" data-src="https://changelog.com/podcast/456/embed" src="https://cdn.changelog.com/uploads/podcast/456/the-changelog-456.mp3" preload="none" class="changelog-episode" controls></audio><script async src="//cdn.changelog.com/embed.js"></script></div>
+      <div class="post-previews rounded-bottom">
+      <div class="item">
+        <div class="item-content">
+                                    <a href="https://aaronparecki.com/2022/02/14/4/sleep">
+                <img src="/2022/02/14/4/sleep.svg" height="60" class="photo">
+              </a>
+                        <div>
+              <a href="https://aaronparecki.com/2022/02/14/4/sleep">
+                Slept  7h 16m
+              </a>
+            </div>
+            <div>11:09pm
+            -
+            6:25am
+            </div>
+                  </div>
+      </div>
+      <div class="item">
+        <div class="item-content">
+          <style>
+          .map-zoom {
+            position: relative;
+          }
+          .map-zoom img.hidden {
+            display: none;
+          }
+          .map-zoom img {
+            border: 1px #ccc solid;
+          }
+          </style>
+                      <a href="https://aaronparecki.com/2022/02/12/4/">
+                              <div class="map-zoom">
+                                    <img src="/images/minimap.png?m=0" class="photo level-0">
+                  <img src="/images/minimap.png?m=1" class="photo level-1 hidden">
+                  <img src="/images/minimap.png?m=2" class="photo level-2 hidden">
+                </div>
+                          </a>
+              <div>
+                <div>Checked in at</div>
+                <b><a href="https://aaronparecki.com/2022/02/12/4/">German American Society</a></b>
+              </div>
+              <div>9:54am</div>
+                  </div>
+      </div>
+      <div class="item">
+        <div class="item-content">
+                      <a href="https://aaronparecki.com/2022/02/11/2/tula-mic">
+              <img src="/img/400,sc/2022/02/11/2/photo.jpg" class="photo">
+            </a>
+                  </div>
+      </div>
+      <div class="item">
+        <div class="item-content event-item">
+                      <b style="font-size: 1.3em;"><a href="https://aaronparecki.com/2022/03/19/1/">IETF 113 Vienna</a></b>
+            <div class="block-with-icon">
+              <div class="left-icon">
+                <div class="date-block">
+                  <div class="month">Mar</div>
+                  <div class="day">19</div>
+                </div>
+                                  <div class="date-block">
+                                          <div class="month">Mar</div>
+                      <div class="day">&hellip;</div>
+                                      </div>
+                                <div class="date-block">
+                  <div class="month">Mar</div>
+                  <div class="day">25</div>
+                </div>
+                                        </div>
+            </div>
+
+            <div>
+                              <time class="dt-start" datetime="2022-03-19T09:00:00+01:00">9:00am</time> - <time class="dt-end" datetime="2022-03-25T15:00:00+01:00">3:00pm (+0100)</time>
+                          </div>
+                  </div>
+      </div>
+    </div>
+   
+ 
+<div class="post-list">
+                    <ul>
+      <li class="h-entry post-entry post-type-note    post   " id="post-id-86662">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >PSA to fellow creators who use <a href="https://twitter.com/artlist_io">@artlist_io</a> you might want to avoid using &quot;Anthem of a Quirky Hipster&quot; for a while... Seems like a comedian published the song in a comedy album and now YouTube is flagging any use of it thinking he owns the copyright to it. <br> <br><a href="https://artlist.io/song/3091/anthem-of-a-quirky-hipster"><span class="protocol">https://</span>artlist.io/song/3091/anthem-of-a-quirky-hipster</a></div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-803" title="broken clouds"></i>
+              46&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">2</span> likes</span>
+            <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">1</span> reply</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/copyright" class="p-category">copyright</a>
+      #<a href="/tag/youtube" class="p-category">youtube</a>
+      #<a href="/tag/artlist" class="p-category">artlist</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/02/14/5/artlist" class="u-url">
+      <time class="dt-published" datetime="2022-02-14T08:34:51-08:00">
+        Mon, Feb 14, 2022 8:34am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1493262492214050816" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12485152" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-86652">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >Duolingo out here doing a bit of foreshadowing...</div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/02/13/16/duo"><img src="/img/1240x0/2022/02/13/16/photo.jpg" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-804" title="overcast clouds"></i>
+              50&deg;F
+      </span>
+  </div>
+        
+          <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/duolingo" class="p-category">duolingo</a>
+      #<a href="/tag/german" class="p-category">german</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/02/13/16/duo" class="u-url">
+      <time class="dt-published" datetime="2022-02-13T20:47:53-08:00">
+        Sun, Feb 13, 2022 8:47pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12483406" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-86587">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >Pretty neat trick Wordle used to migrate everyone's saved game state: <br> <br>The main Wordle site was replaced with a bit of JS that grabs the game data from LocalStorage and puts it in the query string when redirecting to nytimes. <br> <br>Also notable: that code is vanilla JS, no libraries!</div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-741" title="fog"></i>
+              42&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">24</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">1</span> repost</span>
+          <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">7</span> replies</span>
+        <span><i class="file text outline icon"></i> <span class="p-pk-num-mentions">1</span> mention</span>
+      </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/wordle" class="p-category">wordle</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/02/11/9/wordle" class="u-url">
+      <time class="dt-published" datetime="2022-02-11T08:15:23-08:00">
+        Fri, Feb 11, 2022 8:15am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1492170528638996480" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12474619" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-86580">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/emoji/aaronpk1116.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content " ><p>This microphone sounds great and looks incredible! 😍</p>
+
+<p>It's a USB-C mic with built in storage for on-board recordings, and you can also use it as a headphone jack for an iPad! I just posted a video going over all the features of the mic, so be sure to <a href="https://youtu.be/1VTI_qH372o">check it out</a> on my channel! Thanks to <a href="https://www.tulamics.com/">@tula.mics</a> for sending this over to check out!</p>
+</div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/02/11/2/tula-mic"><img src="/img/1240x0/2022/02/11/2/photo.jpg" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-803" title="broken clouds"></i>
+              42&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+            <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">2</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/tulamic" class="p-category">tulamic</a>
+      #<a href="/tag/proaudio" class="p-category">proaudio</a>
+      #<a href="/tag/studiogear" class="p-category">studiogear</a>
+      #<a href="/tag/youtube" class="p-category">youtube</a>
+      #<a href="/tag/recordingstudios" class="p-category">recordingstudios</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/02/11/2/tula-mic" class="u-url">
+      <time class="dt-published" datetime="2022-02-11T07:04:05-08:00">
+        Fri, Feb 11, 2022 7:04am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12474364" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-86368">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >Sometimes Duolingo makes up sentences that don't make any sense, but I think even this is something they couldn't have come up with if it weren't for the pandemic</div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/02/02/20/duolingo"><img src="/img/1240x0/2022/02/02/20/photo.jpg" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-500" title="light rain"></i>
+              43&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">36</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">3</span> reposts</span>
+          <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">13</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/german" class="p-category">german</a>
+      #<a href="/tag/duolingo" class="p-category">duolingo</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/02/02/20/duolingo" class="u-url">
+      <time class="dt-published" datetime="2022-02-02T21:39:37-08:00">
+        Wed, Feb 2, 2022 9:39pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1489111322558009347" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12442395" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-86353">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >I'm curious what, if any, types of websites you actually want and allow browser notifications from.  <br> <br>I feel like there's a good use case for them, but it's certainly not being notified of news articles or new recipes.</div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/02/02/5/notification"><img src="/img/1240x0/2022/02/02/5/photo.png" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-300" title="light intensity drizzle"></i>
+              40&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">12</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">2</span> reposts</span>
+          <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">27</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/notification" class="p-category">notification</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/02/02/5/notification" class="u-url">
+      <time class="dt-published" datetime="2022-02-02T09:12:36-08:00">
+        Wed, Feb 2, 2022 9:12am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1488923324742713349" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12440333" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-article    post   " id="post-id-86260">
+
+
+      <div style="" class="content-area      has-name">
+              <div class="pad">
+                <div class="post-text">
+        <h2 class="post-title"><a href="https://aaronparecki.com/2022/01/29/12/raspi-usb-webcam-hdmi" class="p-name post-title">Stream a USB webcam to HDMI on a Raspberry Pi</a></h2>
+                	        <div class="p-summary" style="margin: 12px 0;">This post exists to collect my notes on displaying a USB webcam on the Raspberry Pi HDMI outputs. This is not the same as streaming the webcam (easy), and this is not for use with the Raspberry Pi camera module. This is specifically for USB UVC webcams.</div>
+	    	    <a href="https://aaronparecki.com/2022/01/29/12/raspi-usb-webcam-hdmi">continue reading...</a>
+      </div>
+        </div>
+              
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">1</span> like</span>
+              </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/raspi" class="p-category">raspi</a>
+      #<a href="/tag/webcam" class="p-category">webcam</a>
+      #<a href="/tag/hdmi" class="p-category">hdmi</a>
+      #<a href="/tag/streaming" class="p-category">streaming</a>
+      #<a href="/tag/video" class="p-category">video</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/29/12/raspi-usb-webcam-hdmi" class="u-url">
+      <time class="dt-published" datetime="2022-01-29T13:53:21-08:00">
+        Sat, Jan 29, 2022 1:53pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12426535" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+<a class="u-author" href="/"></a>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-86122">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >In this week's video I showed the step by step for how to green screen your live videos using the YoloBox Pro! Frankly it couldn't be any easier, I was really impressed how well it handled even my poorly lit green screen.  <br> <br>Also can I just say again how much I like the Elgato green screen? It collapses down onto my floor so it's totally out of the way, and only takes a few seconds to set up when I want to use it! <br> <br>Watch here! <a href="https://www.youtube.com/watch?v=MAL7ZoHprz4"><span class="protocol">https://</span>www.youtube.com/watch?v=MAL7ZoHprz4</a></div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/01/22/16/yolobox-greenscreen"><img src="/img/1240x0/2022/01/22/16/photo.jpg" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-801" title="few clouds"></i>
+              43&deg;F
+      </span>
+  </div>
+        
+          <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/greenscreen" class="p-category">greenscreen</a>
+      #<a href="/tag/livestreaming" class="p-category">livestreaming</a>
+      #<a href="/tag/yolobox" class="p-category">yolobox</a>
+      #<a href="/tag/streamingsetup" class="p-category">streamingsetup</a>
+      #<a href="/tag/elgato" class="p-category">elgato</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/22/16/yolobox-greenscreen" class="u-url">
+      <time class="dt-published" datetime="2022-01-22T18:17:57-08:00">
+        Sat, Jan 22, 2022 6:17pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12403799" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-86068">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >oops, I accidentally viewsourced wordle and it turns out the next day's words are already chosen and visible in the source code. Don't look if you don't want to be spoiled! <br> <br>Wordle 216 1/6 <br> <br>🟩🟩🟩🟩🟩</div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-804" title="overcast clouds"></i>
+              53&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">25</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">2</span> reposts</span>
+          <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">7</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/wordle" class="p-category">wordle</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/20/10/wordle" class="u-url">
+      <time class="dt-published" datetime="2022-01-20T10:06:21-08:00">
+        Thu, Jan 20, 2022 10:06am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1484225810277879811" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12395312" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-86029">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >Dear <a href="https://twitter.com/Eventbrite">@Eventbrite</a>, I have an account, so please make sure it is not possible for other people to sign me up for events with only my email address. I've been added to dozens of events over the last two weeks and it's an interesting new vector for spam. <a href="https://twitter.com/EventbriteHelp">@EventbriteHelp</a></div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-804" title="overcast clouds"></i>
+              41&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">5</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">1</span> repost</span>
+            </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/spam" class="p-category">spam</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/18/8/spam" class="u-url">
+      <time class="dt-published" datetime="2022-01-18T09:08:08-08:00">
+        Tue, Jan 18, 2022 9:08am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1483486469859667975" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12387842" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-article    post   " id="post-id-86005">
+
+
+      <div style="" class="content-area      has-name">
+              <div class="pad">
+                <div class="post-text">
+        <h2 class="post-title"><a href="https://aaronparecki.com/2022/01/17/4/how-to-green-screen-chroma-key-yolobox-pro" class="p-name post-title">How to Green Screen on the YoloBox Pro</a></h2>
+                	<a href="https://aaronparecki.com/2022/01/17/4/how-to-green-screen-chroma-key-yolobox-pro"><img src="/2022/01/17/4/yolobox-green-screen-featured.jpg" class="u-featured"></a>
+                	        <div class="p-summary" style="margin: 12px 0;">This step-by-step guide will show you how to use the chroma key feature on the YoloBox Pro to green screen yourself onto picture backgrounds and videos, or even add external graphics from a computer.</div>
+	    	    <a href="https://aaronparecki.com/2022/01/17/4/how-to-green-screen-chroma-key-yolobox-pro">continue reading...</a>
+      </div>
+        </div>
+              
+          <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/chromakey" class="p-category">chromakey</a>
+      #<a href="/tag/greenscreen" class="p-category">greenscreen</a>
+      #<a href="/tag/yolobox" class="p-category">yolobox</a>
+      #<a href="/tag/videoproduction" class="p-category">videoproduction</a>
+      #<a href="/tag/livestream" class="p-category">livestream</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/17/4/how-to-green-screen-chroma-key-yolobox-pro" class="u-url">
+      <time class="dt-published" datetime="2022-01-17T07:55:57-08:00">
+        Mon, Jan 17, 2022 7:55am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12384041" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+<a class="u-author" href="/"></a>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-85997">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >In case you missed it, I posted a video with my 10 favorite tech/video purchases from 2021 on my YouTube!  <br> <br>I included only things that I actually bought myself, not including anything that was sent to me to review. I did get to review a lot of great gear too but that will be for another video. <br> <br>Here's to another year of livestreams and video production! <br> <br><a href="https://www.youtube.com/watch?v=IHElJPhJKUM"><span class="protocol">https://</span>www.youtube.com/watch?v=IHElJPhJKUM</a></div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/01/16/17/"><img src="/img/1240x0/2022/01/16/17/photo.jpg" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>
+      </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-803" title="broken clouds"></i>
+              40&deg;F
+      </span>
+  </div>
+        
+          <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/yearinreview" class="p-category">yearinreview</a>
+      #<a href="/tag/videoproduction" class="p-category">videoproduction</a>
+      #<a href="/tag/livestreaming" class="p-category">livestreaming</a>
+      #<a href="/tag/lumixgh5" class="p-category">lumixgh5</a>
+      #<a href="/tag/streamdeck" class="p-category">streamdeck</a>
+      #<a href="/tag/djiaction2" class="p-category">djiaction2</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/16/17/" class="u-url">
+      <time class="dt-published" datetime="2022-01-16T20:16:51-08:00">
+        Sun, Jan 16, 2022 8:16pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://www.instagram.com/p/CY0UTb_rcoe" class="u-syndication syndication"><i class="instagram icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12382032" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-85949">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >Fellow conference speakers! I'm tired of posting my slides on Speakerdeck, I want to host them on my own website. <br> <br>What awesome tools are there for doing this in a way that looks as close to Speakerdeck as possible? I'm thinking maybe an old-school JS slideshow viewer?</div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-802" title="scattered clouds"></i>
+              49&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">6</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">9</span> reposts</span>
+          <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">10</span> replies</span>
+        <span><i class="file text outline icon"></i> <span class="p-pk-num-mentions">1</span> mention</span>
+      </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/presentations" class="p-category">presentations</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/14/16/slides" class="u-url">
+      <time class="dt-published" datetime="2022-01-14T16:22:34-08:00">
+        Fri, Jan 14, 2022 4:22pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1482146160340987905" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12374846" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-85862">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >Just used this handy XKCD chart to determine that it was finally time to build a web interface on top of this little PHP script that generates PDFs of checks, rather than continuing to hack up this code by hand every time I need to print one. <a href="https://imgs.xkcd.com/comics/is_it_worth_the_time_2x.png"><span class="protocol">https://</span>imgs.xkcd.com/comics/is_it_worth_the_time_2x.png</a></div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-804" title="overcast clouds"></i>
+              48&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">11</span> likes</span>
+            <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">3</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/checks" class="p-category">checks</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/11/9/checks" class="u-url">
+      <time class="dt-published" datetime="2022-01-11T10:18:21-08:00">
+        Tue, Jan 11, 2022 10:18am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1480967340900511746" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12363052" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-article    post   " id="post-id-85861">
+
+
+      <div style="" class="content-area      has-name">
+              <div class="pad">
+                <div class="post-text">
+        <h2 class="post-title"><a href="https://aaronparecki.com/2022/01/11/8/convert-usb-webcam-to-hdmi" class="p-name post-title">How to convert USB webcams to HDMI</a></h2>
+                	        <div class="p-summary" style="margin: 12px 0;">There are a handful of interesting USB webcams out there, which naturally work great with a computer. But what if you want to combine video from a USB webcam with your HDMI cameras in a video switcher like the ATEM Mini?</div>
+	    	    <a href="https://aaronparecki.com/2022/01/11/8/convert-usb-webcam-to-hdmi">continue reading...</a>
+      </div>
+        </div>
+              
+      <div class="metaline responses-summary pad">
+              <span><i class="file text outline icon"></i> <span class="p-pk-num-mentions">2</span> mentions</span>
+      </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/video" class="p-category">video</a>
+      #<a href="/tag/atem" class="p-category">atem</a>
+      #<a href="/tag/streaming" class="p-category">streaming</a>
+      #<a href="/tag/usb" class="p-category">usb</a>
+      #<a href="/tag/uvc" class="p-category">uvc</a>
+      #<a href="/tag/webcam" class="p-category">webcam</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/11/8/convert-usb-webcam-to-hdmi" class="u-url">
+      <time class="dt-published" datetime="2022-01-11T09:33:24-08:00">
+        Tue, Jan 11, 2022 9:33am -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12362933" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+<a class="u-author" href="/"></a>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-85816">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >In late 2019 I stuck a raspberry pi and e-paper display in a picture frame and made it show my upcoming travel plans. Now it is just blank. What should I use it for now?</div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/01/09/22/pi"><img src="/img/1240x0/2022/01/09/22/photo.jpg" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-800" title="clear sky"></i>
+              41&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">22</span> likes</span>
+            <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">35</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/travel" class="p-category">travel</a>
+      #<a href="/tag/raspberrypi" class="p-category">raspberrypi</a>
+      #<a href="/tag/raspi" class="p-category">raspi</a>
+      #<a href="/tag/iot" class="p-category">iot</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/09/22/pi" class="u-url">
+      <time class="dt-published" datetime="2022-01-09T19:14:55-08:00">
+        Sun, Jan 9, 2022 7:14pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1480377609678508036" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12357079" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-photo    post   " id="post-id-85764">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >I think this is the first time the &quot;elevator&quot; on a plane has made sense to me!  <br> <br>Too bad it has nothing to do with the quadcopters I want to fly but I need to learn it for the test anyway <a href="/emoji/😅" class="emoji">😅</a></div>
+        </div>
+      </div>
+        <a href="https://aaronparecki.com/2022/01/07/10/drone"><img src="/img/1240x0/2022/01/07/10/photo.png" class="u-photo post-img photo"></a>
+  
+        <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-804" title="overcast clouds"></i>
+              42&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+            <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">2</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/drone" class="p-category">drone</a>
+      #<a href="/tag/pilotinstitute" class="p-category">pilotinstitute</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/07/10/drone" class="u-url">
+      <time class="dt-published" datetime="2022-01-07T17:04:44-08:00">
+        Fri, Jan 7, 2022 5:04pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://micro.blog/aaronpk/12350101" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-85754">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >It's okay nobody really knows how maps work anyway <a href="https://twitter.com/lavenderashtray/status/1479285712641875968"><span class="protocol">https://</span>twitter.com/lavenderashtray/status/1479285712641875968</a></div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-500" title="light rain"></i>
+              50&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">7</span> likes</span>
+              </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/covid" class="p-category">covid</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/06/25/maps" class="u-url">
+      <time class="dt-published" datetime="2022-01-06T22:30:22-08:00">
+        Thu, Jan 6, 2022 10:30pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1479339618864537603" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12346983" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-85741">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >software you've purchased that auto-updates to a new version and makes you buy a new license is worse than software that is just a straight subscription model, just saying</div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-804" title="overcast clouds"></i>
+              53&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">22</span> likes</span>
+        <span><i class="retweet icon"></i> <span class="p-pk-num-reposts">3</span> reposts</span>
+          <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">4</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/software" class="p-category">software</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/06/12/software" class="u-url">
+      <time class="dt-published" datetime="2022-01-06T14:45:03-08:00">
+        Thu, Jan 6, 2022 2:45pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1479222525770883072" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12345663" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+  <li class="h-entry post-entry post-type-note    post   " id="post-id-85672">
+
+
+      <div style="" class="content-area      ">
+                <div class="pad">
+        <div class="show-author-photo">
+                              <div class="author u-author h-card">
+            <a href="/" class="u-url"><img class="u-photo p-name" src="/images/profile.jpg" width="48" alt="Aaron Parecki"></a>
+          </div>
+          
+          <div class="post-text e-content content-type-plain" >If you just finished watching The Matrix Resurrections, next go watch Dr Horrible's Sing-Along Blog. You won't regret it I promise.</div>
+        </div>
+      </div>
+                <div class="metaline pad">
+  <i class="marker icon"></i>
+      <span class="p-location h-adr">
+          <span class="p-locality">Portland</span>,
+        <span class="p-region">Oregon</span>,
+        <span class="p-country">USA</span>
+    </span>
+  <span class="weather">
+    <span>&bull;</span>
+          <i class="wi wi-owm-500" title="light rain"></i>
+              47&deg;F
+      </span>
+  </div>
+        
+      <div class="metaline responses-summary pad">
+      <span><i class="star empty icon"></i> <span class="p-pk-num-likes">14</span> likes</span>
+            <span><i class="comment outline icon"></i> <span class="p-pk-num-replies">2</span> replies</span>
+        </div>
+    <div class="metaline tags pad" style="float: right;">
+      #<a href="/tag/matrix" class="p-category">matrix</a>
+  </div>
+    <div class="metaline pad">
+      <a href="https://aaronparecki.com/2022/01/02/17/matrix" class="u-url">
+      <time class="dt-published" datetime="2022-01-02T21:20:04-08:00">
+        Sun, Jan 2, 2022 9:20pm -08:00
+      </time>
+    </a>
+        <span class="syndications">
+              <a href="https://twitter.com/aaronpk/status/1477872382094180357" class="u-syndication syndication"><i class="twitter icon"></i></a>
+              <a href="https://micro.blog/aaronpk/12330960" class="u-syndication syndication"><i class="linkify icon"></i></a>
+          </span>
+  </div>
+  
+  <div style="clear:both;"></div>
+</div>
+      </li>
+  
+    
+    </ul>
+        <div class="load-more">
+      <a href="/?before=20220102T212004-0800" class="infinite " rel="prev">next</a>
+    </div>
+  </div>
+
+  </div>
+  <script src="/assets/homepage-streaming.js?3"></script>
+    </div>
+
+    <footer class="sticky-footer">
+        <div style="margin-top: 1rem;"></div>
+  <div class="ui container">
+    <div class="channels">
+      <ul class="footer-links">
+                  <li><a href="/all">All</a></li>
+                  <li><a href="/articles">Articles</a></li>
+                  <li><a href="/bookmarks">Bookmarks</a></li>
+                  <li><a href="/notes">Notes</a></li>
+                  <li><a href="/photos">Photos</a></li>
+                  <li><a href="/replies">Replies</a></li>
+                  <li><a href="/reviews">Reviews</a></li>
+                  <li><a href="/sleep">Sleep</a></li>
+                  <li><a href="/trips">Trips</a></li>
+                  <li><a href="/videos">Videos</a></li>
+                <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+        <div class="elsewhere">
+      <ul class="footer-links" id="relme">
+                  <li><a href="https://twitter.com/aaronpk" rel="me"><i class="twitter icon"></i></a></li>
+                  <li><a href="https://youtube.com/aaronpk" rel="me"><i class="youtube play icon"></i></a></li>
+                  <li><a href="https://github.com/aaronpk" rel="me"><i class="github icon"></i></a></li>
+                  <li><a href="http://foursquare.com/aaronpk" rel="me"><i class="foursquare icon"></i></a></li>
+                  <li><a href="http://www.linkedin.com/in/aaronparecki" rel="me"><i class="linkedin icon"></i></a></li>
+                  <li><a href="https://instagram.com/aaronpk_tv" rel="me"><i class="instagram icon"></i></a></li>
+                  <li><a href="https://instagram.com/aaronpk_2d" rel="me"><i class="instagram icon"></i></a></li>
+                  <li><a href="http://flickr.com/aaronpk" rel="me"><i class="flickr icon"></i></a></li>
+                  <li><a href="https://speakerdeck.com/aaronpk" rel="me"><i class="linkify icon"></i></a></li>
+                  <li><a href="http://www.slideshare.net/aaronpk" rel="me"><i class="slideshare icon"></i></a></li>
+                  <li><a href="http://www.last.fm/user/aaron_pk" rel="me"><i class="lastfm icon"></i></a></li>
+                  <li><a href="https://kit.co/aaronpk" rel="me"><i class="linkify icon"></i></a></li>
+                  <li><a href="https://www.duolingo.com/profile/aaronpk" rel="me"><i class="linkify icon"></i></a></li>
+                  <li><a href="https://www.w3.org/users/59996" rel="me"><i class="icon-w3c icon"></i></a></li>
+                  <li><a href="https://u.wechat.com/kKChiO-sSbgJQFf0UJrpHhE" rel="me"><i class="wechat icon"></i></a></li>
+                  <li><a href="https://www.amazon.com/shop/aaronparecki" rel="me"><i class="linkify icon"></i></a></li>
+                  <li><a href="https://www.amazon.com/gp/profile/amzn1.account.AHJ2OJ7NXSYM23FDDEDVZV2UR4MA" rel="me"><i class="linkify icon"></i></a></li>
+                  <li><a href="https://aaronparecki.com/aaronpk" rel="me"><i class="linkify icon"></i></a></li>
+                  <li><a href="https://cash.me/$aaronpk" rel="me payment"><i class="icon-squarecash icon"></i></a></li>
+                  <li><a href="https://venmo.com/aaronpk" rel="me payment"><i class="icon-venmo icon"></i></a></li>
+                  <li><a href="https://paypal.me/apk" rel="me payment"><i class="paypal icon"></i></a></li>
+                  <li><a href="mailto:aaron@parecki.com" rel="me"><i class="mail icon"></i></a></li>
+              </ul>
+    </div>
+  </div>
+  
+      <div class="footer">
+        <a href="/login" class="hidden-login"></a>
+        <div>
+          <span>&copy; 1999-2022 by Aaron Parecki.</span>
+          <span>Powered by <a href="https://indieweb.org/p3k">p3k</a>.</span>
+          <span>This site supports <a href="https://webmention.net/">Webmention</a>.</span>
+        </div>
+        <div>
+          <span>Except where otherwise noted, text content on this site is licensed
+            under a <a href="http://creativecommons.org/licenses/by/3.0/" rel="license">Creative Commons Attribution 3.0 License</a>.</span>
+        </div>
+        <div class="badges" style="padding-top: 8px;">
+          <a href="https://indieweb.org/"><img src="/assets/badges/indieweb.png" width="80" height="15" alt="IndieWebCamp" style="image-rendering: pixelated;"></a>
+          <a href="http://microformats.org/"><img src="/assets/badges/microformats.png" width="80" height="15" alt="Microformats" style="image-rendering: pixelated;"></a>
+          <a href="https://indieweb.org/Webmention"><img src="/assets/badges/webmention.png" width="80" height="15" alt="Webmention" style="image-rendering: pixelated;"></a>
+          <img src="/assets/badges/w3c-valid-html.png" width="80" height="15" alt="W3C HTML5" style="image-rendering: pixelated;">
+          <a href="http://creativecommons.org/licenses/by/3.0/"><img src="/assets/badges/cc-commons.png" width="80" height="15" alt="Creative Commons" style="image-rendering: pixelated;"></a>
+        </div>
+        <div class="webring">
+  <a href="https://xn--sr8hvo.ws/™️/previous">←</a> <a href="https://xn--sr8hvo.ws/">🕸💍</a> <a href="https://xn--sr8hvo.ws/™️/next">→</a>
+</div>
+      </div>
+    </footer>
+
+    <input type="hidden" id="permalink" value="">
+        
+    <div id="wechat-modal" class="hidden">
+      <div class="contents">
+        <div class="text">WeChat ID<br>aaronpk_tv</div>
+        <div class="img"><img src="/images/wechat.jpg"></div>
+      </div>
+    </div>
+        
+    <script src="/assets/photo-albums/justified-layout.js"></script>
+    <script src="/assets/photo-albums/photo-layout.js"></script>
+    <script src="/assets/js-cookie.js"></script>
+    <script src="/assets/blm.js" async></script>
+    <script src="/assets/story.js" async></script>
+
+    <script src="/assets/script.js"></script>
+    <script src="/assets/webmention.js"></script>
+
+    <script src="/assets/admin.js"></script>
+
+    <script>
+      // Lolz. https://www.youtube.com/watch?v=EZpdEljk5dY
+      // thanks seblog.nl!
+      let photo = document.querySelector('.about .image img')
+      if(photo) {
+        window.addEventListener('deviceorientation', (e) => {
+          let tiltLR = e.gamma; let tiltFB = e.beta;
+          photo.style.transform = `rotate(${tiltLR * -1}deg)`
+        })
+      }
+    </script>
+
+        <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-4617305-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+        
+        <script src="https://cdn.usefathom.com/script.js" site="JGWUQUCN" defer></script>
+    
+  </body>
+</html>
