@@ -21,7 +21,7 @@ to which they are granting access by authenticating with a service.
 
 To access the scope reference, import the following variable:
 
-..code-block:: python
+.. code-block:: python
 
     from indieweb_utils import SCOPE_DEFINITIONS
 
@@ -33,7 +33,7 @@ that is requesting a user to authenticate.
 
 You can do this using the following function:
 
-..autofunction:: indieweb_utils.get_h_app_item
+.. autofunction:: indieweb_utils.get_h_app_item
 
 This function returns an object with the name, logo, url, and summary found in a h-app item.
 
@@ -51,7 +51,7 @@ of the specified page. If a h-card is not provided, empty strings are returned.
 
 Usage information for this function is below.
 
-..autofunction:: indieweb_utils.get_profile
+.. autofunction:: indieweb_utils.get_profile
 
 Generate an authentication token
 --------------------------------
@@ -91,7 +91,7 @@ is valid.
 
 Here is the syntax for this function:
 
-..autofunction:: indieweb_utils.validate_authorization_response
+.. autofunction:: indieweb_utils.validate_authorization_response
 
 This function does not return a value if an authorization response is valid. If a response is invalid,
 an exception will be raised with a relevant error message.
@@ -116,7 +116,7 @@ a token for a token endpoint.
 
 Here is the syntax for this function:
 
-..autofunction:: indieweb_utils.redeem_code
+.. autofunction:: indieweb_utils.redeem_code
 
 Validate an access token created by a token endpoint
 ----------------------------------------------------
@@ -133,4 +133,4 @@ If the code can be decoded, the me, client_id, and scope values will be returned
 
 Here is the syntax for the function:
 
-..autofunction:: indieweb_utils.validate_access_token
+.. autofunction:: indieweb_utils.validate_access_token
