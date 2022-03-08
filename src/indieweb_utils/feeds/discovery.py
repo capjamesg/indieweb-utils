@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List, Optional
+from typing import List, Optional, Dict
 from urllib import parse as url_parse
 
 import mf2py
@@ -70,7 +70,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     return feeds
 
 
-def discover_h_feed(url: str) -> dict:
+def discover_h_feed(url: str) -> Dict:
     """
     Find the main h-feed that represents a web page as per the h-feed Discovery algorithm.
 
@@ -93,12 +93,12 @@ def discover_h_feed(url: str) -> dict:
 
         parsed_feed = mf2py.parse(url=feed)
 
-        h_feed = [item for item in parsed_feed["items"] if item.get("type", [])[0] == "h-feed"]
+        h_feed = [item for item in parsed_feed["items"] if item.get("type") and item.get("type")[0] == "h-feed"]
 
         if h_feed:
             return h_feed[0]
 
-    h_feed = [item for item in parsed_main_page_mf2["items"] if item.get("type", [])[0] == "h-feed"]
+    h_feed = [item for item in parsed_main_page_mf2["items"] if item.get("type") and item.get("type")[0] == "h-feed"]
 
     if h_feed:
         return h_feed[0]
