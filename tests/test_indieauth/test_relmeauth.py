@@ -1,4 +1,5 @@
 import pytest
+import responses
 
 
 class TestRelMeAuthLinkDiscovery:
@@ -8,10 +9,10 @@ class TestRelMeAuthLinkDiscovery:
 
         return get_valid_relmeauth_links
 
-    def test_rel_me_auth_link_discovery(self, target):
+    def test_rel_me_auth_link_discovery(self, target, index):
         # NOTE: This test will take a few seconds as it executes multiple requests.
         url = "https://jamesg.blog"
 
-        links = target(url)
+        responses.add(responses.Response(method="GET", url=url, body=index))
 
-        assert links == ["https://indieweb.social/@capjamesg"]
+        assert target(url) == ["https://indieweb.social/@capjamesg"]
