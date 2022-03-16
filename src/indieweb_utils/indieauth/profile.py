@@ -27,7 +27,7 @@ def get_profile(me: str) -> Profile:
     :type me: str
     :return: The profile information.
     :rtype: Profile
-    
+
     Get a profile from a url.
 
     :param me: The url to get the profile from.
