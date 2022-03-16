@@ -5,6 +5,7 @@ from .indieauth import (
     _validate_indieauth_response,
     get_h_app_item,
     get_profile,
+    get_valid_relmeauth_links,
     is_authenticated,
     redeem_code,
     validate_access_token,
