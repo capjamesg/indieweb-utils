@@ -1,9 +1,16 @@
+from dataclasses import dataclass
 from typing import Any, Dict
 
 import mf2py
 
 
 class RepresentativeHCardParsingError(Exception):
+    pass
+
+
+@dataclass
+class RepresentativeHCard:
+    # TODO: Fill this out with a full h-card object
     pass
 
 

@@ -19,5 +19,11 @@ def index() -> str:
 
 
 @pytest.fixture
+def representative_index() -> str:
+    with open("tests/fixtures/representative_page.html") as f:
+        return f.read()
+
+
+@pytest.fixture
 def index_url() -> str:
     return "https://jamesg.blog/"
