@@ -15,6 +15,20 @@ def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = 
     :type protocol: str or None
     :return: The canonical URL.
     :rtype: str
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "/contact"
+        domain = "jamesg.blog"
+        protocol = "https"
+
+        endpoints = indieweb_utils.canonicalize_url(
+            url, domain, protocol=protocol
+        )
+
+        print(webmention_endpoint) # https://jamesg.blog/contact/
     """
 
     if _is_http_url(url):

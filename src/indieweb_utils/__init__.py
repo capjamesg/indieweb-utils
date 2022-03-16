@@ -10,7 +10,7 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
 
 __all__ = [
     "discover_web_page_feeds",
