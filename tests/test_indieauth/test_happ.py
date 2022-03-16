@@ -15,9 +15,8 @@ def test_handles_missing_name():
     """
 
     client_id = "https://example.com"
-    redirect_uri = "https://example.com/authorize"
 
-    response = happ.get_h_app_item(web_page, client_id, redirect_uri)
+    response = happ.get_h_app_item(web_page, client_id)
     assert response.name == "Application Name"
     assert response.url == "https://example.com"
     assert response.logo == "https://example.com/me.jpg"

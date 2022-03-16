@@ -22,7 +22,7 @@ class WebmentionCheckResponse:
     vouch_check_has_passed: bool
 
 
-def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
+def _process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
     """
     use vouch to flag webmentions for moderation
     see Vouch spec for more: https://indieweb.org/Vouch
@@ -35,26 +35,25 @@ def process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
     if vouch and vouch != "":
         vouch_domain = url_parse.urlparse(vouch).netloc
 
-        if moderate:
-            if vouch_domain in vouch_list:
-                try:
-                    r = requests.get(vouch, timeout=5)
-                except requests.exceptions.RequestException:
-                    return moderate
+        if vouch_domain in vouch_list:
+            try:
+                r = requests.get(vouch, timeout=5)
+            except requests.exceptions.RequestException:
+                return moderate
 
-                soup = BeautifulSoup(r.text, "html.parser")
+            soup = BeautifulSoup(r.text, "html.parser")
 
-                # find hyperlink with source
-                # required for a vouch to be valid
-                for anchor in soup.find_all("a"):
-                    if anchor.get("href"):
-                        if anchor["href"] == source:
-                            moderate = False
+            # find hyperlink with source
+            # required for a vouch to be valid
+            for anchor in soup.find_all("a"):
+                if anchor.get("href"):
+                    if anchor["href"] == source:
+                        moderate = False
 
     return moderate
 
 
-def validate_headers(request_item):
+def _validate_headers(request_item):
     if request_item.headers.get("Content-Length"):
         if int(request_item.headers["Content-Length"]) > 10000000:
             raise WebmentionValidationError("Source is too large.")
@@ -95,7 +94,7 @@ def _retrieve_webmention_target(source: str) -> BeautifulSoup:
     try:
         check_source_size = session.head(source, timeout=5)
 
-        validated_headers = validate_headers(check_source_size)
+        validated_headers = _validate_headers(check_source_size)
     except requests.exceptions.TooManyRedirects:
         raise WebmentionValidationError("Source redirected too many times.")
     except requests.exceptions.Timeout:
@@ -110,7 +109,7 @@ def _retrieve_webmention_target(source: str) -> BeautifulSoup:
         raise WebmentionValidationError("Source could not be retrieved.")
 
     if validated_headers is False:
-        validated_headers = validate_headers(check_source_size)
+        validated_headers = _validate_headers(check_source_size)
 
     if get_source_for_validation.status_code == 410:
         raise WebmentionIsGone("Webmention source returned 410 Gone code.")
@@ -140,6 +139,21 @@ def validate_webmention(
     :return: Boolean to indicate webmention is valid, boolean
         stating whether the vouch check has passed.
     :rtype: bool, bool
+
+    Here is an example of a workflow for validating a webmention:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        source = "https://jamesg.blog/"
+        target = "https://jamesg.blog/mugs/"
+
+        webmention_is_valid = indieweb_utils.validate_webmention(
+            source, target
+        )
+
+        print(webmention_is_valid) # Should return True
     """
 
     if source.strip("/") == target.strip("/"):
@@ -171,6 +185,6 @@ def validate_webmention(
     if not contains_valid_link_to_target:
         raise WebmentionValidationError("Source does not contain a link to target.")
 
-    moderate = process_vouch(vouch, source, vouch_list)
+    moderate = _process_vouch(vouch, source, vouch_list)
 
     return WebmentionCheckResponse(webmention_is_valid=True, vouch_check_has_passed=moderate)

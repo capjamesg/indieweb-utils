@@ -1,4 +1,5 @@
 # Imports added for API backwards compatibility
+
 from .feeds import FeedUrl, discover_web_page_feeds
 from .indieauth import (
     _validate_indieauth_response,
@@ -20,7 +21,7 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
 
 __all__ = [
     "discover_web_page_feeds",
@@ -44,4 +45,5 @@ __all__ = [
     "validate_access_token",
     "_validate_indieauth_response",
     "redeem_code",
+    "get_valid_relmeauth_links",
 ]
