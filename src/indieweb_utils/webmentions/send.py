@@ -15,7 +15,19 @@ class SendWebmentionResponse:
     success: bool
 
 
-def send_webmention(source: str, target: str, me: str = ""):
+def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionResponse:
+    """
+    Send a webmention to a target URL.
+
+    :param source: The source URL of the webmention.
+    :type source: str
+    :param target: The target URL to which you want to send the webmention.
+    :type target: str
+    :param me: The URL of the user.
+    :type me: str
+    :return: The response from the webmention endpoint.
+    :rtype: SendWebmentionResponse
+    """
     if not source and not target:
         return SendWebmentionResponse(
             title="Error: A source or target was not provided.",

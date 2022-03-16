@@ -78,7 +78,7 @@ request.
 Validate an authorization response
 ----------------------------------
 
-The validate_authorization_response() function contains five checks:
+The _validate_indieauth_response() function contains five checks:
 
 1. Ensures the grant_type provided is authorization_code.
 2. Validates that a code, client_id, and redirect_uri are provided.
@@ -133,7 +133,7 @@ If the code can be decoded, the me, client_id, and scope values will be returned
 
 Here is the syntax for the function:
 
-..autofunction:: indieweb_utils.validate_access_token
+.. autofunction:: indieweb_utils.validate_access_token
 
 Retrieve Valid Links for Use in RelMeAuth
 -----------------------------------------
@@ -145,7 +145,7 @@ link back to the source.
 
 To check whether there is a two-way rel=me link between two resources, you can use this function:
 
-..autofunction:: indieweb_utils.get_valid_rel_me_links
+.. autofunction:: indieweb_utils.get_valid_rel_me_links
 
 This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
 rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,

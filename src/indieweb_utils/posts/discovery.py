@@ -268,6 +268,8 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
     :return: The type of the h-entry.
     :rtype: str
 
+    Here is an example of the function in action:
+
     .. code-block:: python
 
         import indieweb_utils

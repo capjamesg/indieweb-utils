@@ -21,27 +21,34 @@ class Profile:
 
 def get_profile(me: str) -> Profile:
     """
-        Get a profile from a url.
+    Return the profile information for the given me URL.
 
-        :param me: The url to get the profile from.
-        :type me: str
-        :return: The profile.
-        :rtype: Profile
+    :param me: The me URL to get the profile information for.
+    :type me: str
+    :return: The profile information.
+    :rtype: Profile
 
-        Example:
+    Get a profile from a url.
 
-        .. code-block:: python
+    :param me: The url to get the profile from.
+    :type me: str
+    :return: The profile.
+    :rtype: Profile
 
-            import indieweb_utils
+    Example:
 
-            me = "https://jamesg.blog"
+    .. code-block:: python
 
-            profile = indieweb_utils.get_profile(me)
+        import indieweb_utils
 
-    assert profile.email == "james@jamesg.blog"
-    assert profile.name == "James"
-    assert profile.photo == "https://jamesg.blog/me.jpg"
-    assert profile.url == "https://jamesg.blog
+        me = "https://jamesg.blog"
+
+        profile = indieweb_utils.get_profile(me)
+
+        assert profile.email == "james@jamesg.blog"
+        assert profile.name == "James"
+        assert profile.photo == "https://jamesg.blog/me.jpg"
+        assert profile.url == "https://jamesg.blog
     """
 
     try:

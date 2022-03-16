@@ -9,7 +9,7 @@ project = "IndieWeb Utils"
 copyright = "capjamesg 2021"
 author = "capjamesg"
 
-sys.path.insert(0, os.path.abspath("../../"))
+sys.path.insert(0, os.path.abspath("../../src/"))
 
 release = "0.2.0"
 version = "0.2.0"
@@ -21,6 +21,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
 ]
 
 intersphinx_mapping = {
