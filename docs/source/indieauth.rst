@@ -145,10 +145,10 @@ link back to the source.
 
 To check whether there is a two-way rel=me link between two resources, you can use this function:
 
-.. autofunction:: indieweb_utils.get_valid_rel_me_links
+.. autofunction:: indieweb_utils.get_valid_relmeauth_links
 
 This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
 rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
 if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user,
-even if the get_valid_rel_me_links() function found a valid two-way rel=me link.
+even if the get_valid_relmeauth_links() function found a valid two-way rel=me link.
 
