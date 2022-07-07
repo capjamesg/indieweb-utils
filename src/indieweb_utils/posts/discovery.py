@@ -194,7 +194,7 @@ def discover_author(url: str, page_contents: str = "") -> dict:
 
         parsed_mf2 = mf2py.parse(url=url)
 
-        post_author = indieweb_utils.get_post_type(
+        post_author = indieweb_utils.discover_author(
             h_entry
         )
 
