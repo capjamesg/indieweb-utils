@@ -43,7 +43,6 @@ class SendWebmentionResponse:
     title: str
     description: str
     url: str
-    success: bool
     status_code: Optional[int]
     headers: List[Header]
 
@@ -107,5 +106,5 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
         raise GenericWebmentionError(message)
 
     return SendWebmentionResponse(
-        title=message, description=message, url=target, success=True, status_code=r.status_code, headers=headers
+        title=message, description=message, url=target, status_code=r.status_code, headers=headers
     )
