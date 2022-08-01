@@ -15,4 +15,4 @@ class TestRelMeAuthLinkDiscovery:
 
         responses.add(responses.Response(method="GET", url=url, body=index))
 
-        assert target(url) == ["https://indieweb.social/@capjamesg"]
+        assert target(url) == ["https://sr.ht/~capjamesg/"]

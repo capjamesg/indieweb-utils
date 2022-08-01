@@ -14,6 +14,30 @@ class Header:
     value: str
 
 
+class MissingSourceError(Exception):
+    pass
+
+
+class MissingTargetError(Exception):
+    pass
+
+
+class UnsupportedProtocolError(Exception):
+    pass
+
+
+class TargetIsNotApprovedDomain(Exception):
+    pass
+
+
+class GenericWebmentionError(Exception):
+    pass
+
+
+class CouldNotConnectToWebmentionEndpoint(Exception):
+    pass
+
+
 @dataclass
 class SendWebmentionResponse:
     title: str
@@ -37,25 +61,14 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     :return: The response from the webmention endpoint.
     :rtype: SendWebmentionResponse
     """
-    if not source and not target:
-        return SendWebmentionResponse(
-            title="Error: A source or target was not provided.",
-            description="Error: A source or target was not provided.",
-            url=target,
-            success=False,
-            status_code=None,
-            headers=[],
-        )
+    if not source:
+        raise MissingSourceError("A source was not provided.")
+
+    if not target:
+        raise MissingTargetError("A target was not provided.")
 
     if not _is_http_url(source) or not _is_http_url(target):
-        return SendWebmentionResponse(
-            title="Error: Source and target must use a http:// or https:// protocol.",
-            description="Error: Source and target must use a http:// or https:// protocol.",
-            url=target,
-            success=False,
-            status_code=None,
-            headers=[],
-        )
+        raise UnsupportedProtocolError("Only HTTP/HTTPS URLs are supported.")
 
     # if domain is not approved, don't allow access
     if me != "":
@@ -67,26 +80,12 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
             raw_domain = me
 
         if not target_domain.endswith(raw_domain):
-            return SendWebmentionResponse(
-                title=f"Error: Target must be a {me} post.",
-                description=f"Error: Target must be a {me} post.",
-                url=target,
-                success=False,
-                status_code=None,
-                headers=[],
-            )
+            raise TargetIsNotApprovedDomain("Target must be a {me} post.")
 
     response = discovery.discover_webmention_endpoint(target)
 
     if response.endpoint == "":
-        return SendWebmentionResponse(
-            title=f"Error: {response.message}",
-            description=response.endpoint,
-            url=target,
-            success=False,
-            status_code=None,
-            headers=[],
-        )
+        raise GenericWebmentionError(response.message)
 
     # make post request to endpoint with source and target as values
     try:
@@ -96,14 +95,7 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
     except requests.exceptions.RequestException:
-        return SendWebmentionResponse(
-            title="Error: Could not connect to the receiver's endpoint.",
-            description="Error: Could not connect to the receiver's endpoint.",
-            url=target,
-            success=False,
-            status_code=None,
-            headers=[],
-        )
+        raise CouldNotConnectToWebmentionEndpoint("Could not connect to the receiver's webmention endpoint.")
 
     message = str(r.json()["message"])
 
@@ -112,15 +104,7 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     headers = [Header(name=str(k), value=str(v)) for k, v in r.headers.items()]
 
     if r.status_code not in valid_status_codes:
-
-        return SendWebmentionResponse(
-            title=f"Error: {message}",
-            description=message,
-            url=target,
-            success=False,
-            status_code=r.status_code,
-            headers=headers,
-        )
+        raise GenericWebmentionError(message)
 
     return SendWebmentionResponse(
         title=message, description=message, url=target, success=True, status_code=r.status_code, headers=headers
