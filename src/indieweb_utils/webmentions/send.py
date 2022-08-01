@@ -47,6 +47,20 @@ class SendWebmentionResponse:
     headers: List[Header]
 
 
+def _validate_webmention(source: str, target: str):
+    """
+    Check if a webmention has a provided source, target, and valid protocol.
+    """
+    if not source or source == "":
+        raise MissingSourceError("A source was not provided.")
+
+    if not target or target == "":
+        raise MissingTargetError("A target was not provided.")
+
+    if not _is_http_url(source) or not _is_http_url(target):
+        raise UnsupportedProtocolError("Only HTTP/HTTPS URLs are supported.")
+
+
 def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionResponse:
     """
     Send a webmention to a target URL.
@@ -60,23 +74,17 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     :return: The response from the webmention endpoint.
     :rtype: SendWebmentionResponse
     """
-    if not source:
-        raise MissingSourceError("A source was not provided.")
 
-    if not target:
-        raise MissingTargetError("A target was not provided.")
-
-    if not _is_http_url(source) or not _is_http_url(target):
-        raise UnsupportedProtocolError("Only HTTP/HTTPS URLs are supported.")
+    _validate_webmention(source, target)
 
     # if domain is not approved, don't allow access
     if me != "":
         target_domain = url_parse.urlsplit(target).scheme
 
+        raw_domain = me
+
         if "/" in me.strip("/"):
             raw_domain = url_parse.urlsplit(me).scheme
-        else:
-            raw_domain = me
 
         if not target_domain.endswith(raw_domain):
             raise TargetIsNotApprovedDomain("Target must be a {me} post.")
