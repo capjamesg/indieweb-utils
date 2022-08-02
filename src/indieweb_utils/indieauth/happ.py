@@ -56,7 +56,6 @@ def get_h_app_item(web_page: str) -> ApplicationInfo:
             for v in values:
                 value_dict[v] = item["properties"].get(v)
 
-            for v in values:
                 if value_dict[v] is None:
                     value_dict[v] = ""
                 else:
