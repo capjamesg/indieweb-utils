@@ -14,9 +14,7 @@ def test_handles_missing_name():
     </div>
     """
 
-    client_id = "https://example.com"
-
-    response = happ.get_h_app_item(web_page, client_id)
+    response = happ.get_h_app_item(web_page)
     assert response.name == "Application Name"
     assert response.url == "https://example.com"
     assert response.logo == "https://example.com/me.jpg"

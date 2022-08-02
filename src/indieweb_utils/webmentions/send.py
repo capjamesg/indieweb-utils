@@ -95,7 +95,7 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     response = discovery.discover_webmention_endpoint(target)
 
     if response.endpoint == "":
-        raise GenericWebmentionError(response.message)
+        raise GenericWebmentionError("No webmention endpoint was found.")
 
     # make post request to endpoint with source and target as values
     try:

@@ -374,9 +374,12 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
     if page_content.status_code != 200:
         raise ReplyContextRetrievalError(f"Page returned a {page_content.status_code} response.")
 
-    webmention_endpoint_url_response = discover_webmention_endpoint(url)
+    try:
+        webmention_endpoint_url_response = discover_webmention_endpoint(url)
 
-    webmention_endpoint_url = webmention_endpoint_url_response.endpoint
+        webmention_endpoint_url = webmention_endpoint_url_response.endpoint
+    except Exception:
+        webmention_endpoint_url = ""
 
     parsed = mf2py.parse(doc=page_content.text)
 
