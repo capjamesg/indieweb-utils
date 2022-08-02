@@ -23,6 +23,9 @@ class MissingTargetError(Exception):
 
 
 class UnsupportedProtocolError(Exception):
+    """
+    Raised if a provided webmention source or target uses a protocol other than http:// or https://.
+    """
     pass
 
 
@@ -51,10 +54,10 @@ def _validate_webmention(source: str, target: str):
     """
     Check if a webmention has a provided source, target, and valid protocol.
     """
-    if not source or source == "":
+    if not source:
         raise MissingSourceError("A source was not provided.")
 
-    if not target or target == "":
+    if not target:
         raise MissingTargetError("A target was not provided.")
 
     if not _is_http_url(source) or not _is_http_url(target):

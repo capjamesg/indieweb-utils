@@ -16,15 +16,20 @@ class WebmentionDiscoveryResponse:
     endpoint: str
 
 
-class NoTargetProvided(Exception):
+class TargetNotProvided(Exception):
     pass
 
 
-class NoWebmentionEndpointFound(Exception):
+class WebmentionEndpointNotFound(Exception):
     pass
 
 
 class UnacceptableIPAddress(Exception):
+    """
+    Raised if an IP address for a webmention endpoint does not resolve on the public internet.
+
+    Local, loopback, private, reserved, and multicast IP addresses are not acceptable.
+    """
     pass
 
 
@@ -54,14 +59,14 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
         print(webmention_endpoint) # https://webmention.jamesg.blog/webmention
     """
     if not target:
-        raise NoTargetProvided("No target provided.")
+        raise TargetNotProvided("No target provided.")
 
     endpoints = _discover_endpoints(target, [_WEBMENTION])
 
     endpoint = endpoints.get("webmention", None)
 
     if endpoint is None:
-        raise NoWebmentionEndpointFound("No webmention endpoint could be found for this resource.")
+        raise WebmentionEndpointNotFound("No webmention endpoint could be found for this resource.")
 
     # verify if IP address is not allowed
     try:

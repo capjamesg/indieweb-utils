@@ -11,11 +11,11 @@ class ApplicationInfo:
     summary: str
 
 
-class NoHAppFound(Exception):
+class HAppNotFound(Exception):
     pass
 
 
-def get_h_app_item(web_page: str, client_id: str) -> ApplicationInfo:
+def get_h_app_item(web_page: str) -> ApplicationInfo:
     """
     Get the h-app item from the web page.
 
@@ -45,7 +45,7 @@ def get_h_app_item(web_page: str, client_id: str) -> ApplicationInfo:
     parsed_document = mf2py.parse(web_page)
 
     if not parsed_document:
-        raise NoHAppFound("No h-app mf2 data was found on the specified page.")
+        raise HAppNotFound("No h-app mf2 data was found on the specified page.")
 
     for item in parsed_document["items"]:
         if item.get("type") and item.get("type")[0] == "h-app":
@@ -64,4 +64,4 @@ def get_h_app_item(web_page: str, client_id: str) -> ApplicationInfo:
 
             return ApplicationInfo(**value_dict)
 
-    raise NoHAppFound("No h-app mf2 data was found on the specified page.")
+    raise HAppNotFound("No h-app mf2 data was found on the specified page.")

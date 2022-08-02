@@ -31,13 +31,11 @@ class ReplyContext:
 
 
 class ReplyContextRetrievalError(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 class UnsupportedScheme(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 def _get_author_properties(author_url: str, h_entry: dict) -> Tuple[str, str, str]:
