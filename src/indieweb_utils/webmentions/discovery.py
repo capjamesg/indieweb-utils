@@ -30,7 +30,6 @@ class UnacceptableIPAddress(Exception):
 
     Local, loopback, private, reserved, and multicast IP addresses are not acceptable.
     """
-    pass
 
 
 class LocalhostEndpointFound(Exception):

@@ -7,7 +7,13 @@ import requests
 from bs4 import BeautifulSoup
 
 from ..utils.urls import _is_http_url, canonicalize_url
-from ..webmentions.discovery import discover_webmention_endpoint
+from ..webmentions.discovery import (
+    LocalhostEndpointFound,
+    TargetNotProvided,
+    UnacceptableIPAddress,
+    WebmentionEndpointNotFound,
+    discover_webmention_endpoint,
+)
 
 
 @dataclass
@@ -378,7 +384,7 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
         webmention_endpoint_url_response = discover_webmention_endpoint(url)
 
         webmention_endpoint_url = webmention_endpoint_url_response.endpoint
-    except Exception:
+    except (TargetNotProvided, WebmentionEndpointNotFound, UnacceptableIPAddress, LocalhostEndpointFound):
         webmention_endpoint_url = ""
 
     parsed = mf2py.parse(doc=page_content.text)

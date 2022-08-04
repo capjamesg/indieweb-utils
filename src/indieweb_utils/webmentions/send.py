@@ -26,6 +26,7 @@ class UnsupportedProtocolError(Exception):
     """
     Raised if a provided webmention source or target uses a protocol other than http:// or https://.
     """
+
     pass
 
 
