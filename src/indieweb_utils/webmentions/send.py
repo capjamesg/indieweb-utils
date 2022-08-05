@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List, Optional
 from urllib import parse as url_parse
 
 import requests
@@ -8,11 +9,60 @@ from . import discovery
 
 
 @dataclass
+class Header:
+    name: str
+    value: str
+
+
+class MissingSourceError(Exception):
+    pass
+
+
+class MissingTargetError(Exception):
+    pass
+
+
+class UnsupportedProtocolError(Exception):
+    """
+    Raised if a provided webmention source or target uses a protocol other than http:// or https://.
+    """
+
+    pass
+
+
+class TargetIsNotApprovedDomain(Exception):
+    pass
+
+
+class GenericWebmentionError(Exception):
+    pass
+
+
+class CouldNotConnectToWebmentionEndpoint(Exception):
+    pass
+
+
+@dataclass
 class SendWebmentionResponse:
     title: str
     description: str
     url: str
-    success: bool
+    status_code: Optional[int]
+    headers: List[Header]
+
+
+def _validate_webmention(source: str, target: str):
+    """
+    Check if a webmention has a provided source, target, and valid protocol.
+    """
+    if not source:
+        raise MissingSourceError("A source was not provided.")
+
+    if not target:
+        raise MissingTargetError("A target was not provided.")
+
+    if not _is_http_url(source) or not _is_http_url(target):
+        raise UnsupportedProtocolError("Only HTTP/HTTPS URLs are supported.")
 
 
 def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionResponse:
@@ -28,48 +78,25 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     :return: The response from the webmention endpoint.
     :rtype: SendWebmentionResponse
     """
-    if not source and not target:
-        return SendWebmentionResponse(
-            title="Error: A source or target was not provided.",
-            description="Error: A source or target was not provided.",
-            url=target,
-            success=False,
-        )
 
-    if not _is_http_url(source) or not _is_http_url(target):
-        return SendWebmentionResponse(
-            title="Error: Source and target must use a http:// or https:// protocol.",
-            description="Error: Source and target must use a http:// or https:// protocol.",
-            url=target,
-            success=False,
-        )
+    _validate_webmention(source, target)
 
     # if domain is not approved, don't allow access
     if me != "":
         target_domain = url_parse.urlsplit(target).scheme
 
+        raw_domain = me
+
         if "/" in me.strip("/"):
             raw_domain = url_parse.urlsplit(me).scheme
-        else:
-            raw_domain = me
 
         if not target_domain.endswith(raw_domain):
-            return SendWebmentionResponse(
-                title=f"Error: Target must be a {me} post.",
-                description=f"Error: Target must be a {me} post.",
-                url=target,
-                success=False,
-            )
+            raise TargetIsNotApprovedDomain("Target must be a {me} post.")
 
     response = discovery.discover_webmention_endpoint(target)
 
     if response.endpoint == "":
-        return SendWebmentionResponse(
-            title=f"Error: {response.message}",
-            description=response.endpoint,
-            url=target,
-            success=False,
-        )
+        raise GenericWebmentionError("No webmention endpoint was found.")
 
     # make post request to endpoint with source and target as values
     try:
@@ -79,23 +106,17 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
     except requests.exceptions.RequestException:
-        return SendWebmentionResponse(
-            title="Error: Could not connect to the receiver's endpoint.",
-            description="Error: Could not connect to the receiver's endpoint.",
-            url=target,
-            success=False,
-        )
+        raise CouldNotConnectToWebmentionEndpoint("Could not connect to the receiver's webmention endpoint.")
 
     message = str(r.json()["message"])
 
     valid_status_codes = (200, 201, 202)
 
-    if r.status_code not in valid_status_codes:
-        return SendWebmentionResponse(
-            title=f"Error: {message}",
-            description=message,
-            url=target,
-            success=False,
-        )
+    headers = [Header(name=str(k), value=str(v)) for k, v in r.headers.items()]
 
-    return SendWebmentionResponse(title=message, description=message, url=target, success=True)
+    if r.status_code not in valid_status_codes:
+        raise GenericWebmentionError(message)
+
+    return SendWebmentionResponse(
+        title=message, description=message, url=target, status_code=r.status_code, headers=headers
+    )

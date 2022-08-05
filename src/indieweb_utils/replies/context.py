@@ -7,7 +7,13 @@ import requests
 from bs4 import BeautifulSoup
 
 from ..utils.urls import _is_http_url, canonicalize_url
-from ..webmentions.discovery import discover_webmention_endpoint
+from ..webmentions.discovery import (
+    LocalhostEndpointFound,
+    TargetNotProvided,
+    UnacceptableIPAddress,
+    WebmentionEndpointNotFound,
+    discover_webmention_endpoint,
+)
 
 
 @dataclass
@@ -31,13 +37,11 @@ class ReplyContext:
 
 
 class ReplyContextRetrievalError(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 class UnsupportedScheme(Exception):
-    def __init__(self, message):
-        self.message = message
+    pass
 
 
 def _get_author_properties(author_url: str, h_entry: dict) -> Tuple[str, str, str]:
@@ -376,9 +380,12 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
     if page_content.status_code != 200:
         raise ReplyContextRetrievalError(f"Page returned a {page_content.status_code} response.")
 
-    webmention_endpoint_url_response = discover_webmention_endpoint(url)
+    try:
+        webmention_endpoint_url_response = discover_webmention_endpoint(url)
 
-    webmention_endpoint_url = webmention_endpoint_url_response.endpoint
+        webmention_endpoint_url = webmention_endpoint_url_response.endpoint
+    except (TargetNotProvided, WebmentionEndpointNotFound, UnacceptableIPAddress, LocalhostEndpointFound):
+        webmention_endpoint_url = ""
 
     parsed = mf2py.parse(doc=page_content.text)
 
