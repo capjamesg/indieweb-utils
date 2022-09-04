@@ -84,29 +84,35 @@ def _check_for_link_to_target(validation_source: requests.Response, target) -> b
     return contains_valid_link_to_target
 
 
-def _retrieve_webmention_target(source: str) -> BeautifulSoup:
+def _retrieve_webmention_target(source: str, target_request) -> BeautifulSoup:
     # Only allow 3 redirects before raising an error
-    session = requests.Session()
-    session.max_redirects = 3
 
-    validated_headers = False
+    if target_request:
+        validated_headers = _validate_headers(target_request)
 
-    try:
-        check_source_size = session.head(source, timeout=5)
+        get_source_for_validation = target_request
+    else:
+        session = requests.Session()
+        session.max_redirects = 3
 
-        validated_headers = _validate_headers(check_source_size)
-    except requests.exceptions.TooManyRedirects:
-        raise WebmentionValidationError("Source redirected too many times.")
-    except requests.exceptions.Timeout:
-        raise WebmentionValidationError("Source timed out.")
-    except requests.exceptions.RequestException:
-        # pass because HEAD request might not be recognised / processed by the client
-        pass
+        validated_headers = False
 
-    try:
-        get_source_for_validation = session.get(source)
-    except requests.exceptions.RequestException:
-        raise WebmentionValidationError("Source could not be retrieved.")
+        try:
+            check_source_size = session.head(source, timeout=5)
+
+            validated_headers = _validate_headers(check_source_size)
+        except requests.exceptions.TooManyRedirects:
+            raise WebmentionValidationError("Source redirected too many times.")
+        except requests.exceptions.Timeout:
+            raise WebmentionValidationError("Source timed out.")
+        except requests.exceptions.RequestException:
+            # pass because HEAD request might not be recognised / processed by the client
+            pass
+
+        try:
+            get_source_for_validation = session.get(source)
+        except requests.exceptions.RequestException:
+            raise WebmentionValidationError("Source could not be retrieved.")
 
     if validated_headers is False:
         validated_headers = _validate_headers(check_source_size)
@@ -123,7 +129,7 @@ def _retrieve_webmention_target(source: str) -> BeautifulSoup:
 
 
 def validate_webmention(
-    source: str, target: str, vouch: str = "", vouch_list: List[str] = []
+    source: str, target: str, vouch: str = "", vouch_list: List[str] = [], target_request: requests.Response = ""
 ) -> WebmentionCheckResponse:
     """
     Check if a webmention is valid.
@@ -168,7 +174,7 @@ def validate_webmention(
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
 
-    parsed_page = _retrieve_webmention_target(source)
+    parsed_page = _retrieve_webmention_target(source, target_request)
 
     # get all <link> tags
     meta_links = parsed_page.find_all("link")
