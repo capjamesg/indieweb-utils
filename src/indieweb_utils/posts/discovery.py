@@ -203,7 +203,7 @@ def discover_author(url: str, html: str = "", parsed_mf2: mf2py.Parser = None) -
         print(post_author) # A h-card object representing the post author.
     """
 
-    full_page = get_parsed_mf2_data(parsed_mf2, html, str)
+    full_page = get_parsed_mf2_data(parsed_mf2, html, url)
 
     preliminary_author = None
 
@@ -257,7 +257,7 @@ def discover_author(url: str, html: str = "", parsed_mf2: mf2py.Parser = None) -
     return {}
 
 
-def get_post_type(h_entry: dict = "", custom_properties: List[Tuple[str, str]] = []) -> str:
+def get_post_type(h_entry: dict = {}, custom_properties: List[Tuple[str, str]] = []) -> str:
     """
     Return the type of a h-entry per the Post Type Discovery algorithm.
 

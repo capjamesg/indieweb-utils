@@ -2,6 +2,8 @@ from typing import List, Set
 from urllib.parse import urlparse as parse_url
 
 import mf2py
+import requests
+from bs4 import BeautifulSoup
 
 from ..parsing.parse import get_parsed_mf2_data
 from ..utils.urls import canonicalize_url

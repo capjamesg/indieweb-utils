@@ -1,9 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import requests
-from bs4 import BeautifulSoup
-
 from ..parsing.parse import get_soup
 from . import constants
 
