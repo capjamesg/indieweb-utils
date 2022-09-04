@@ -6,6 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
+from ..parsing.parse import get_parsed_mf2_data, get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 
 # This regex identifies permashortlink citations in the form of (example.com slug)
@@ -81,7 +82,7 @@ def _check_for_link_in_post(last_text: BeautifulSoup) -> str:
     return candidate_url
 
 
-def discover_original_post(posse_permalink: str) -> str:
+def discover_original_post(posse_permalink: str, soup: BeautifulSoup = None, html: str = "") -> str:
     """
     Find the original version of a post per the Original Post Discovery algorithm.
 
@@ -92,7 +93,8 @@ def discover_original_post(posse_permalink: str) -> str:
     :return: The original post permalink.
     :rtype: str
     """
-    parsed_post = BeautifulSoup(posse_permalink, "lxml")
+
+    parsed_post = get_soup(html, soup, posse_permalink)
 
     # Get the post h-entry
 
@@ -173,7 +175,7 @@ def _discover_h_card_from_author_page(author_url: str, rel_author: str) -> dict:
     return {}
 
 
-def discover_author(url: str, page_contents: str = "") -> dict:
+def discover_author(url: str, html: str = "", parsed_mf2: mf2py.Parser = None) -> dict:
     """
     Discover the author of a post per the IndieWeb Authorship specification.
 
@@ -200,10 +202,8 @@ def discover_author(url: str, page_contents: str = "") -> dict:
 
         print(post_author) # A h-card object representing the post author.
     """
-    if page_contents != "":
-        full_page = mf2py.parse(doc=page_contents)
-    else:
-        full_page = mf2py.parse(url=url)
+
+    full_page = get_parsed_mf2_data(parsed_mf2, html, str)
 
     preliminary_author = None
 
@@ -257,7 +257,7 @@ def discover_author(url: str, page_contents: str = "") -> dict:
     return {}
 
 
-def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) -> str:
+def get_post_type(h_entry: dict = "", custom_properties: List[Tuple[str, str]] = []) -> str:
     """
     Return the type of a h-entry per the Post Type Discovery algorithm.
 
@@ -287,6 +287,7 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
 
         print(post_type) # article
     """
+
     post = h_entry.get("properties")
 
     if post is None:

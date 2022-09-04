@@ -17,7 +17,9 @@ class FeedUrl:
     title: str
 
 
-def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None) -> List[FeedUrl]:
+def discover_web_page_feeds(
+    url: str, user_mime_types: Optional[List[str]] = None, web_page_request: requests.Response = None
+) -> List[FeedUrl]:
     """
     Get all feeds on a web page.
 
@@ -47,12 +49,16 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
         url = "https://" + url
     elif url.startswith("//"):
         url = "https:" + url
-    try:
-        web_page_request = requests.get(url, timeout=10, allow_redirects=True)
 
+    if web_page_request:
         web_page = web_page_request.text
-    except requests.exceptions.RequestException:
-        return []
+    else:
+        try:
+            web_page_request = requests.get(url, timeout=10, allow_redirects=True)
+
+            web_page = web_page_request.text
+        except requests.exceptions.RequestException as exception:
+            raise exception
 
     soup = BeautifulSoup(web_page, "lxml")
 

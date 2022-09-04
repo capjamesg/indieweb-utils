@@ -3,6 +3,8 @@ from typing import Any, Dict
 
 import mf2py
 
+from ..parsing.parse import get_parsed_mf2_data
+
 
 class RepresentativeHCardParsingError(Exception):
     pass
@@ -14,7 +16,7 @@ class RepresentativeHCard:
     pass
 
 
-def get_representative_h_card(url: str) -> Dict[str, Any]:
+def get_representative_h_card(url: str, html: str = "", parsed_mf2: mf2py.Parser = None) -> Dict[str, Any]:
     """
     Get the representative h-card on a page per the Representative h-card Parsing algorithm.
 
@@ -25,7 +27,8 @@ def get_representative_h_card(url: str) -> Dict[str, Any]:
     :return: The representative h-card.
     :rtype: dict
     """
-    mf2_data = mf2py.parse(url=url)
+
+    mf2_data = get_parsed_mf2_data(parsed_mf2, html, url)
 
     if not mf2_data:
         raise RepresentativeHCardParsingError("No mf2 data found.")

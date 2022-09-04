@@ -5,10 +5,13 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
+from ..parsing.parse import get_parsed_mf2_data
 from ..utils.urls import canonicalize_url
 
 
-def get_valid_relmeauth_links(url: str, require_rel_me_link_back: bool = True) -> List[str]:
+def get_valid_relmeauth_links(
+    url: str, require_rel_me_link_back: bool = True, html: str = "", parsed_mf2: mf2py.Parser = ""
+) -> List[str]:
     """
     Get the valid links on a page that point back to a rel=me URL per RelMeAuth.
 
@@ -39,11 +42,12 @@ def get_valid_relmeauth_links(url: str, require_rel_me_link_back: bool = True) -
         for link in valid_relmeauth_links:
             print(link)
     """
+
     domain = parse_url(url).netloc
 
     canonical_url = canonicalize_url(url, domain).strip("/")
 
-    mf2_data = mf2py.parse(url=canonical_url)
+    mf2_data = get_parsed_mf2_data(parsed_mf2, html, url)
 
     rel_me_links = mf2_data["rels"].get("me", [])
 

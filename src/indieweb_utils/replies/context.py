@@ -6,6 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
+from ..parsing.parse import get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 from ..webmentions.discovery import (
     LocalhostEndpointFound,
@@ -287,15 +288,16 @@ def _get_favicon(photo_url: str, domain: str) -> str:
 
 
 def _generate_reply_context_from_main_page(
-    url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+    url: str,
+    http_headers: dict,
+    domain: str,
+    webmention_endpoint_url: str,
+    summary_word_limit: int,
+    html: str = None,
+    soup: BeautifulSoup = None,
 ) -> ReplyContext:
 
-    try:
-        request = requests.get(url, headers=http_headers)
-    except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
-
-    soup = BeautifulSoup(request.text, "lxml")
+    soup = get_soup(html, soup, url, headers=http_headers)
 
     page_title = soup.find("title")
 
