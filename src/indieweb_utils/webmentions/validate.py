@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from urllib import parse as url_parse
 
 import requests
@@ -84,7 +84,7 @@ def _check_for_link_to_target(validation_source: requests.Response, target) -> b
     return contains_valid_link_to_target
 
 
-def _retrieve_webmention_target(source: str, target_request: requests.Request = None) -> BeautifulSoup:
+def _retrieve_webmention_target(source: str, target_request: requests.Request: Optional[requests.Request] = None) -> BeautifulSoup:
     # Only allow 3 redirects before raising an error
 
     if target_request:

@@ -27,6 +27,8 @@ def discover_web_page_feeds(
     :type url: str
     :param user_mime_types: A list of mime types whose associated feeds you want to retrieve.
     :type user_mime_types: Optional[List[str]]
+    :param web_page_request: A requests object you can specify to skip this function making a request if you have already retrieved the web page.
+    :type web_page_request: requests.Response
     :return: A list of FeedUrl objects.
 
     Example:
@@ -55,10 +57,10 @@ def discover_web_page_feeds(
     else:
         try:
             web_page_request = requests.get(url, timeout=10, allow_redirects=True)
+        except Exception as e:
+            raise Exception("Request to retrieve URL did not return a valid response.")
 
-            web_page = web_page_request.text
-        except requests.exceptions.RequestException as exception:
-            raise exception
+    web_page = web_page_request.text
 
     soup = BeautifulSoup(web_page, "lxml")
 
