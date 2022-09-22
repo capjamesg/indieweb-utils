@@ -4,12 +4,15 @@ Welcome to IndieWeb Utils documentation!
 **indieweb-utils** is a Python library that provides building blocks for people implementing IndieWeb applications.
 This library also contains implementations for some specifications that may be useful in IndieWeb applications.
 
-Check out the :doc:`usage` section for further information, including
-how to install the project.
+To install IndieWeb Utils, use this command:
 
-.. note::
+.. code-block:: bash
 
-   This project is under active development. 
+   pip3 install indieweb-utils
+
+Below, you will find links to all of the methods available in IndieWeb Utils.
+   
+This project is licensed under an MIT license.
 
 Contents
 --------
@@ -17,8 +20,6 @@ Contents
 .. toctree::
 
    contents
-   usage
-   indieauth
 
 Feature Set
 ----------------
@@ -33,17 +34,14 @@ This package provides functions that cater to the following needs:
 - Discovering the author of a post per the `Authorship <https://indieweb.org/authorship-spec>`_ Specification.
 - Handling the response from an IndieAuth callback request.
 
-Why Use indieweb-utils?
-------------------------
-
 If any of the above use cases resonate with you, this library may be helpful. Please note this library does not fully implement all IndieWeb specifications.
 
 Rather, this library provides a set of building blocks that you can use to speed up your development of IndieWeb applications.
 
-The following applications will benefit from at least one of the functions provided in this library:
+Here are a few of the many applications that may benefit from the functions provided in this library:
 
-- Micropub server.
-- Microsub server.
-- Webmention sender.
+- `Micropub <https://indieweb.org/Micropub>`_ server.
+- `Microsub <https://indieweb.org/Microsub>`_ server.
+- `Webmention <https://indieweb.org/Webmention>`_ sender.
 - Any application that needs to canonicalize a URL.
-- An application implementing IndieAuth.
+- An application implementing `IndieAuth authentication <https://indieweb.org/IndieAuth>`_.
