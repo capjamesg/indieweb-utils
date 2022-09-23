@@ -9,6 +9,7 @@ from .indieauth import (
     is_authenticated,
     redeem_code,
     validate_access_token,
+    validate_authorization_response,
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .posts.discovery import discover_author, discover_original_post, get_post_type
@@ -47,4 +48,5 @@ __all__ = [
     "_validate_indieauth_response",
     "redeem_code",
     "get_valid_relmeauth_links",
+    "validate_authorization_response",
 ]

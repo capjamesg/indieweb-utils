@@ -6,7 +6,7 @@ from .flask import (
 from .happ import get_h_app_item
 from .profile import get_profile
 from .relmeauth import get_valid_relmeauth_links
-from .server import redeem_code, validate_access_token
+from .server import redeem_code, validate_access_token, validate_authorization_response
 
 __all__ = [
     "is_authenticated",
@@ -17,4 +17,5 @@ __all__ = [
     "validate_access_token",
     "_validate_indieauth_response",
     "get_valid_relmeauth_links",
+    "validate_authorization_response",
 ]

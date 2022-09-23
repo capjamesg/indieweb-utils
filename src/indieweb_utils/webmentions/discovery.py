@@ -14,8 +14,26 @@ _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 @dataclass
 class WebmentionDiscoveryResponse:
     endpoint: str
-    message: str
-    success: bool
+
+
+class TargetNotProvided(Exception):
+    pass
+
+
+class WebmentionEndpointNotFound(Exception):
+    pass
+
+
+class UnacceptableIPAddress(Exception):
+    """
+    Raised if an IP address for a webmention endpoint does not resolve on the public internet.
+
+    Local, loopback, private, reserved, and multicast IP addresses are not acceptable.
+    """
+
+
+class LocalhostEndpointFound(Exception):
+    pass
 
 
 def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
@@ -40,15 +58,14 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
         print(webmention_endpoint) # https://webmention.jamesg.blog/webmention
     """
     if not target:
-        return WebmentionDiscoveryResponse(endpoint="", message="Error: A target was not provided.", success=False)
+        raise TargetNotProvided("No target provided.")
 
     endpoints = _discover_endpoints(target, [_WEBMENTION])
 
     endpoint = endpoints.get("webmention", None)
 
     if endpoint is None:
-        message = "No webmention endpoint could be found for this resource."
-        return WebmentionDiscoveryResponse(endpoint="", message=message, success=False)
+        raise WebmentionEndpointNotFound("No webmention endpoint could be found for this resource.")
 
     # verify if IP address is not allowed
     try:
@@ -62,14 +79,12 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
             or endpoint_as_ip.is_reserved is True
             or endpoint_as_ip.is_link_local is True
         ):
-            message = "The endpoint does not connect to an accepted IP address."
-            return WebmentionDiscoveryResponse(endpoint="", message=message, success=False)
+            raise UnacceptableIPAddress("The endpoint does not connect to an accepted IP address.")
     except ValueError:
         pass
 
     if endpoint == "localhost":
-        message = "This resource is not supported."
-        return WebmentionDiscoveryResponse(endpoint="", message=message, success=False)
+        raise LocalhostEndpointFound("The endpoint is localhost.")
 
     if endpoint == "":
         endpoint = target
@@ -82,7 +97,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     if endpoint.startswith("/"):
         endpoint = "https://" + url_parse.urlsplit(target).scheme + endpoint
 
-    return WebmentionDiscoveryResponse(endpoint=endpoint, message="Webmention endpoint found.", success=True)
+    return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
 def _discover_endpoints(url: str, headers_to_find: List[str]):
