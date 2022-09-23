@@ -29,14 +29,9 @@ The `get_post_type` function function uses the following syntax:
 
 .. autofunction:: indieweb_utils.get_post_type
 
-Here are the arguments you can use:
+This function returns a single string with the post type of the specified web page.
 
-- `url`: The URL of the web page to discover the post type of.
-- `custom_properties`: A list of custom properties to use when discovering the post type. This list must contain tuples.
-
-The function returns a single string with the post type of the specified web page.
-
-See the Post Type Discovery specification for a full list of post types.
+See the `Post Type Discovery specification <https://indieweb.org/post-type-discovery>`_ for a full list of post types.
 
 Custom Properties
 ------------------------
@@ -59,25 +54,7 @@ This function would look for a poke-of attribute on a web page and return the "p
 
 By default, this function contains all of the attributes in the Post Type Discovery mechanism.
 
-Custom properties are added to the end of the post type discovery list, just before the "article" property. All specification property types will be checked before your custom attribute.
-
-Here is an example of the `get_post_type` function in use:
-
-.. code-block:: python
-
-    import indieweb_utils
-
-    url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
-
-    post_type = indieweb_utils.discover_endpoint(url)
-
-    print(post_type)
-
-This code returns the following string:
-
-.. code-block:: python
-
-    article
+Custom properties are added to the end of the post type discovery list, just before the "article" property. All specification property types are checked before your custom attribute.
 
 Discover a Webmention Endpoint
 ------------------------------------
@@ -88,21 +65,9 @@ You can discover if a URL has an associated webmention endpoint using the `disco
 
 .. autofunction:: indieweb_utils.discover_webmention_endpoint
 
-Here is an example of the function in action:
+If successful, this function returns the URL of the webmention endpoint associated with a resource. In this case, the message value is a blank string.
 
-.. code-block:: python
-
-    import indieweb_utils
-
-    url = "https://jamesg.blog/2021/12/06/advent-of-bloggers-6/"
-
-    url, message = indieweb_utils.discover_webmention_endpoint(url)
-
-    print(url)
-
-If successful, this function will return the URL of the webmention endpoint associated with a resource. The message value will be a blank string in this acse.
-
-If a webmention endpoint could not be found, URL will be equal to None. A string message value will be provided that you can use for debugging or present to a user.
+If a webmention endpoint could not be found, URL is equal to None. In this case, a string message value is provided that you can use for debugging or present to a user.
 
 Canonicalize a URL
 ------------------------
@@ -113,16 +78,11 @@ To canonicalize a URL, use this function:
 
 .. autofunction:: indieweb_utils.canonicalize_url
 
-This function requires two arguments.
-
-- `url`: The URL to canonicalize.
-- `domain`: The domain to use during canonicalization.
-
-This function will return a URL with a protocol, host, and path.
+This function returns a URL with a protocol, host, and path.
 
 The domain of the resource is needed so that it can be added to the URL during canonicalization if the URL is relative.
 
-A complete URL returned by this function will look like this:
+A complete URL returned by this function looks like this:
 
 .. code-block:: python
 
@@ -144,9 +104,9 @@ Here are the arguments you can use:
 
 The page_contents argument is optional.
 
-If no page_contents argument is specified, the URL you stated will be retrieved and authorship inference will begin.
+If no page_contents argument is specified, the URL you stated is retrieved. Then, authorship inference begins.
 
-If you specify a page_contents value, the HTML you parsed will be used for authorship discovery. This will save on a HTML request if you have already retrieved the HTML for another reason (for example, if you need to retreive other values in the page HTML). You still need to specify a URL even if you specify a page_contents value.
+If you specify a page_contents value, the HTML you parsed is used for authorship discovery. This saves on a HTML request if you have already retrieved the HTML for another reason (for example, if you need to retreive other values in the page HTML). You still need to specify a URL even if you specify a page_contents value.
 
 The discover_author function can return one of two values:
 
@@ -154,18 +114,6 @@ The discover_author function can return one of two values:
 - The h-card of an author.
 
 These are the two outputs defined in the authorship inference algorithm. Your program should be able to handle both of these outputs.
-
-Here is an example of the `discover_author` function in action:
-
-.. code-block:: python
-
-    import indieweb_utils
-
-    url = "https://aaronparecki.com/2021/12/07/8/drone"
-
-    post_type = indieweb_utils.discover_author(url)
-
-    print(post_type)
 
 This code returns the following h-card:
 
@@ -200,13 +148,13 @@ Otherwise, set "me" to the URL of the profile that should be able to access your
 
 Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
 
-If successful, this function will return an IndieAuthCallbackResponse object that looks like this:
+If successful, this function returns an IndieAuthCallbackResponse object that looks like this:
 
 .. class:: indieweb_utils.IndieAuthCallbackResponse
 
 This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
 
-An example endpoint response will look like this:
+An example endpoint response looks like this:
 
 .. code-block:: python
 
@@ -234,7 +182,7 @@ To generate reply context for a given page, use the following function:
 
 .. autofunction:: indieweb_utils.get_reply_context
 
-This function will return a ReplyContext object that looks like this:
+This function returns a ReplyContext object that looks like this:
 
 .. autoclass:: indieweb_utils.ReplyContext
 
@@ -245,7 +193,7 @@ To find the original version of a post per the Original Post Discovery algorithm
 
 .. autofunction:: indieweb_utils.discover_original_post
 
-This function will return the URL of the original version of a post, if one is found. Otherwise, None will be returned.
+This function returns the URL of the original version of a post, if one is found. Otherwise, None is returned.
 
 Send a Webmention
 ------------------
@@ -254,7 +202,7 @@ To send a webmention to a target, use this function:
 
 .. autofunction:: indieweb_utils.send_webmention
 
-This function will return a SendWebmentionResponse object with this structure:
+This function returns a SendWebmentionResponse object with this structure:
 
 .. autoclass:: indieweb_utils.SendWebmentionResponse
 
