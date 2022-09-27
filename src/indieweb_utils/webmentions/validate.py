@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from urllib import parse as url_parse
 
 import requests
@@ -84,7 +84,23 @@ def _check_for_link_to_target(validation_source: requests.Response, target) -> b
     return contains_valid_link_to_target
 
 
-def _retrieve_webmention_target(source: str, target_request: Optional[requests.Request] = None) -> BeautifulSoup:
+def _webmention_head_request(session: requests.Session, source: str = "") -> Tuple[requests.Response, bool]:
+    try:
+        check_source_size = session.head(source, timeout=5)
+
+        validated_headers = _validate_headers(check_source_size)
+    except requests.exceptions.TooManyRedirects:
+        raise WebmentionValidationError("Source redirected too many times.")
+    except requests.exceptions.Timeout:
+        raise WebmentionValidationError("Source timed out.")
+    except requests.exceptions.RequestException:
+        # pass because HEAD request might not be recognised / processed by the client
+        pass
+
+    return check_source_size, validated_headers
+
+
+def _retrieve_webmention_target(source: str, target_request: Optional[requests.Response] = None) -> BeautifulSoup:
     # Only allow 3 redirects before raising an error
 
     if target_request:
@@ -98,21 +114,11 @@ def _retrieve_webmention_target(source: str, target_request: Optional[requests.R
         validated_headers = False
 
         try:
-            check_source_size = session.head(source, timeout=5)
-
-            validated_headers = _validate_headers(check_source_size)
-        except requests.exceptions.TooManyRedirects:
-            raise WebmentionValidationError("Source redirected too many times.")
-        except requests.exceptions.Timeout:
-            raise WebmentionValidationError("Source timed out.")
-        except requests.exceptions.RequestException:
-            # pass because HEAD request might not be recognised / processed by the client
-            pass
-
-        try:
             get_source_for_validation = session.get(source)
         except requests.exceptions.RequestException:
             raise WebmentionValidationError("Source could not be retrieved.")
+
+        check_source_size, validated_headers = _webmention_head_request(session, source)
 
     if validated_headers is False:
         validated_headers = _validate_headers(check_source_size)
@@ -129,7 +135,7 @@ def _retrieve_webmention_target(source: str, target_request: Optional[requests.R
 
 
 def validate_webmention(
-    source: str, target: str, vouch: str = "", vouch_list: List[str] = [], target_request: requests.Response = ""
+    source: str, target: str, vouch: str = "", vouch_list: List[str] = [], target_request: requests.Response = None
 ) -> WebmentionCheckResponse:
     """
     Check if a webmention is valid.

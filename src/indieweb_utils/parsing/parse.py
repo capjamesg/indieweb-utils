@@ -36,6 +36,7 @@ def _get_soup(html: str = "", soup: BeautifulSoup = BeautifulSoup, url: str = ""
 
     raise RequestError("No soup, url, or HTML document provided.")
 
+
 def __get_soup_from_request(url: str, headers: dict = {}) -> BeautifulSoup:
     """
     Create a BeautifulSoup object from a URL.

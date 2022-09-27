@@ -16,7 +16,7 @@ class RepresentativeHCard:
     pass
 
 
-def _get_soup(url: str, html: str = "", parsed_mf2: Optional[mf2py.Parser] = None) -> Dict[str, Any]:
+def get_representative_h_card(url: str, html: str = "", parsed_mf2: Optional[mf2py.Parser] = None) -> Dict[str, Any]:
     """
     Get the representative h-card on a page per the Representative h-card Parsing algorithm.
 

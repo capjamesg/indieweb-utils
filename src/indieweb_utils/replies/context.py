@@ -293,7 +293,7 @@ def _generate_reply_context_from_main_page(
     domain: str,
     webmention_endpoint_url: str,
     summary_word_limit: int,
-    html: str = None,
+    html: str = "",
     soup: BeautifulSoup = None,
 ) -> ReplyContext:
 
