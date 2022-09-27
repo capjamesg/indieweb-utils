@@ -158,7 +158,7 @@ def validate_webmention(
             raise exception
         except indeweb_utils.WebmentionIsGone:
             # returns when the source of a webmention reports a 410 status code
-            raise Exception("Webmention returned a 410 response.") 
+            raise Exception("Webmention returned a 410 response.")
 
         print(webmention_is_valid) # Should return True
     """

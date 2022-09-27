@@ -18,6 +18,7 @@ PERMASHORTLINK_CITATION_BRACKET_MATCHING = r"\((.*?)\)"
 class PostDiscoveryError(Exception):
     pass
 
+
 class PostTypeFormattingError(Exception):
     pass
 

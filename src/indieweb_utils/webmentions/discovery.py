@@ -15,6 +15,7 @@ _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 class WebmentionDiscoveryResponse:
     endpoint: str
 
+
 class TargetNotProvided(Exception):
     pass
 
