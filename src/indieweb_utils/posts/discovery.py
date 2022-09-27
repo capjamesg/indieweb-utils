@@ -329,7 +329,7 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
         if content_to_validate is None and content[0].get("html") and content[0].get("html")[0] != "":
             content_to_validate = BeautifulSoup(content[0].get("html"), "lxml").get_text()
 
-        if not content_to_validate.startswith(title):
+        if content_to_validate and not content_to_validate.startswith(title):
             return "article"
 
     return "note"
