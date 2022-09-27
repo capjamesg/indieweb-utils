@@ -320,15 +320,17 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
     title = post.get("name")[0].strip().replace("\n", " ").replace("\r", " ")
 
     content = post.get("content")
+    content_to_validate = None
 
-    if content and content[0].get("text") and content[0].get("text")[0] != "":
-        content = BeautifulSoup(content[0].get("text"), "lxml").get_text()
+    if content:
+        if content[0].get("text") and content[0].get("text")[0] != "":
+            content_to_validate = BeautifulSoup(content[0].get("text"), "lxml").get_text()
 
-    if content and content[0].get("html") and content[0].get("html")[0] != "":
-        content = BeautifulSoup(content[0].get("html"), "lxml").get_text()
+        if content_to_validate is None and content[0].get("html") and content[0].get("html")[0] != "":
+            content_to_validate = BeautifulSoup(content[0].get("html"), "lxml").get_text()
 
-    if not content.startswith(title):
-        return "article"
+        if not content_to_validate.startswith(title):
+            return "article"
 
     return "note"
 
