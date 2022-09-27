@@ -21,7 +21,7 @@ def get_parsed_mf2_data(parsed_mf2: mf2py.Parser, html: str = "", url: str = "")
     raise RequestError("No soup, url, or HTML document provided.")
 
 
-def get_soup(html: str = "", soup: BeautifulSoup = {}, url: str = "", headers: dict = {}) -> BeautifulSoup:
+def _get_soup(html: str = "", soup: BeautifulSoup = BeautifulSoup, url: str = "", headers: dict = {}) -> BeautifulSoup:
     """
     Return or create a BeautifulSoup object from a parsed document, a HTML string, and a URL.
     """
@@ -32,11 +32,11 @@ def get_soup(html: str = "", soup: BeautifulSoup = {}, url: str = "", headers: d
         return soup
 
     if url:
-        return _get_soup_from_request(url, headers=headers)
+        return __get_soup_from_request(url, headers=headers)
 
     raise RequestError("No soup, url, or HTML document provided.")
 
-def _get_soup_from_request(url: str, headers: dict = {}) -> BeautifulSoup:
+def __get_soup_from_request(url: str, headers: dict = {}) -> BeautifulSoup:
     """
     Create a BeautifulSoup object from a URL.
     """

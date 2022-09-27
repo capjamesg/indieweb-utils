@@ -6,7 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
-from ..parsing.parse import get_parsed_mf2_data, get_soup
+from ..parsing.parse import get_parsed_mf2_data, _get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 
 # This regex identifies permashortlink citations in the form of (example.com slug)
@@ -94,7 +94,7 @@ def discover_original_post(posse_permalink: str, soup: BeautifulSoup = None, htm
     :rtype: str
     """
 
-    parsed_post = get_soup(html, soup, posse_permalink)
+    parsed_post = _get_soup(html, soup, posse_permalink)
 
     # Get the post h-entry
 
