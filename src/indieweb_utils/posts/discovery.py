@@ -18,6 +18,9 @@ PERMASHORTLINK_CITATION_BRACKET_MATCHING = r"\((.*?)\)"
 class PostDiscoveryError(Exception):
     pass
 
+class PostTypeFormattingError(Exception):
+    pass
+
 
 def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post: BeautifulSoup) -> str:
     try:
@@ -91,6 +94,21 @@ def discover_original_post(posse_permalink: str) -> str:
     :type posse_permalink: str
     :return: The original post permalink.
     :rtype: str
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        try:
+            original_post_url = indieweb_utils.discover_original_post("https://example.com")
+        except indieweb_utils.PostDiscoveryError as exception:
+            # raised when a candidate URL cannot be retrieved
+            # or when a specified post is not marked up with h-entry
+            raise exception
+
+        print(original_post_url)
     """
     parsed_post = BeautifulSoup(posse_permalink, "lxml")
 
@@ -281,9 +299,13 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
 
         h_entry = [e for e in parsed_mf2["items"] if e["type"] == ["h-entry"]][0]
 
-        post_type = indieweb_utils.get_post_type(
-            h_entry
-        )
+        try:
+            post_type = indieweb_utils.get_post_type(
+                h_entry
+            )
+        except indieweb_utils.PostTypeFormattingError as exception:
+            # raised when you specify a custom_properties tuple in the wrong format
+            raise exception
 
         print(post_type) # article
     """
@@ -306,7 +328,7 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
         if len(prop) == 2 and isinstance(prop, tuple) and isinstance(prop[0], str) and isinstance(prop[1], str):
             values_to_check.append(prop)
         else:
-            raise Exception("custom_properties must be a list of tuples")
+            raise PostTypeFormattingError("custom_properties must be a list of tuples")
 
     for item in values_to_check:
         if post.get(item[0]):

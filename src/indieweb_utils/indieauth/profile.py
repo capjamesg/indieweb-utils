@@ -43,7 +43,11 @@ def get_profile(me: str) -> Profile:
 
         me = "https://jamesg.blog"
 
-        profile = indieweb_utils.get_profile(me)
+        try:
+            profile = indieweb_utils.get_profile(me)
+        except indieweb_utils.ProfileError as exception:
+            # returned when a profile cannot be retrieved
+            raise exception
 
         assert profile.email == "james@jamesg.blog"
         assert profile.name == "James"

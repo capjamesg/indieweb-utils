@@ -149,9 +149,16 @@ def validate_webmention(
         source = "https://jamesg.blog/"
         target = "https://jamesg.blog/mugs/"
 
-        webmention_is_valid = indieweb_utils.validate_webmention(
-            source, target
-        )
+        try:
+            webmention_is_valid = indieweb_utils.validate_webmention(
+                source, target
+            )
+        except indieweb_utils.WebmentionValidationError as exception:
+            # returns information about why webmention validation failed
+            raise exception
+        except indeweb_utils.WebmentionIsGone:
+            # returns when the source of a webmention reports a 410 status code
+            raise Exception("Webmention returned a 410 response.") 
 
         print(webmention_is_valid) # Should return True
     """

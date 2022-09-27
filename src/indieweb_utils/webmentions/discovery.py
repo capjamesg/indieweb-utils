@@ -15,7 +15,6 @@ _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 class WebmentionDiscoveryResponse:
     endpoint: str
 
-
 class TargetNotProvided(Exception):
     pass
 
@@ -51,16 +50,29 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
 
         target = "https://jamesg.blog/"
 
-        webmention_endpoint = indieweb_utils.discover_webmention_endpoint(
-            target
-        )
+        try:
+            webmention_endpoint = indieweb_utils.discover_webmention_endpoint(
+                target
+            )
+        except indieweb_utils.TargetNotProvided as exception:
+            # target was None
+            raise exception
+        except indieweb_utils.WebmentionEndpointNotFound as exception:
+            # no webmention endpoint was found on the target URL
+            raise exception
+        except indieweb_utils.UnacceptableIPAddress as exception:
+            # endpoint does not connect to an accepted IP
+            raise exception
+        except indieweb_utils.LocalhostEndpointFound as exception:
+            # discovered endpoint is equal to localhost
+            raise exception
 
         print(webmention_endpoint) # https://webmention.jamesg.blog/webmention
     """
     if not target:
         raise TargetNotProvided("No target provided.")
 
-    endpoints = _discover_endpoints(target, [_WEBMENTION])
+    endpoints = discover_endpoints(target, [_WEBMENTION])
 
     endpoint = endpoints.get("webmention", None)
 
@@ -100,7 +112,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def _discover_endpoints(url: str, headers_to_find: List[str]):
+def discover_endpoints(url: str, headers_to_find: List[str]):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
@@ -116,15 +128,20 @@ def _discover_endpoints(url: str, headers_to_find: List[str]):
     .. code-block:: python
 
         import indieweb_utils
+        import requests
 
         url = "https://jamesg.blog/"
 
         # find the webmention header on a web page
         headers_to_find = ["webmention"]
 
-        endpoints = indieweb_utils._discover_endpoints(
-            url
-        )
+        try:
+            endpoints = indieweb_utils.discover_endpoints(
+                url
+            )
+        except requests.exceptions.RequestException as exception:
+            # error making the network request to discover endpoints
+            raise exception
 
         print(webmention_endpoint) # {'webmention': 'https://webmention.jamesg.blog/webmention'}
     """
@@ -133,7 +150,7 @@ def _discover_endpoints(url: str, headers_to_find: List[str]):
     try:
         endpoint_request = requests.get(url, timeout=5)
     except requests.exceptions.RequestException:
-        raise Exception("Could not connect to the specified URL.")
+        raise requests.exceptions.RequestException("Could not connect to the specified URL.")
 
     link_headers = _find_links_in_headers(headers=endpoint_request.headers, target_headers=headers_to_find)
 

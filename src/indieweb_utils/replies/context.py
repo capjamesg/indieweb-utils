@@ -194,7 +194,7 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
         raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if r and r.status_code != 200:
-        raise Exception(f"Twitter API returned {r.status_code}")
+        raise ReplyContextRetrievalError(f"Twitter API returned {r.status_code}")
 
     base_url = f"https://api.twitter.com/2/users/{r.json()['data'].get('author_id')}"
 
@@ -357,10 +357,17 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
 
         import indieweb_utils
 
-        context = indieweb_utils.get_reply_context(
-            url="https://jamesg.blog",
-            summary_word_limit=50
-        )
+        try:
+            context = indieweb_utils.get_reply_context(
+                url="https://jamesg.blog",
+                summary_word_limit=50
+            )
+        except indiweb_utils.ReplyContextRetrievalError as exception:
+            # raised when reply context cannot be retrieved
+            raise ReplyContextRetrievalError
+        except indieweb_utils.UnsupportedScheme as exception:
+            # raised when specified URL does not use http:// or https://
+            raise exception
 
         # print the name of the specified page to the console
         print(context.name) # "Home | James' Coffee Blog"
