@@ -319,20 +319,22 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
 
     title = post.get("name")[0].strip().replace("\n", " ").replace("\r", " ")
 
-    content = post.get("content")
-    content_to_validate = None
-
+    # Default should be a list so we're never dealing with None
+    content = post.get("content", []) 
+    
     if content:
-        if content[0].get("text") and content[0].get("text")[0] != "":
-            content_to_validate = BeautifulSoup(content[0].get("text"), "lxml").get_text()
+        # Default should be an empty string, so we're never dealing with None
+        text = content[0].get("text", "")
+        html = content[0].get("html", "")
 
-        if content_to_validate is None and content[0].get("html") and content[0].get("html")[0] != "":
-            content_to_validate = BeautifulSoup(content[0].get("html"), "lxml").get_text()
+        if html or text:
+            # Prefer to validate against html than text version of the content
+            content_text = BeautifulSoup(html or text, "lxml").get_text()
+            
+            if content_text and content_text.startswith(title):
+                post_type = "article"
 
-        if content_to_validate and not content_to_validate.startswith(title):
-            return "article"
-
-    return "note"
+    return post_type
 
 
 def _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domain):
