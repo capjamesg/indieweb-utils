@@ -309,7 +309,7 @@ def redeem_code(
         print(token_response.token_type)
         print(token_response.scope)
         print(token_response.me)
-    
+
     :raises AuthorizationCodeExpiredError: If the authorization code has expired.
     :raises TokenValidationError: If the decoded code is invalid.
     :raises AuthenticationError: If the token request is invalid.

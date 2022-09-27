@@ -152,7 +152,7 @@ def validate_webmention(
         webmention_is_valid = indieweb_utils.validate_webmention(
             source, target
         )
-        
+
         print(webmention_is_valid) # Should return True
 
     :raises WebmentionValidationError: Webmention is invalid.
