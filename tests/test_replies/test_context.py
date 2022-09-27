@@ -55,7 +55,6 @@ class TestReplyContext:
             responses.add(responses.Response(responses.GET, url=url, body=f.read()))
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == url
         assert reply_context.webmention_endpoint == ""
         assert reply_context.authors[0].url == "https://www.theguardian.com"
         assert reply_context.authors[0].name == ""
@@ -76,7 +75,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == url
         assert reply_context.webmention_endpoint == ""
         assert reply_context.authors[0].url == "https://warmedal.se"
         assert reply_context.authors[0].name == ""
