@@ -27,7 +27,6 @@ class PostAuthor:
 @dataclass
 class ReplyContext:
     webmention_endpoint: str
-    post_url: str
     photo: str
     name: str
     video: str
@@ -168,7 +167,6 @@ def _generate_h_entry_reply_context(
 
     return ReplyContext(
         name=p_name,
-        post_url=url,
         post_text=post_body,
         post_html=post_body,
         authors=[PostAuthor(url=author_url, name=author_name, photo=author_image)],
@@ -217,7 +215,6 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
     return ReplyContext(
         name=author_name,
-        post_url=url,
         post_text=r.json()["data"].get("text"),
         post_html=r.json()["data"].get("html"),
         authors=[PostAuthor(url=author_url, name=author_name, photo=photo_url)],
@@ -328,7 +325,6 @@ def _generate_reply_context_from_main_page(
 
     return ReplyContext(
         name=page_title,
-        post_url=url,
         post_text=p_tag,
         post_html=p_tag,
         authors=[PostAuthor(url=author_url, name="", photo=photo_url)],
