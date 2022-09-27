@@ -102,14 +102,11 @@ def discover_original_post(posse_permalink: str) -> str:
 
         import indieweb_utils
 
-        try:
-            original_post_url = indieweb_utils.discover_original_post("https://example.com")
-        except indieweb_utils.PostDiscoveryError as exception:
-            # raised when a candidate URL cannot be retrieved
-            # or when a specified post is not marked up with h-entry
-            raise exception
+        original_post_url = indieweb_utils.discover_original_post("https://example.com")
 
         print(original_post_url)
+
+    :raises PostDiscoveryError: A candidate URL cannot be retrieved or when a specified post is not marked up with h-entry.
     """
     parsed_post = BeautifulSoup(posse_permalink, "lxml")
 
@@ -300,15 +297,13 @@ def get_post_type(h_entry: dict, custom_properties: List[Tuple[str, str]] = []) 
 
         h_entry = [e for e in parsed_mf2["items"] if e["type"] == ["h-entry"]][0]
 
-        try:
-            post_type = indieweb_utils.get_post_type(
-                h_entry
-            )
-        except indieweb_utils.PostTypeFormattingError as exception:
-            # raised when you specify a custom_properties tuple in the wrong format
-            raise exception
+        post_type = indieweb_utils.get_post_type(
+            h_entry
+        )
 
         print(post_type) # article
+
+    :raises PostTypeFormattingError: Raised when you specify a custom_properties tuple in the wrong format.
     """
     post = h_entry.get("properties")
 

@@ -357,20 +357,16 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
 
         import indieweb_utils
 
-        try:
-            context = indieweb_utils.get_reply_context(
-                url="https://jamesg.blog",
-                summary_word_limit=50
-            )
-        except indiweb_utils.ReplyContextRetrievalError as exception:
-            # raised when reply context cannot be retrieved
-            raise ReplyContextRetrievalError
-        except indieweb_utils.UnsupportedScheme as exception:
-            # raised when specified URL does not use http:// or https://
-            raise exception
+        context = indieweb_utils.get_reply_context(
+            url="https://jamesg.blog",
+            summary_word_limit=50
+        )
 
         # print the name of the specified page to the console
         print(context.name) # "Home | James' Coffee Blog"
+
+    :raises ReplyContextRetrievalError: Reply context cannot be retrieved.
+    :raises UnsupportedScheme: The specified URL does not use http:// or https://.
     """
 
     parsed_url = url_parse.urlsplit(url)

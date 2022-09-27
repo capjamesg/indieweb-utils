@@ -43,16 +43,14 @@ def get_profile(me: str) -> Profile:
 
         me = "https://jamesg.blog"
 
-        try:
-            profile = indieweb_utils.get_profile(me)
-        except indieweb_utils.ProfileError as exception:
-            # returned when a profile cannot be retrieved
-            raise exception
+        profile = indieweb_utils.get_profile(me)
 
         assert profile.email == "james@jamesg.blog"
         assert profile.name == "James"
         assert profile.photo == "https://jamesg.blog/me.jpg"
         assert profile.url == "https://jamesg.blog
+
+    :raises ProfileError: Profile could not be retrieved.
     """
 
     try:

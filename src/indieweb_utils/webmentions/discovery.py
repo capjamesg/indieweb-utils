@@ -51,24 +51,16 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
 
         target = "https://jamesg.blog/"
 
-        try:
-            webmention_endpoint = indieweb_utils.discover_webmention_endpoint(
-                target
-            )
-        except indieweb_utils.TargetNotProvided as exception:
-            # target was None
-            raise exception
-        except indieweb_utils.WebmentionEndpointNotFound as exception:
-            # no webmention endpoint was found on the target URL
-            raise exception
-        except indieweb_utils.UnacceptableIPAddress as exception:
-            # endpoint does not connect to an accepted IP
-            raise exception
-        except indieweb_utils.LocalhostEndpointFound as exception:
-            # discovered endpoint is equal to localhost
-            raise exception
+        webmention_endpoint = indieweb_utils.discover_webmention_endpoint(
+            target
+        )
 
         print(webmention_endpoint) # https://webmention.jamesg.blog/webmention
+
+    :raises TargetNotProvided: Target is not provided.
+    :raises WebmentionEndpointNotFound: Webmention endpoint is not found.
+    :raises UnacceptableIPAddress: Endpoint does not connect to an accepted IP.
+    :raises LocalhostEndpointFound: Discovered endpoint is equal to localhost.
     """
     if not target:
         raise TargetNotProvided("No target provided.")
@@ -136,15 +128,13 @@ def discover_endpoints(url: str, headers_to_find: List[str]):
         # find the webmention header on a web page
         headers_to_find = ["webmention"]
 
-        try:
-            endpoints = indieweb_utils.discover_endpoints(
-                url
-            )
-        except requests.exceptions.RequestException as exception:
-            # error making the network request to discover endpoints
-            raise exception
+        endpoints = indieweb_utils.discover_endpoints(
+            url
+        )
 
         print(webmention_endpoint) # {'webmention': 'https://webmention.jamesg.blog/webmention'}
+
+    :raises requests.exceptions.RequestException: Error raised while making the network request to discover endpoints.
     """
     response: Dict[str, str] = {}
 
