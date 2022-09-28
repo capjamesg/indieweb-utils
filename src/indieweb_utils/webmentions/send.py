@@ -89,7 +89,7 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
             "https://example.example.com/post/1",
             "https://test.example"
         )
-        
+
     :raises TargetIsNotApprovedDomain: Target is not in list of approved domains.
     :raises GenericWebmentionError: Generic webmention error.
     :raises CouldNotConnectToWebmentionEndpoint: Could not connect to the receiver's webmention endpoint.

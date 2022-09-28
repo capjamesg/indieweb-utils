@@ -28,7 +28,7 @@ def email_tag():
 def test_parses_profile(name_tag, photo_tag, me_tag, email_tag):
     url = "http://example.com"
 
-    body=f'<div class="h-card">{name_tag}{photo_tag}{me_tag}{email_tag}</div>'
+    body = f'<div class="h-card">{name_tag}{photo_tag}{me_tag}{email_tag}</div>'
 
     responses.add(
         responses.Response(
@@ -38,7 +38,7 @@ def test_parses_profile(name_tag, photo_tag, me_tag, email_tag):
         )
     )
     actual = profile.get_profile(url, html=body)
-    
+
     assert actual.name == "John Doe"
     assert actual.photo == "http://example.com/me.jpg"
     assert actual.url == "http://example.com/john"

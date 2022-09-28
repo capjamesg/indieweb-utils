@@ -28,4 +28,3 @@ class TestRelMeAuthLinkDiscovery:
             for r in expected_responses:
                 if r not in results:
                     raise AssertionError(f"Expected {r} to be in {results}")
-

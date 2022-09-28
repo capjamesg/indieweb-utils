@@ -92,7 +92,7 @@ def indieauth_callback_handler(
             )
 
             return response.message
-    
+
     :raises AuthenticationError: The token endpoint could not be accessed or authentication failed.
     """
 
