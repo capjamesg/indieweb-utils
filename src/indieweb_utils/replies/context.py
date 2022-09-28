@@ -294,7 +294,8 @@ def _generate_reply_context_from_main_page(
     soup: BeautifulSoup = None,
 ) -> ReplyContext:
 
-    soup = get_soup(html, soup, url, headers=http_headers)
+    if soup is None:
+        soup = get_soup(html, url, headers=http_headers)
 
     page_title = soup.find("title")
 

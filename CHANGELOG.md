@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - TBD
+
+### Added
+
+#### Development
+
+- Provide docstrings for all functions in the library that did not have a docstring.
+- Fix docstring rendering issues with library documentation so that all docstrings show up on [Read the Docs](https://indieweb-utils.readthedocs.io/en/latest/).
+- Add `:raises:` statements to docstrings to document existing
+- Add code examples to docstrings and remove redundant examples from RS documentation.
+
+#### Functions
+
+- `discover_h_feed()` function to discover the representative h-feed on a page.
+- `get_valid_relmeauth_links()` function to find both one-way and bi-directional rel=me links on a web page.
+- `get_representative_h_card()` function to get the [representative h-card](https://microformats.org/wiki/representative-h-card-parsing) associated with a web page.
+
+#### Tests
+
+- Added test cases for:
+    - `get_representative_h_card()`
+    - `get_valid_relmeauth_links()`
+
+### Changed
+
+- Support importing IndieAuth functions directly from `indieweb_utils` without having to use `indieweb_utils.indieauth.`.
+- Simplify `get_h_app_item()` logic.
+- Raise `HAppNotFound` exception when `get_h_app_item()` cannot identify a h-app microformat.
+- `discover_webmention_endpoint()` can now raise LocalhostEndpointFound, TargetNotProvided, UnacceptableIPAddress, and WebmentionEndpointNotFound exceptions when there is an issue validating a webmention.
+- `send_webmention()` can now raise MissingSourceError, MissingTargetError, UnsupportedProtocolError, TargetIsNotApprovedDomain, GenericWebmentionError, and CouldNotConnectToWebmentionEndpoint if there was an issue sending a webmention.
+
 ## [0.2.0] - 2022-02-15
 
 ### Added

@@ -110,7 +110,10 @@ def discover_original_post(posse_permalink: str, soup: BeautifulSoup = None, htm
     :raises PostDiscoveryError: A candidate URL cannot be retrieved or when a specified post is not marked up with h-entry.
     """
 
-    parsed_post = get_soup(html, soup, posse_permalink)
+    if soup is None:
+        parsed_post = get_soup(html, posse_permalink)
+    else:
+        parsed_post = soup
 
     # Get the post h-entry
 

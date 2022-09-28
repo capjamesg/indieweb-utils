@@ -19,7 +19,7 @@ class Profile:
     email: Optional[str]
 
 
-def get_profile(me: str, html: str = "", soup: BeautifulSoup = BeautifulSoup) -> Profile:
+def get_profile(me: str, html: str = "", soup: BeautifulSoup = None) -> Profile:
     """
     Return the profile information for the given me URL.
 
@@ -53,9 +53,10 @@ def get_profile(me: str, html: str = "", soup: BeautifulSoup = BeautifulSoup) ->
     :raises ProfileError: Profile could not be retrieved.
     """
 
-    profile_item = get_soup(html, soup, me)
-
-    print(profile_item)
+    if soup is None:
+        profile_item = get_soup(html, me)
+    else:
+        profile_item = soup
 
     h_card_tag = profile_item.select(".h-card")
 
