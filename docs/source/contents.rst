@@ -5,3 +5,4 @@ Contents
 
    usage
    indieauth
+   changelog

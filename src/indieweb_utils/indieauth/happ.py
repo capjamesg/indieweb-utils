@@ -40,6 +40,8 @@ def get_h_app_item(web_page: str) -> ApplicationInfo:
         )
 
         print(h_app_item.name) # Quill
+
+    :raises HAppNotFound: Raised if no mf2 h-app data was found on the specified page.
     """
 
     parsed_document = mf2py.parse(doc=web_page)

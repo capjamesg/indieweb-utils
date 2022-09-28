@@ -1,4 +1,4 @@
-IndieWeb Utils IndieAuth Features
+IndieAuth Features
 =================================
 
 The indieweb-utils library provides a number of helper functions that will enable you
@@ -56,7 +56,7 @@ Usage information for this function is below.
 Generate an authentication token
 --------------------------------
 
-The generate_auth_token() validates that an authentication request contains all required values. Then,
+The `generate_auth_token()` function validates that an authentication request contains all required values. Then,
 this function generates a JWT-encoded token with the following pieces of information:
 
 - me
@@ -70,6 +70,10 @@ this function generates a JWT-encoded token with the following pieces of informa
 
 You can later refer to these values during the stage where you decode a token.
 
+Here is the syntax for this function:
+
+.. autofunction:: indieweb_utils.generate_auth_token
+
 This function returns both the code you should send to the client in the authentication redirect
 response as well as the code_verifier used in the token. This code_verifier should be saved,
 perhaps in session storage, for later use in checking the validity of a token redemption
@@ -78,7 +82,7 @@ request.
 Validate an authorization response
 ----------------------------------
 
-The _validate_indieauth_response() function contains five checks:
+The `_validate_indieauth_response` function contains five checks. These five checks validate an authorization response according to the IndieAuth specification.
 
 1. Ensures the grant_type provided is authorization_code.
 2. Validates that a code, client_id, and redirect_uri are provided.
@@ -102,7 +106,7 @@ Redeem an IndieAuth code at a token endpoint
 You can redeem an IndieAuth authorization code for an access token if needed. This is a common
 need for Micropub and Microsub clients.
 
-The redeem_code() function validates all the required parameters are provided in a request. Then,
+The `redeem_code()`` function validates all the required parameters are provided in a request. Then,
 this function decodes the provided code using the code, secret key, and algorithm specified. If
 the code is invalid or the code challenge in the decoded code is invalid, AuthenticationErrors will be
 raised. The function will also verify that:
@@ -124,7 +128,7 @@ Validate an access token created by a token endpoint
 A server may ask your token endpoint to validate that a provided token is in fact valid. This may be done
 by a Micropub client to ensure a token is still active, for example.
 
-You can validate an access token using the validate_access_token() function.
+You can validate an access token using the `validate_access_token()` function.
 
 This function decodes an authorization code using the specified secret key and algorithm(s). Then, the function
 will check that the authorization code has not yet expired.
@@ -138,17 +142,15 @@ Here is the syntax for the function:
 Retrieve Valid Links for Use in RelMeAuth
 -----------------------------------------
 
-To authenticate a user with RelMeAuth, you need to validate that there is a two-way link between two resources.
+To authenticate a user with `RelMeAuth <https://microformats.org/RelMeAuth>`_, you need to validate that there is a two-way link between two resources.
 
 IndieWeb Utils implements a helper function that checks whether the URLs linked with rel=me on a web page contain a
 link back to the source.
 
 To check whether there is a two-way rel=me link between two resources, you can use this function:
 
-.. autofunction:: indieweb_utils.get_valid_rel_me_links
+.. autofunction:: indieweb_utils.get_valid_relmeauth_links
 
 This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
 rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
-if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user,
-even if the get_valid_rel_me_links() function found a valid two-way rel=me link.
-
+if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user, even if the `get_valid_relmeauth_links()` function found a valid two-way rel=me link.

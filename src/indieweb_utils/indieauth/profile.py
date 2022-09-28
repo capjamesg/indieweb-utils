@@ -49,6 +49,8 @@ def get_profile(me: str, html: str = "", soup: BeautifulSoup = BeautifulSoup) ->
         assert profile.name == "James"
         assert profile.photo == "https://jamesg.blog/me.jpg"
         assert profile.url == "https://jamesg.blog
+
+    :raises ProfileError: Profile could not be retrieved.
     """
 
     profile_item = get_soup(html, soup, me)

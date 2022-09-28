@@ -20,6 +20,10 @@ class PostDiscoveryError(Exception):
     pass
 
 
+class PostTypeFormattingError(Exception):
+    pass
+
+
 def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post: BeautifulSoup) -> str:
     try:
         request = requests.get(candidate_url, timeout=5)
@@ -92,6 +96,18 @@ def discover_original_post(posse_permalink: str, soup: BeautifulSoup = None, htm
     :type posse_permalink: str
     :return: The original post permalink.
     :rtype: str
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        original_post_url = indieweb_utils.discover_original_post("https://example.com")
+
+        print(original_post_url)
+
+    :raises PostDiscoveryError: A candidate URL cannot be retrieved or when a specified post is not marked up with h-entry.
     """
 
     parsed_post = get_soup(html, soup, posse_permalink)
@@ -286,6 +302,8 @@ def get_post_type(h_entry: dict = {}, custom_properties: List[Tuple[str, str]] =
         )
 
         print(post_type) # article
+
+    :raises PostTypeFormattingError: Raised when you specify a custom_properties tuple in the wrong format.
     """
 
     post = h_entry.get("properties")
@@ -307,7 +325,7 @@ def get_post_type(h_entry: dict = {}, custom_properties: List[Tuple[str, str]] =
         if len(prop) == 2 and isinstance(prop, tuple) and isinstance(prop[0], str) and isinstance(prop[1], str):
             values_to_check.append(prop)
         else:
-            raise Exception("custom_properties must be a list of tuples")
+            raise PostTypeFormattingError("custom_properties must be a list of tuples")
 
     for item in values_to_check:
         if post.get(item[0]):

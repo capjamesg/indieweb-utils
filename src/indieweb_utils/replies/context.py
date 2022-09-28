@@ -193,7 +193,7 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
         raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if r and r.status_code != 200:
-        raise Exception(f"Twitter API returned {r.status_code}")
+        raise ReplyContextRetrievalError(f"Twitter API returned {r.status_code}")
 
     base_url = f"https://api.twitter.com/2/users/{r.json()['data'].get('author_id')}"
 
@@ -362,6 +362,9 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
 
         # print the name of the specified page to the console
         print(context.name) # "Home | James' Coffee Blog"
+
+    :raises ReplyContextRetrievalError: Reply context cannot be retrieved.
+    :raises UnsupportedScheme: The specified URL does not use http:// or https://.
     """
 
     parsed_url = url_parse.urlsplit(url)

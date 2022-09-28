@@ -6,10 +6,10 @@ import sys
 # -- Project information
 
 project = "IndieWeb Utils"
-copyright = "capjamesg 2021"
+copyright = "capjamesg 2022"
 author = "capjamesg"
 
-sys.path.insert(0, os.path.abspath("../../src/"))
+sys.path.insert(0, os.path.abspath("../../../src/"))
 
 release = "0.2.0"
 version = "0.2.0"
@@ -34,7 +34,9 @@ templates_path = ["_templates"]
 
 # -- Options for HTML output
 
-html_theme = "sphinx_rtd_theme"
-
 # -- Options for EPUB output
 epub_show_urls = "footnote"
+
+html_static_path = ["_static"]
+
+html_logo = "_static/indieweb.png"
