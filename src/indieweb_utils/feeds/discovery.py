@@ -18,7 +18,7 @@ class FeedUrl:
 
 
 def discover_web_page_feeds(
-    url: str, user_mime_types: Optional[List[str]] = None, web_page_request: requests.Response = None
+    url: str, user_mime_types: Optional[List[str]] = None, html: str = ""
 ) -> List[FeedUrl]:
     """
     Get all feeds on a web page.
@@ -27,9 +27,8 @@ def discover_web_page_feeds(
     :type url: str
     :param user_mime_types: A list of mime types whose associated feeds you want to retrieve.
     :type user_mime_types: Optional[List[str]]
-    :param web_page_request: A requests object you can specify to skip this
-        function making a request if you have already retrieved the web page.
-    :type web_page_request: requests.Response
+    :param html: A string with the HTML on a page.
+    :type html: str
     :return: A list of FeedUrl objects.
 
     Example:
@@ -53,17 +52,21 @@ def discover_web_page_feeds(
     elif url.startswith("//"):
         url = "https:" + url
 
-    if web_page_request:
-        web_page = web_page_request.text
-    else:
+    if html:
+        try:
+            web_page_request = requests.head(url, timeout=10, allow_redirects=True)
+        except requests.RequestException:
+            raise Exception("Request to retrieve URL did not return a valid response.")
+
+    if not html:
         try:
             web_page_request = requests.get(url, timeout=10, allow_redirects=True)
         except requests.RequestException:
             raise Exception("Request to retrieve URL did not return a valid response.")
+        else:
+            html = web_page_request.text
 
-    web_page = web_page_request.text
-
-    soup = BeautifulSoup(web_page, "lxml")
+    soup = BeautifulSoup(html, "lxml")
 
     # check for presence of mf2 hfeed
     h_feed = soup.find_all(class_="h-feed")
@@ -118,6 +121,18 @@ def discover_h_feed(url: str) -> Dict:
     :type url: str
     :return: The h-feed data.
     :rtype: dict
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog/"
+
+        hfeed = indieweb_utils.discover_h_feed(url)
+
+        print(hfeed)
     """
 
     parsed_main_page_mf2 = mf2py.parse(url=url)

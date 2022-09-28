@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
+from bs4 import BeautifulSoup
 
-from ..parsing.parse import _get_soup
+from ..parsing.parse import get_soup
 from . import constants
 
 
@@ -17,7 +18,7 @@ class Profile:
     email: Optional[str]
 
 
-def get_profile(me: str, html: str = "", soup: str = "") -> Profile:
+def get_profile(me: str, html: str = "", soup: BeautifulSoup = BeautifulSoup) -> Profile:
     """
     Return the profile information for the given me URL.
 
@@ -49,7 +50,7 @@ def get_profile(me: str, html: str = "", soup: str = "") -> Profile:
         assert profile.url == "https://jamesg.blog
     """
 
-    profile_item = _get_soup(html, soup, me)
+    profile_item = get_soup(html, soup, me)
 
     h_card_tag = profile_item.select(".h-card")
 

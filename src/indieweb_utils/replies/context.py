@@ -6,7 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
-from ..parsing.parse import _get_soup
+from ..parsing.parse import get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 from ..webmentions.discovery import (
     LocalhostEndpointFound,
@@ -294,7 +294,7 @@ def _generate_reply_context_from_main_page(
     soup: BeautifulSoup = None,
 ) -> ReplyContext:
 
-    soup = _get_soup(html, soup, url, headers=http_headers)
+    soup = get_soup(html, soup, url, headers=http_headers)
 
     page_title = soup.find("title")
 
