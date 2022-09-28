@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
+
 from bs4 import BeautifulSoup
 
 from ..parsing.parse import get_soup
@@ -51,6 +52,8 @@ def get_profile(me: str, html: str = "", soup: BeautifulSoup = BeautifulSoup) ->
     """
 
     profile_item = get_soup(html, soup, me)
+
+    print(profile_item)
 
     h_card_tag = profile_item.select(".h-card")
 

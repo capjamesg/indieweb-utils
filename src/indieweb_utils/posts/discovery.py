@@ -6,7 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
-from ..parsing.parse import get_soup, get_parsed_mf2_data
+from ..parsing.parse import get_parsed_mf2_data, get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 
 # This regex identifies permashortlink citations in the form of (example.com slug)

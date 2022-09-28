@@ -17,9 +17,7 @@ class FeedUrl:
     title: str
 
 
-def discover_web_page_feeds(
-    url: str, user_mime_types: Optional[List[str]] = None, html: str = ""
-) -> List[FeedUrl]:
+def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None, html: str = "") -> List[FeedUrl]:
     """
     Get all feeds on a web page.
 

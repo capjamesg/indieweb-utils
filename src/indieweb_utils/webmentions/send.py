@@ -77,6 +77,18 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     :type me: str
     :return: The response from the webmention endpoint.
     :rtype: SendWebmentionResponse
+
+    Example
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        response = indieweb_utils.send_webmention(
+            "https://example.com",
+            "https://example.example.com/post/1",
+            "https://test.example"
+        )
     """
 
     _validate_webmention(source, target)
