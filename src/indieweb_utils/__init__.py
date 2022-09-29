@@ -1,6 +1,6 @@
 # Imports added for API backwards compatibility
 
-from .feeds import FeedUrl, discover_web_page_feeds
+from .feeds import FeedUrl, discover_web_page_feeds, discover_h_feed
 from .indieauth import (
     _validate_indieauth_response,
     get_h_app_item,
@@ -49,4 +49,5 @@ __all__ = [
     "redeem_code",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
+    "discover_h_feed"
 ]

@@ -24,3 +24,11 @@ class TestWebPageFeedDiscovery:
 
         for feed in actual_feeds:
             assert feed.url in expected_feeds
+
+class TestHFeedDiscovery:
+    @pytest.fixture
+    def target(self):
+        from indieweb_utils import discover_h_feed
+
+        return discover_h_feed
+    
