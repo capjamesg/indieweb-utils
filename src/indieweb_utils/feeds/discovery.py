@@ -26,6 +26,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     :param user_mime_types: A list of mime types whose associated feeds you want to retrieve.
     :type user_mime_types: Optional[List[str]]
     :return: A list of FeedUrl objects.
+    :rtype: List[FeedUrl]
 
     Example:
 
