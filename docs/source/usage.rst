@@ -97,13 +97,6 @@ To do so, use this function:
 
 .. autofunction:: indieweb_utils.discover_author
 
-Here are the arguments you can use:
-
-- `url`: The URL of the web page whose author you want to discover.
-- `page_contents`: The unmodified HTML of a web page whose author you want to discover.
-
-The page_contents argument is optional.
-
 If no page_contents argument is specified, the URL you stated is retrieved. Then, authorship inference begins.
 
 If you specify a page_contents value, the HTML you parsed is used for authorship discovery. This saves on a HTML request if you have already retrieved the HTML for another reason (for example, if you need to retreive other values in the page HTML). You still need to specify a URL even if you specify a page_contents value.
