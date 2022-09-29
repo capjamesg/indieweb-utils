@@ -229,3 +229,17 @@ use the following function:
 .. autofunction:: indieweb_utils.get_representative_h_card
 
 This function returns a dictionary with the h-card found on a web page.
+
+Infer the Name of a Page
+------------------------
+
+To find the name of a page per the `Page Name Algorithm <https://indieweb.org/page-name-algorithm>`_, use this function:
+
+.. autofunction:: indieweb_utils.get_page_name
+
+This function searches:
+
+1. For a h-entry title;
+2. For a h-entry summary;
+3. For a HTML page <title> tag;
+4. Otherwise, returns "Untitled".
