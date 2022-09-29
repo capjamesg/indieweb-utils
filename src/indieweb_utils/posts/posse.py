@@ -7,6 +7,8 @@ def get_syndicated_copies(url: str, html: str = None) -> List[str]:
     """
     Retrieve the URLs for syndicated copies of a post.
 
+    :refs: https://indieweb.org/discovery-algorithms#POSSE_copies
+
     :param url: The URL of the post whose syndicated copies you want to retrieve.
     :type url: str
     :param html: The HTML of the post whose syndicated copies you want to retrieve.
