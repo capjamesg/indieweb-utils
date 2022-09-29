@@ -148,11 +148,7 @@ Otherwise, set "me" to the URL of the profile that should be able to access your
 
 Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
 
-If successful, this function returns an IndieAuthCallbackResponse object that looks like this:
-
-.. class:: indieweb_utils.IndieAuthCallbackResponse
-
-This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
+If successful, this function returns an IndieAuthCallbackResponse. This class contains an `endpoint_response`` value. This value is equal to the JSON response sent by the IndieAuth web server.
 
 An example endpoint response looks like this:
 
@@ -201,10 +197,6 @@ Send a Webmention
 To send a webmention to a target, use this function:
 
 .. autofunction:: indieweb_utils.send_webmention
-
-This function returns a SendWebmentionResponse object with this structure:
-
-.. autoclass:: indieweb_utils.SendWebmentionResponse
 
 Discover all Feeds on a Page
 -----------------------------
