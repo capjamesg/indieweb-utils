@@ -1,12 +1,12 @@
 from .flask import (
     _validate_indieauth_response,
     indieauth_callback_handler,
-    is_authenticated,
+    is_authenticated
 )
 from .happ import get_h_app_item
 from .profile import get_profile
 from .relmeauth import get_valid_relmeauth_links
-from .server import redeem_code, validate_access_token, validate_authorization_response
+from .server import redeem_code, validate_access_token, validate_authorization_response, generate_auth_token
 
 __all__ = [
     "is_authenticated",
@@ -18,4 +18,5 @@ __all__ = [
     "_validate_indieauth_response",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
+    "generate_auth_token",
 ]
