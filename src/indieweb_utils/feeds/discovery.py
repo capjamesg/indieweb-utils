@@ -99,7 +99,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     return feeds
 
 
-def discover_h_feed(url: str) -> Dict:
+def discover_h_feed(url: str, html: str = "") -> Dict:
     """
     Find the main h-feed that represents a web page as per the h-feed Discovery algorithm.
 
@@ -107,11 +107,16 @@ def discover_h_feed(url: str) -> Dict:
 
     :param url: The URL of the page whose associated feeds you want to retrieve.
     :type url: str
+    :param html: The HTML of a page whose feeds you want to retrieve
+    :type html: str
     :return: The h-feed data.
     :rtype: dict
     """
 
-    parsed_main_page_mf2 = mf2py.parse(url=url)
+    if html:
+        parsed_main_page_mf2 = mf2py.parse(doc=html)
+    else:
+        parsed_main_page_mf2 = mf2py.parse(url=url)
 
     all_page_feeds = discover_web_page_feeds(url)
 
