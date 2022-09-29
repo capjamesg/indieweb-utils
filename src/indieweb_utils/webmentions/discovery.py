@@ -179,7 +179,6 @@ def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, D
 
 
 def _find_links_html(*, body: str, target_headers: List[str]) -> Dict[str, str]:
-    """"""
     soup = BeautifulSoup(body, "html.parser")
     found: Dict[str, str] = {}
 
