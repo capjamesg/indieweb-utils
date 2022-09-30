@@ -74,6 +74,7 @@ Here are some example values for use with this function:
     headers_to_find = ["hub", "self"] # discover WebSub endpoints
     headers_to_find = ["micropub"] # discover a Micropub endpoint
     headers_to_find = ["microsub"] # discover a Microsub endpoint
+    headers_to_find = ["syndication", "shortlink"] # useful for interpreting Micropub success responses (ref: https://www.w3.org/TR/micropub/#h-response)
 
 Discover a Webmention Endpoint
 ------------------------------------
