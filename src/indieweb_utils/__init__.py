@@ -18,10 +18,10 @@ from .replies import ReplyContext, get_reply_context
 from .utils.urls import canonicalize_url
 from .webmentions import (
     SendWebmentionResponse,
+    discover_endpoint,
     discover_webmention_endpoint,
     send_webmention,
     validate_webmention,
-    discover_endpoint
 )
 
 __version__ = "0.2.0"
@@ -50,5 +50,5 @@ __all__ = [
     "redeem_code",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
-    "discover_endpoint"
+    "discover_endpoint",
 ]
