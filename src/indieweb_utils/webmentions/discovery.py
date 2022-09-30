@@ -60,7 +60,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     if not target:
         raise TargetNotProvided("No target provided.")
 
-    endpoints = _discover_endpoints(target, [_WEBMENTION])
+    endpoints = discover_endpoints(target, [_WEBMENTION])
 
     endpoint = endpoints.get("webmention", None)
 
@@ -100,7 +100,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def _discover_endpoints(url: str, headers_to_find: List[str]):
+def discover_endpoints(url: str, headers_to_find: List[str]):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
@@ -122,7 +122,7 @@ def _discover_endpoints(url: str, headers_to_find: List[str]):
         # find the webmention header on a web page
         headers_to_find = ["webmention"]
 
-        endpoints = indieweb_utils._discover_endpoints(
+        endpoints = indieweb_utils.discover_endpoints(
             url
         )
 
