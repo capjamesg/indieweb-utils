@@ -229,3 +229,10 @@ use the following function:
 .. autofunction:: indieweb_utils.get_representative_h_card
 
 This function returns a dictionary with the h-card found on a web page.
+
+Get all URLs a Post Replies To
+------------------------------
+
+To find all of the URLs to which a reply post is replying, use this function:
+
+.. autofunction:: indieweb_utils.get_reply_urls
