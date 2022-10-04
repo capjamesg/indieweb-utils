@@ -72,7 +72,7 @@ You can later refer to these values during the stage where you decode a token.
 
 Here is the syntax for this function:
 
-.. autofunction:: indieweb_utils.generate_auth_token
+.. autofunction:: indieweb_utils.indieauth.server.generate_auth_token
 
 This function returns both the code you should send to the client in the authentication redirect
 response as well as the code_verifier used in the token. This code_verifier should be saved,
