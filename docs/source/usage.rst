@@ -44,6 +44,40 @@ By default, this function contains all of the attributes in the Post Type Discov
 
 Custom properties are added to the end of the post type discovery list, just before the "article" property. All specification property types are checked before your custom attribute.
 
+Discover an Endpoint
+-----------------------------
+
+You can discover an endpoint from a HTTP header or a HTML `link` tag using the `discover_endpoint` function.
+
+The `discover_endpoint` function uses this syntax:
+
+.. autofunction:: indieweb_utils.discover_endpoint
+
+Here are some example values for use with this function:
+
+.. codeblock:: python
+
+    headers_to_find = ["indieauth-metadata"] # discover an IndieAuth metadata endpoint
+    headers_to_find = ["authorization_endpoint", "token_endpoint"] # discover IndieAuth authorization and token endpoints
+    headers_to_find = ["hub", "self"] # discover WebSub endpoints
+    headers_to_find = ["micropub"] # discover a Micropub endpoint
+    headers_to_find = ["microsub"] # discover a Microsub endpoint
+    headers_to_find = ["syndication", "shortlink"] # useful for interpreting Micropub success responses (ref: https://www.w3.org/TR/micropub/#h-response)
+
+Discover a Webmention Endpoint
+------------------------------------
+
+Webmention endpoint discovery is useful if you want to know if you can send webmentions to a site or if you want to send a webmention to a site.
+
+This function both finds a Webmention endpoint and validates it. This function should be used to discover Webmention endpoints instead of `discover_endpoint()`, which is more generic and performs no validation on resources it discovers.
+
+You can discover if a URL has an associated webmention endpoint using the `discover_webmention_endpoint` function:
+
+.. autofunction:: indieweb_utils.discover_webmention_endpoint
+
+If successful, this function returns the URL of the webmention endpoint associated with a resource. In this case, the message value is a blank string.
+
+If a webmention endpoint could not be found, URL is equal to None. In this case, a string message value is provided that you can use for debugging or present to a user.
 
 Canonicalize a URL
 ------------------------
