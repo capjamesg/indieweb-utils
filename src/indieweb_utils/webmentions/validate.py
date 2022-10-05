@@ -154,6 +154,9 @@ def validate_webmention(
         )
 
         print(webmention_is_valid) # Should return True
+
+    :raises WebmentionValidationError: Webmention is invalid.
+    :raises WebmentionIsGone: Webmention source returns a 410 Gone code.
     """
 
     if source.strip("/") == target.strip("/"):

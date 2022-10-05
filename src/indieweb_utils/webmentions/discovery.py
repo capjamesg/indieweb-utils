@@ -56,6 +56,11 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
         )
 
         print(webmention_endpoint) # https://webmention.jamesg.blog/webmention
+
+    :raises TargetNotProvided: Target is not provided.
+    :raises WebmentionEndpointNotFound: Webmention endpoint is not found.
+    :raises UnacceptableIPAddress: Endpoint does not connect to an accepted IP.
+    :raises LocalhostEndpointFound: Discovered endpoint is equal to localhost.
     """
     if not target:
         raise TargetNotProvided("No target provided.")
@@ -116,6 +121,7 @@ def discover_endpoints(url: str, headers_to_find: List[str]):
     .. code-block:: python
 
         import indieweb_utils
+        import requests
 
         url = "https://jamesg.blog/"
 
@@ -127,13 +133,15 @@ def discover_endpoints(url: str, headers_to_find: List[str]):
         )
 
         print(webmention_endpoint) # {'webmention': 'https://webmention.jamesg.blog/webmention'}
+
+    :raises requests.exceptions.RequestException: Error raised while making the network request to discover endpoints.
     """
     response: Dict[str, str] = {}
 
     try:
         endpoint_request = requests.get(url, timeout=5)
     except requests.exceptions.RequestException:
-        raise Exception("Could not connect to the specified URL.")
+        raise requests.exceptions.RequestException("Could not connect to the specified URL.")
 
     link_headers = _find_links_in_headers(headers=endpoint_request.headers, target_headers=headers_to_find)
 
