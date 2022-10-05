@@ -5,4 +5,5 @@ Contents
 
    usage
    indieauth
+   webmention
    changelog
