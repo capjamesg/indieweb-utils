@@ -60,6 +60,30 @@ This function returns a single string with the post type of the specified web pa
 See the `Post Type Discovery specification <https://indieweb.org/post-type-discovery>`_ for a full list of post types.
 
 
+Custom Properties
+------------------------
+
+The structure of the custom properties tuple is:
+
+.. code-block:: python
+
+   (attribute_to_look_for, value_to_return)
+
+An example custom property value is:
+
+.. code-block:: python
+
+    custom_properties = [
+        ("poke-of", "poke")
+    ]
+
+This function would look for a poke-of attribute on a web page and return the "poke" value.
+
+By default, this function contains all of the attributes in the Post Type Discovery mechanism.
+
+Custom properties are added to the end of the post type discovery list, just before the "article" property. All specification property types are checked before your custom attribute.
+
+
 Find the original version of a post
 ------------------------------------
 
