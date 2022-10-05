@@ -24,6 +24,8 @@ def get_representative_h_card(url: str) -> Dict[str, Any]:
     :type url: str
     :return: The representative h-card.
     :rtype: dict
+
+    :raises RepresentativeHCardParsingError: Representative h-card could not be parsed.
     """
     mf2_data = mf2py.parse(url=url)
 
