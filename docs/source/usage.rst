@@ -65,52 +65,6 @@ A complete URL returned by this function looks like this:
     https://indieweb.org/POSSE
 
 
-Handle an IndieAuth Callback Request
-------------------------------------
-
-The last stage of the IndieAuth authentication flow for a client is to verify a callback response and exchange the provided code with a token.
-
-This function implements a callback handler to verify the response frmo an authorization server and redeem a token.
-
-To use this function, you need to pass in the following arguments:
-
-.. autofunction:: indieweb_utils.indieauth_callback_handler
-
-This function verifies that an authorization server has returned a valid response and redeems a token.
-
-You can leave the "me" value equal to None if any URL should be able to access your service.
-
-Otherwise, set "me" to the URL of the profile that should be able to access your service.
-
-Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
-
-If successful, this function returns an IndieAuthCallbackResponse object that looks like this:
-
-.. class:: indieweb_utils.IndieAuthCallbackResponse
-
-This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
-
-An example endpoint response looks like this:
-
-.. code-block:: python
-
-    {
-        "me": "https://jamesg.blog/",
-        "access_token": "ACCESS_TOKEN",
-        "scope": "SCOPE_LIST"
-    }
-
-Check if a User is Authenticated (Flask)
-----------------------------------------
-
-To check if a user is authenticated in a Flask application, use the following function:
-
-.. autofunction:: indieweb_utils.is_authenticated
-
-This function checks if an authorization token is provided in a header or user storage. If a token is provided, that token is verified with the specified token endpoint.
-
-A True value is returned if a user has provided a token and that token is valid. A False value is returned if a user has not provided a token or if the token is invalid.
-
 Generate Reply Context
 ------------------------
 
