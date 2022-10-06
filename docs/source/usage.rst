@@ -51,7 +51,6 @@ This function returns a ReplyContext object that looks like this:
 
 .. autoclass:: indieweb_utils.ReplyContext
 
-
 Generate a URL Summary
 ----------------------
 
@@ -79,3 +78,13 @@ This parameter accepts a dictionary of domain names to summaries, like this:
     }
 
 If a summary cannot be generated, this function returns "A post by [domain_name].", where domain name is the domain of the URL you passed into the function.
+
+
+Get a Page h-feed
+---------------------------
+
+The `discover_page_feed()` function implements the proposed `microformats2 h-feed discovery algorithm <https://microformats.org/wiki/h-feed#Discovery>`_.
+
+This function looks for a h-feed on a given page. If one is not found, the function looks for a rel tag to a h-feed. If one is found, that document is parsed.
+
+If a h-feed is found on the related document, the h-feed is returned.
