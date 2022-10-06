@@ -20,31 +20,6 @@ You can import the package using the following line of code:
 
     import indieweb_utils
 
-
-Custom Properties
-------------------------
-
-The structure of the custom properties tuple is:
-
-.. code-block:: python
-
-   (attribute_to_look_for, value_to_return)
-
-An example custom property value is:
-
-.. code-block:: python
-
-    custom_properties = [
-        ("poke-of", "poke")
-    ]
-
-This function would look for a poke-of attribute on a web page and return the "poke" value.
-
-By default, this function contains all of the attributes in the Post Type Discovery mechanism.
-
-Custom properties are added to the end of the post type discovery list, just before the "article" property. All specification property types are checked before your custom attribute.
-
-
 Canonicalize a URL
 ------------------------
 
@@ -76,3 +51,31 @@ This function returns a ReplyContext object that looks like this:
 
 .. autoclass:: indieweb_utils.ReplyContext
 
+
+Generate a URL Summary
+----------------------
+
+You can generate a summary of a URL without retrieving the page using the `get_url_summary` function.
+
+By default, this function can generate a summary for the following URLs:
+
+- github.com
+- twitter.com
+- facebook.com
+- eventbrite.com / eventbrite.co.uk
+- upcoming.com
+- calagator.com
+- events.indieweb.org
+
+.. autofunction:: indieweb_utils.get_url_summary
+
+You can specify custom mappings for other domains using the `custom_mappings` parameter.
+
+This parameter accepts a dictionary of domain names to summaries, like this:
+
+    {
+        "example.com": "A post on example.com.",
+        "meetup.com": "A meetup on meetup.com."
+    }
+
+If a summary cannot be generated, this function returns "A post by [domain_name].", where domain name is the domain of the URL you passed into the function.
