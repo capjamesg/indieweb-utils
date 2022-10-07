@@ -19,7 +19,7 @@ from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url
 from .webmentions import (
     SendWebmentionResponse,
-    discover_endpoint,
+    discover_endpoints,
     discover_webmention_endpoint,
     send_webmention,
     validate_webmention,
@@ -53,5 +53,5 @@ __all__ = [
     "validate_authorization_response",
     "get_url_summary",
     "InvalidURL",
-    "discover_endpoint",
+    "discover_endpoints",
 ]

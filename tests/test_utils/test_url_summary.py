@@ -15,6 +15,10 @@ from indieweb_utils import utils
             "A comment on pull request #62 in the indieweb-utils GitHub repository",
         ),
         (
+            "https://www.github.com/capjamesg/indieweb-utils",
+            "A comment on the indieweb-utils GitHub repository",
+        ),
+        (
             "https://github.com/capjamesg/indieweb-utils",
             "A comment on the indieweb-utils GitHub repository",
         ),
@@ -32,6 +36,7 @@ from indieweb_utils import utils
         ),
         ("https://jamesg.blog", "A post by jamesg.blog"),
         ("https://indieweb.org/coffee", "The /coffee page on the IndieWeb wiki"),
+        ("https://www.indieweb.org/coffee", "The /coffee page on the IndieWeb wiki"),
         ("https://calagator.com/event", "An event on Calagator"),
         ("https://upcoming.com/event", "An event on Upcoming"),
     ],

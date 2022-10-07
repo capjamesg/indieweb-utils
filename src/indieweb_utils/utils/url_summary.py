@@ -2,6 +2,7 @@ import re
 from urllib.parse import urlparse
 
 from .url_summary_templates import URL_SUMMARY_TEMPLATES
+from .urls import canonicalize_url
 
 
 class InvalidURL(Exception):
@@ -22,7 +23,9 @@ def get_url_summary(url: str, custom_templates: list = None):
     :return: A summary of the URL.
     :rtype: str
 
-    import indieweb_utils
+    .. code-block:: python
+
+        import indieweb_utils
 
         # a dictionary of custom patterns against which to match during the lookup
         custom_properties = {
@@ -40,11 +43,15 @@ def get_url_summary(url: str, custom_templates: list = None):
         print(summary) # "A map of london coffee shops on jamesg.blog"
     """
 
+    url = canonicalize_url(url)
+
     if custom_templates is None:
         custom_templates = []
 
     parsed_url = urlparse(url)
     domain = parsed_url.netloc
+
+    domain = domain.lstrip("www.")
 
     if not domain:
         raise InvalidURL("The provided URL is incorrectly formatted.")
