@@ -67,6 +67,8 @@ def indieauth_callback_handler(
     :return: A message indicating the result of the callback (success or failure) and the token endpoint response.
         The endpoint response will be equal to None if the callback failed.
     :rtype: tuple[str, dict]
+
+    :raises AuthenticationError: Authentication process could not be completed due to an error.
     """
 
     if state != session_state:
@@ -110,6 +112,8 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
     :param approved_user: The optional URL of the that is approved to use the API.
     :return: True if the user is authenticated, False otherwise.
     :rtype: bool
+
+    :raises AuthenticationError: Authentication process could not be completed due to an error.
     """
     if headers.get("Authorization") is not None:
         access_token = headers["Authorization"].split(" ")[-1]
