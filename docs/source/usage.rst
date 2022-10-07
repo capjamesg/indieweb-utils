@@ -60,21 +60,22 @@ By default, this function can generate a summary for the following URLs:
 
 - github.com
 - twitter.com
-- facebook.com
 - eventbrite.com / eventbrite.co.uk
 - upcoming.com
 - calagator.com
 - events.indieweb.org
+- indieweb.org
 
 .. autofunction:: indieweb_utils.get_url_summary
 
 You can specify custom mappings for other domains using the `custom_mappings` parameter.
 
-This parameter accepts a dictionary of domain names to summaries, like this:
+This parameter accepts a dictionary of with domain names mapped to lists of tuples with patterns to match and strings to return, like this:
 
     {
-        "example.com": "A post on example.com.",
-        "meetup.com": "A meetup on meetup.com."
+        "example.com": [
+            (r"example.com/(\d+)", "Example #{}"),
+        ]
     }
 
 If a summary cannot be generated, this function returns "A post by [domain_name].", where domain name is the domain of the URL you passed into the function.
