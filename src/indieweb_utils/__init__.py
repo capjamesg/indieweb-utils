@@ -16,10 +16,11 @@ from .posts.discovery import discover_author, discover_original_post, get_post_t
 from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
+from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url
 from .webmentions import (
     SendWebmentionResponse,
-    discover_endpoint,
+    discover_endpoints,
     discover_webmention_endpoint,
     send_webmention,
     validate_webmention,
@@ -53,4 +54,7 @@ __all__ = [
     "validate_authorization_response",
     "get_syndicated_copies",
     "discover_endpoint",
+    "get_url_summary",
+    "InvalidURL",
+    "discover_endpoints",
 ]
