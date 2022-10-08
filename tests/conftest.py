@@ -19,6 +19,12 @@ def index() -> str:
 
 
 @pytest.fixture
+def index2() -> str:
+    with open("tests/fixtures/index2.html") as f:
+        return f.read()
+
+
+@pytest.fixture
 def representative_index() -> str:
     with open("tests/fixtures/representative_page.html") as f:
         return f.read()
