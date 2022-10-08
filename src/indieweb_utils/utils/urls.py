@@ -1,7 +1,7 @@
 from urllib import parse as url_parse
 
 
-def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = "https") -> str:
+def canonicalize_url(url: str, domain: str = "", full_url: str = "", protocol: str = "https") -> str:
     """
     Return a canonical URL for the given URL.
 

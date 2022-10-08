@@ -25,7 +25,6 @@ class TestWebPageFeedDiscovery:
         for feed in actual_feeds:
             assert feed.url in expected_feeds
 
-
 class TestHFeedDiscovery:
     @pytest.fixture
     def target(self):
@@ -34,9 +33,12 @@ class TestHFeedDiscovery:
         return discover_h_feed
 
     @responses.activate
-    def test_h_feed_discovery(self, target, index, index_url):
-        responses.add(responses.Response(method="GET", url=index_url, body=index))
+    def test_webpage_feed_discovery_2(self, target, index2, index_url):
+        responses.add(responses.Response(method="GET", url=index_url, body=index2))
 
-        h_feed = target(index_url)
+        actual_feeds = target(index_url)
 
-        assert h_feed["children"][0]["properties"] != {}
+        expected_feeds = {"https://jamesvandyne.com/feed/"}
+
+        for feed in actual_feeds:
+            assert feed.url in expected_feeds
