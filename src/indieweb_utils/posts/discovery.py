@@ -193,7 +193,7 @@ def discover_author(url: str, page_contents: str = "") -> dict:
     """
     Discover the author of a post per the IndieWeb Authorship specification.
 
-    refs: https://indieweb.org/authorship-spec
+    :refs: https://indieweb.org/authorship-spec
 
     :param url: The URL of the post.
     :type url: str

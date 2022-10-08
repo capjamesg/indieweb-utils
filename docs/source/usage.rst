@@ -39,7 +39,6 @@ A complete URL returned by this function looks like this:
 
     https://indieweb.org/POSSE
 
-
 Generate Reply Context
 ------------------------
 
