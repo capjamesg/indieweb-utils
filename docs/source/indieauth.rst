@@ -1,5 +1,5 @@
-IndieAuth Features
-=================================
+IndieAuth
+==========
 
 The indieweb-utils library provides a number of helper functions that will enable you
 to implement your own IndieAuth authentication and token endpoints in Python.
@@ -53,8 +53,33 @@ Usage information for this function is below.
 
 .. autofunction:: indieweb_utils.get_profile
 
-Generate an authentication token
+
+
+Retrieve Valid Links for Use in RelMeAuth
+-----------------------------------------
+
+To authenticate a user with `RelMeAuth <https://microformats.org/RelMeAuth>`_, you need to validate that there is a two-way link between two resources.
+
+IndieWeb Utils implements a helper function that checks whether the URLs linked with rel=me on a web page contain a
+link back to the source.
+
+To check whether there is a two-way rel=me link between two resources, you can use this function:
+
+.. autofunction:: indieweb_utils.get_valid_relmeauth_links
+
+This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
+rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
+if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user, even if the `get_valid_relmeauth_links()` function found a valid two-way rel=me link.
+
+
+IndieAuth Endpoint Scaffolding
 --------------------------------
+
+indieweb-utils includes a `indieauth.server` module with scaffolding to help you build your own IndieAuth endpoints.
+
+
+Generate an authentication token
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `generate_auth_token()` function validates that an authentication request contains all required values. Then,
 this function generates a JWT-encoded token with the following pieces of information:
@@ -72,7 +97,7 @@ You can later refer to these values during the stage where you decode a token.
 
 Here is the syntax for this function:
 
-.. autofunction:: indieweb_utils.generate_auth_token
+.. autofunction:: indieweb_utils.indieauth.server.generate_auth_token
 
 This function returns both the code you should send to the client in the authentication redirect
 response as well as the code_verifier used in the token. This code_verifier should be saved,
@@ -80,7 +105,7 @@ perhaps in session storage, for later use in checking the validity of a token re
 request.
 
 Validate an authorization response
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `_validate_indieauth_response` function contains five checks. These five checks validate an authorization response according to the IndieAuth specification.
 
@@ -101,7 +126,7 @@ This function does not return a value if an authorization response is valid. If 
 an exception will be raised with a relevant error message.
 
 Redeem an IndieAuth code at a token endpoint
---------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can redeem an IndieAuth authorization code for an access token if needed. This is a common
 need for Micropub and Microsub clients.
@@ -122,8 +147,9 @@ Here is the syntax for this function:
 
 .. autofunction:: indieweb_utils.redeem_code
 
+
 Validate an access token created by a token endpoint
-----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A server may ask your token endpoint to validate that a provided token is in fact valid. This may be done
 by a Micropub client to ensure a token is still active, for example.
@@ -139,18 +165,50 @@ Here is the syntax for the function:
 
 .. autofunction:: indieweb_utils.validate_access_token
 
-Retrieve Valid Links for Use in RelMeAuth
------------------------------------------
+Determine if a user is authenticated
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To authenticate a user with `RelMeAuth <https://microformats.org/RelMeAuth>`_, you need to validate that there is a two-way link between two resources.
+To check if a user is authenticated in a Flask application, use the following function:
 
-IndieWeb Utils implements a helper function that checks whether the URLs linked with rel=me on a web page contain a
-link back to the source.
+.. autofunction:: indieweb_utils.is_authenticated
 
-To check whether there is a two-way rel=me link between two resources, you can use this function:
+This function checks if an authorization token is provided in a header or user storage. If a token is provided, that token is verified with the specified token endpoint.
 
-.. autofunction:: indieweb_utils.get_valid_relmeauth_links
+A True value is returned if a user has provided a token and that token is valid. A False value is returned if a user has not provided a token or if the token is invalid.
 
-This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
-rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
-if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user, even if the `get_valid_relmeauth_links()` function found a valid two-way rel=me link.
+
+Handle an IndieAuth callback request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The last stage of the IndieAuth authentication flow for a client is to verify a callback response and exchange the provided code with a token.
+
+This function implements a callback handler to verify the response frmo an authorization server and redeem a token.
+
+To use this function, you need to pass in the following arguments:
+
+.. autofunction:: indieweb_utils.indieauth_callback_handler
+
+This function verifies that an authorization server has returned a valid response and redeems a token.
+
+You can leave the "me" value equal to None if any URL should be able to access your service.
+
+Otherwise, set "me" to the URL of the profile that should be able to access your service.
+
+Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
+
+If successful, this function returns an IndieAuthCallbackResponse object that looks like this:
+
+.. class:: indieweb_utils.IndieAuthCallbackResponse
+
+This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
+
+An example endpoint response looks like this:
+
+.. code-block:: python
+
+    {
+        "me": "https://jamesg.blog/",
+        "access_token": "ACCESS_TOKEN",
+        "scope": "SCOPE_LIST"
+    }
+

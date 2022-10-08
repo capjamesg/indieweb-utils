@@ -49,6 +49,8 @@ def get_profile(me: str) -> Profile:
         assert profile.name == "James"
         assert profile.photo == "https://jamesg.blog/me.jpg"
         assert profile.url == "https://jamesg.blog
+
+    :raises ProfileError: Profile could not be retrieved.
     """
 
     try:
