@@ -211,7 +211,6 @@ def generate_auth_token(
         import indieweb_utils
         import random
         import string
-
         token = indieweb_utils.indieauth.server.generate_auth_token(
             me="https://test.example.com/user",
             client_id="https://example.com",
