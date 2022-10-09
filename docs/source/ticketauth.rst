@@ -7,10 +7,10 @@ While the TicketAuth specification is a draft, there are implementations followi
 
 The mechanics of these functions may change as TicketAuth becomes a more mature specification.
 
-Create an IndieAuth ticket
--------------------------
+Send a IndieAuth ticket to a server
+-----------------------------------
 
-The `create_ticket()` function discovers the ticket endpoint of a subject and makes a POST request to their ticket endpoint.
+The `send_ticket()` function discovers the ticket endpoint of a subject and makes a POST request to their ticket endpoint.
 
 This POST request contains an `application/x-www-form-urlencoded` payload with ticket, resource, and subject values. These are defined in Step 2 of the TicketAuth specification.
 

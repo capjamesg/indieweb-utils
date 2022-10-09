@@ -27,13 +27,23 @@ class TicketCreationError(Exception):
     """
 
 
-def create_ticket(feed_url: str, ticket: str, subject: str, resource: str) -> None:
+def send_ticket(subject: str, ticket: str, resource: str) -> None:
     """
-    Create a ticket for an IndieAuth ticket server.
+    Send a ticket to a IndieAuth ticket server.
 
+    :param subject: The subject of the TicketAuth interaction.
+    :type subject: str
+    :param ticket: The ticket to send.
+    :type ticket: str
+    :param resource: The resource to which the ticket grants access.
+    :type resource: str
+    :return: None
+
+    :raises NoTicketEndpointFound: A ticket endpoint could not be found for the provided resource.
+    :raises TicketCreationError: There was an error creating a ticket.
     """
 
-    url_endpoints = _discover_endpoints(feed_url, ["ticket_endpoint"])
+    url_endpoints = _discover_endpoints(subject, ["ticket_endpoint"])
 
     if url_endpoints.get("ticket_endpoint") is None:
         raise NoTicketEndpointFound("A ticket endpoint was not found.")
@@ -52,6 +62,16 @@ def create_ticket(feed_url: str, ticket: str, subject: str, resource: str) -> No
 def redeem_ticket(resource: str, ticket: str) -> str:
     """
     Redeem a ticket from an IndieAuth ticket server for an access token.
+
+    :param resource: The URL of the resource whose token endpoint should be used in redemption.
+    :type resource: str
+    :param ticket: The ticket to redeem.
+    :type ticket: str
+    :return: The access token.
+    :rtype: str
+
+    :raises NoTokenEndpointFound: A token endpoint could not be found for the provided resource.
+    :raises TicketRedemptionError: There was an error redeeming a ticket.
     """
 
     url_endpoints = _discover_endpoints(resource, ["token_endpoint"])
@@ -69,6 +89,4 @@ def redeem_ticket(resource: str, ticket: str) -> str:
     if ticket_response.status_code != 200:
         raise TicketRedemptionError("The ticket endpoint returned a non-200 status code.")
 
-    link_results = ticket_response.json()
-
-    return link_results.json()["ticket"]
+    return ticket_response.json()["access_token"]
