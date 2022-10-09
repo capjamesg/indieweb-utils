@@ -79,7 +79,7 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
                     "authorization_response_iss_parameter_supported"
                 ),
                 userinfo_endpoint=metadata.get("userinfo_endpoint"),
-                ticket_endpoint=metadata.get("ticket_endpoint"),
+                ticket_endpoint=endpoints.get("ticket_endpoint"),
             )
 
             return indieauth_endpoints
