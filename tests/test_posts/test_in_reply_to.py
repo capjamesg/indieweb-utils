@@ -2,14 +2,14 @@ import pytest
 import responses
 
 
-class TestRepresentativeHCard:
+class TestInReplyToAlgorithm:
     @pytest.fixture
     def target(self):
         from indieweb_utils import get_reply_urls
 
         return get_reply_urls
 
-    def test_representative_h_card(self, target, in_reply_to):
+    def test_in_reply_to_algorithm(self, target, in_reply_to):
         url = "https://aaronparecki.com/2022/09/29/29/"
 
         responses.add(
