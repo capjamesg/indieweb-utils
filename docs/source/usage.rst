@@ -123,3 +123,88 @@ Here is an example value for a person tag database:
 
 This function maps the `@james` tag with the name "James' Coffee Blog" and the URL "https://jamesg.blog/". More people can be added as keys to the dictionary.
 
+
+To generate reply context for a given page, use the following function:
+
+.. autofunction:: indieweb_utils.get_reply_context
+
+This function returns a ReplyContext object that looks like this:
+
+.. autoclass:: indieweb_utils.ReplyContext
+
+Find the Original Version of a Post
+------------------------------------
+
+To find the original version of a post per the Original Post Discovery algorithm, use this code:
+
+.. autofunction:: indieweb_utils.discover_original_post
+
+This function returns the URL of the original version of a post, if one is found. Otherwise, None is returned.
+
+Send a Webmention
+------------------
+
+To send a webmention to a target, use this function:
+
+.. autofunction:: indieweb_utils.send_webmention
+
+This function returns a SendWebmentionResponse object with this structure:
+
+.. autoclass:: indieweb_utils.SendWebmentionResponse
+
+Discover all Feeds on a Page
+-----------------------------
+
+To discover the feeds on a page, use this function:
+
+.. autofunction:: indieweb_utils.discover_web_page_feeds
+
+This function returns a list with all feeds on a page.
+
+Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
+
+.. autoclass:: indieweb_utils.FeedUrl
+
+Get a Representative h-card
+---------------------------
+
+To find the h-card that is considered representative of a web resource per the
+`Representative h-card Parsing Algorithm <https://microformats.org/wiki/representative-h-card-parsing>`_,
+use the following function:
+
+.. autofunction:: indieweb_utils.get_representative_h_card
+
+This function returns a dictionary with the h-card found on a web page.
+
+Add hashtags and person tags to a string
+-----------------------------------------
+
+The `autolink_tag()` function replaces hashtags (#) with links to tag pages on a specified site. It also replaces person tags (ex. @james) with provided names and links to the person's profile.
+
+This function is useful for enriching posts.
+
+To use this function, pass in the following arguments:
+
+.. autofunction:: indieweb_utils.autolink_tag
+
+This function will only substitute tags in the list of tags passed through to this function if a `tags` value is provided. This ensures that the function does not create links that your application cannot resolve.
+
+If you do not provide a `tags` value, the function will create links for all hashtags, as it is assumed that your application can resolve all hashtags.
+
+`Tagging people <https://indieweb.org/person-tag>`_ is enabled by providing a dictionary with information on all of the people to whom you can tag.
+
+If a person in an @ link is not in the tag dictionary, this function will not substitute that given @ link.
+
+Here is an example value for a person tag database:
+
+.. code-block:: python
+
+    {
+        "james": (
+            "James' Coffee Blog",
+            "https://jamesg.blog/""
+        )
+    }
+
+This function maps the `@james` tag with the name "James' Coffee Blog" and the URL "https://jamesg.blog/". More people can be added as keys to the dictionary.
+
