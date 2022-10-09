@@ -4,6 +4,7 @@ from .flask import (
     is_authenticated,
 )
 from .happ import get_h_app_item
+from .header_discovery import discover_indieauth_endpoints
 from .profile import get_profile
 from .relmeauth import get_valid_relmeauth_links
 from .server import redeem_code, validate_access_token, validate_authorization_response
@@ -18,4 +19,5 @@ __all__ = [
     "_validate_indieauth_response",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
+    "discover_indieauth_endpoints",
 ]
