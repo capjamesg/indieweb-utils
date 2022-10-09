@@ -1,8 +1,8 @@
 import re
-from typing import Set
+from typing import List
 
 
-def _match_tag(tag_prefix: str, match: str, user_tags: Set[str]) -> str:
+def _match_tag(tag_prefix: str, match: str, user_tags: List[str]) -> str:
     """
     Match a tag and return a link to the tag page.
 
@@ -10,8 +10,8 @@ def _match_tag(tag_prefix: str, match: str, user_tags: Set[str]) -> str:
     :type tag_prefix: str
     :param match: The match to process.
     :type match: str
-    :param user_tags: A set of tags that a user supports on their website.
-    :type user_tags: set
+    :param user_tags: A list of tags that a user supports on their website.
+    :type user_tags: List[str]
     :return: The processed match.
     :rtype: str
     """
@@ -40,7 +40,7 @@ def _match_person_tag(people: dict, match: str) -> str:
         return match
 
 
-def autolink_tags(text: str, tag_prefix: str, people: dict, tags: Set[str] = set()) -> str:
+def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = None) -> str:
     """
     Replace hashtags (#) and person tags (@) with links to the respective tag page and profile URL.
 
@@ -50,8 +50,8 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: Set[str] = set
     :type tag_prefix: str
     :param people: A dictionary of people to link to.
     :type people: dict
-    :param tags: A set of tags to link to (optional).
-    :type tags: Set[str]
+    :param tags: A list of tags to link to (optional).
+    :type tags: List[str]
     :return: The processed text.
     :rtype: str
 
@@ -70,6 +70,11 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: Set[str] = set
         note_with_tags = indieweb_utils.autolink_tags(note, "/tag/", people, tags=["muffin", "recipe"])
 
     """
+
+    if tags is None:
+        tags = []
+        
+    tags = set(tags)
 
     text = re.sub(r"#(\w+)", lambda match: _match_tag(tag_prefix, match.group(), tags), text)
     text = re.sub(r"@(\w+)", lambda match: _match_person_tag(people, match.group()), text)
