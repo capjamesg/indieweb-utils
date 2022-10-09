@@ -18,6 +18,7 @@ from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url
+from .utils.autotag import autolink_tags
 from .webmentions import (
     SendWebmentionResponse,
     discover_endpoints,
@@ -52,6 +53,7 @@ __all__ = [
     "redeem_code",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
+    "autolink_tags",
     "discover_h_feed",
     "generate_auth_token"
     "get_url_summary",
