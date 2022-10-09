@@ -87,4 +87,5 @@ Contributors
 
 - `capjamesg <https://github.com/capjamesg>`_
 - `tantek <https://github.com/tantek>`_
-- `jamesvandyne <https://github.com/jamesvandyne/>`_
+- `jamesvandyne <https://github.com/jamesvandyne>`_
+- `angelogladding <https://github.com/angelogladding>`_
