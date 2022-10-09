@@ -1,8 +1,7 @@
 import re
-from typing import List
 
 
-def _match_tag(tag_prefix: str, match: str, user_tags: List[str]) -> str:
+def _match_tag(tag_prefix: str, match: str, user_tags: list[str]) -> str:
     """
     Match a tag and return a link to the tag page.
 
@@ -11,7 +10,7 @@ def _match_tag(tag_prefix: str, match: str, user_tags: List[str]) -> str:
     :param match: The match to process.
     :type match: str
     :param user_tags: A list of tags that a user supports on their website.
-    :type user_tags: List[str]
+    :type user_tags: list[str]
     :return: The processed match.
     :rtype: str
     """
@@ -40,7 +39,7 @@ def _match_person_tag(people: dict, match: str) -> str:
         return match
 
 
-def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = None) -> str:
+def autolink_tags(text: str, tag_prefix: str, people: dict, tags: list[str] = None) -> str:
     """
     Replace hashtags (#) and person tags (@) with links to the respective tag page and profile URL.
 
@@ -51,7 +50,7 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = No
     :param people: A dictionary of people to link to.
     :type people: dict
     :param tags: A list of tags to link to (optional).
-    :type tags: List[str]
+    :type tags: list[str]
     :return: The processed text.
     :rtype: str
 
@@ -73,7 +72,7 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = No
 
     if tags is None:
         tags = []
-        
+
     tags = set(tags)
 
     text = re.sub(r"#(\w+)", lambda match: _match_tag(tag_prefix, match.group(), tags), text)

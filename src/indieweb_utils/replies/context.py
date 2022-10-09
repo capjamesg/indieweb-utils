@@ -21,6 +21,7 @@ class PostAuthor:
     """
     Information about the author of a post.
     """
+
     name: str
     url: str
     photo: str
@@ -31,6 +32,7 @@ class ReplyContext:
     """
     Context about a web page and its contents.
     """
+
     webmention_endpoint: str
     post_url: str
     photo: str
