@@ -20,65 +20,6 @@ You can import the package using the following line of code:
 
     import indieweb_utils
 
-
-Custom Properties
-------------------------
-
-The structure of the custom properties tuple is:
-
-.. code-block:: python
-
-   (attribute_to_look_for, value_to_return)
-
-An example custom property value is:
-
-.. code-block:: python
-
-    custom_properties = [
-        ("poke-of", "poke")
-    ]
-
-This function would look for a poke-of attribute on a web page and return the "poke" value.
-
-By default, this function contains all of the attributes in the Post Type Discovery mechanism.
-
-Custom properties are added to the end of the post type discovery list, just before the "article" property. All specification property types are checked before your custom attribute.
-
-Discover an Endpoint
------------------------------
-
-You can discover an endpoint from a HTTP header or a HTML `link` tag using the `discover_endpoint` function.
-
-The `discover_endpoint` function uses this syntax:
-
-.. autofunction:: indieweb_utils.discover_endpoint
-
-Here are some example values for use with this function:
-
-.. codeblock:: python
-
-    headers_to_find = ["indieauth-metadata"] # discover an IndieAuth metadata endpoint
-    headers_to_find = ["authorization_endpoint", "token_endpoint"] # discover IndieAuth authorization and token endpoints
-    headers_to_find = ["hub", "self"] # discover WebSub endpoints
-    headers_to_find = ["micropub"] # discover a Micropub endpoint
-    headers_to_find = ["microsub"] # discover a Microsub endpoint
-    headers_to_find = ["syndication", "shortlink"] # useful for interpreting Micropub success responses (ref: https://www.w3.org/TR/micropub/#h-response)
-
-Discover a Webmention Endpoint
-------------------------------------
-
-Webmention endpoint discovery is useful if you want to know if you can send webmentions to a site or if you want to send a webmention to a site.
-
-This function both finds a Webmention endpoint and validates it. This function should be used to discover Webmention endpoints instead of `discover_endpoint()`, which is more generic and performs no validation on resources it discovers.
-
-You can discover if a URL has an associated webmention endpoint using the `discover_webmention_endpoint` function:
-
-.. autofunction:: indieweb_utils.discover_webmention_endpoint
-
-If successful, this function returns the URL of the webmention endpoint associated with a resource. In this case, the message value is a blank string.
-
-If a webmention endpoint could not be found, URL is equal to None. In this case, a string message value is provided that you can use for debugging or present to a user.
-
 Canonicalize a URL
 ------------------------
 
@@ -98,7 +39,6 @@ A complete URL returned by this function looks like this:
 
     https://indieweb.org/POSSE
 
-
 Generate Reply Context
 ------------------------
 
@@ -110,6 +50,35 @@ This function returns a ReplyContext object that looks like this:
 
 .. autoclass:: indieweb_utils.ReplyContext
 
+Generate a URL Summary
+----------------------
+
+You can generate a summary of a URL without retrieving the page using the `get_url_summary` function.
+
+By default, this function can generate a summary for the following URLs:
+
+- github.com
+- twitter.com
+- eventbrite.com / eventbrite.co.uk
+- upcoming.com
+- calagator.com
+- events.indieweb.org
+- indieweb.org
+
+.. autofunction:: indieweb_utils.get_url_summary
+
+You can specify custom mappings for other domains using the `custom_mappings` parameter.
+
+This parameter accepts a dictionary of with domain names mapped to lists of tuples with patterns to match and strings to return, like this:
+
+    {
+        "example.com": [
+            (r"example.com/(\d+)", "Example #{}"),
+        ]
+    }
+
+If a summary cannot be generated, this function returns "A post by [domain_name].", where domain name is the domain of the URL you passed into the function.
+
 
 Get a Page h-feed
 ---------------------------
@@ -118,7 +87,96 @@ The `discover_page_feed()` function implements the proposed `microformats2 h-fee
 
 This function looks for a h-feed on a given page. If one is not found, the function looks for a rel tag to a h-feed. If one is found, that document is parsed.
 
-If a h-feed is found on the related document, the h-feed is returned. 
+If a h-feed is found on the related document, the h-feed is returned.
+
+This function returns a dictionary with the h-card found on a web page.
+
+Generate reply context
+----------------------
+
+To generate reply context for a given page, use the following function:
+
+.. autofunction:: indieweb_utils.get_reply_context
+
+This function returns a ReplyContext object that looks like this:
+
+.. autoclass:: indieweb_utils.ReplyContext
+
+Find the Original Version of a Post
+------------------------------------
+
+To find the original version of a post per the Original Post Discovery algorithm, use this code:
+
+.. autofunction:: indieweb_utils.discover_original_post
+
+This function returns the URL of the original version of a post, if one is found. Otherwise, None is returned.
+
+Send a Webmention
+------------------
+
+To send a webmention to a target, use this function:
+
+.. autofunction:: indieweb_utils.send_webmention
+
+This function returns a SendWebmentionResponse object with this structure:
+
+.. autoclass:: indieweb_utils.SendWebmentionResponse
+
+Discover all Feeds on a Page
+-----------------------------
+
+To discover the feeds on a page, use this function:
+
+.. autofunction:: indieweb_utils.discover_web_page_feeds
+
+This function returns a list with all feeds on a page.
+
+Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
+
+.. autoclass:: indieweb_utils.FeedUrl
+
+Get a Representative h-card
+---------------------------
+
+To find the h-card that is considered representative of a web resource per the
+`Representative h-card Parsing Algorithm <https://microformats.org/wiki/representative-h-card-parsing>`_,
+use the following function:
+
+.. autofunction:: indieweb_utils.get_representative_h_card
+
+This function returns a dictionary with the h-card found on a web page.
+
+Add hashtags and person tags to a string
+-----------------------------------------
+
+The `autolink_tag()` function replaces hashtags (#) with links to tag pages on a specified site. It also replaces person tags (ex. @james) with provided names and links to the person's profile.
+
+This function is useful for enriching posts.
+
+To use this function, pass in the following arguments:
+
+.. autofunction:: indieweb_utils.autolink_tag
+
+This function will only substitute tags in the list of tags passed through to this function if a `tags` value is provided. This ensures that the function does not create links that your application cannot resolve.
+
+If you do not provide a `tags` value, the function will create links for all hashtags, as it is assumed that your application can resolve all hashtags.
+
+`Tagging people <https://indieweb.org/person-tag>`_ is enabled by providing a dictionary with information on all of the people to whom you can tag.
+
+If a person in an @ link is not in the tag dictionary, this function will not substitute that given @ link.
+
+Here is an example value for a person tag database:
+
+.. code-block:: python
+
+    {
+        "james": (
+            "James' Coffee Blog",
+            "https://jamesg.blog/""
+        )
+    }
+
+This function maps the `@james` tag with the name "James' Coffee Blog" and the URL "https://jamesg.blog/". More people can be added as keys to the dictionary.
 
 This function returns a dictionary with the h-card found on a web page.
 

@@ -131,7 +131,7 @@ Redeem an IndieAuth code at a token endpoint
 You can redeem an IndieAuth authorization code for an access token if needed. This is a common
 need for Micropub and Microsub clients.
 
-The `redeem_code()`` function validates all the required parameters are provided in a request. Then,
+The `redeem_code()` function validates all the required parameters are provided in a request. Then,
 this function decodes the provided code using the code, secret key, and algorithm specified. If
 the code is invalid or the code challenge in the decoded code is invalid, AuthenticationErrors will be
 raised. The function will also verify that:
@@ -212,3 +212,6 @@ An example endpoint response looks like this:
         "scope": "SCOPE_LIST"
     }
 
+This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
+rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
+if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user, even if the `get_valid_relmeauth_links()` function found a valid two-way rel=me link.
