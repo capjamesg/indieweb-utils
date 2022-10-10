@@ -66,5 +66,5 @@ __all__ = [
     "get_url_summary",
     "InvalidURL",
     "discover_endpoints",
-    "_discover_endpoints"
+    "_discover_endpoints",
 ]
