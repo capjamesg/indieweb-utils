@@ -2,7 +2,6 @@ import base64
 import hashlib
 import random
 import string
-from functools import wraps
 
 from flask import Flask, flash, redirect, request, session
 from flask_functions import AuthenticationError, indieauth_callback_handler
