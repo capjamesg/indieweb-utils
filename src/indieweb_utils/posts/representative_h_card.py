@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import mf2py
+
+from ..parsing.parse import get_parsed_mf2_data
 
 
 class RepresentativeHCardParsingError(Exception):
@@ -14,7 +16,7 @@ class RepresentativeHCard:
     pass
 
 
-def get_representative_h_card(url: str) -> Dict[str, Any]:
+def get_representative_h_card(url: str, html: str = "", parsed_mf2: Optional[mf2py.Parser] = None) -> Dict[str, Any]:
     """
     Get the representative h-card on a page per the Representative h-card Parsing algorithm.
 
@@ -24,8 +26,23 @@ def get_representative_h_card(url: str) -> Dict[str, Any]:
     :type url: str
     :return: The representative h-card.
     :rtype: dict
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog/"
+
+        h_card = indieweb_utils.get_representative_h_card(url)
+
+        print(h_card) # {'type': ['h-card'], 'properties': {...}}
+
+    :raises RepresentativeHCardParsingError: Representative h-card could not be parsed.
     """
-    mf2_data = mf2py.parse(url=url)
+
+    mf2_data = get_parsed_mf2_data(parsed_mf2, html, url)
 
     if not mf2_data:
         raise RepresentativeHCardParsingError("No mf2 data found.")

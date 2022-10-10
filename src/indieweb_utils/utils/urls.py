@@ -1,7 +1,7 @@
 from urllib import parse as url_parse
 
 
-def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = "https") -> str:
+def canonicalize_url(url: str, domain: str = "", full_url: str = "", protocol: str = "https") -> str:
     """
     Return a canonical URL for the given URL.
 
@@ -41,6 +41,12 @@ def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = 
         protocol = url_parse.urlsplit(url).scheme
 
         return protocol + "://" + domain + "/" + "/".join(url.split("/")[3:])
+
+    current_protocol = url_parse.urlsplit(url).scheme
+
+    # this will preserve links like irc:// and mailto:
+    if current_protocol:
+        return url
 
     if ":" in domain:
         text_before_port = domain.split(":")[0]

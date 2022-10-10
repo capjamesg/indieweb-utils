@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-import requests
 from bs4 import BeautifulSoup
 
+from ..parsing.parse import get_soup
 from . import constants
 
 
@@ -19,7 +19,7 @@ class Profile:
     email: Optional[str]
 
 
-def get_profile(me: str) -> Profile:
+def get_profile(me: str, html: str = "", soup: BeautifulSoup = None) -> Profile:
     """
     Return the profile information for the given me URL.
 
@@ -49,15 +49,17 @@ def get_profile(me: str) -> Profile:
         assert profile.name == "James"
         assert profile.photo == "https://jamesg.blog/me.jpg"
         assert profile.url == "https://jamesg.blog
+
+    :raises ProfileError: Profile could not be retrieved.
     """
 
-    try:
-        me_profile = requests.get(me, timeout=10)
-    except requests.exceptions.RequestException:
-        raise ProfileError("Request to retrieve profile URL did not return a valid response.")
+    if soup is None:
+        profile_item = get_soup(html, me)
+    else:
+        profile_item = soup
 
-    profile_item = BeautifulSoup(me_profile.text, "html.parser")
     h_card_tag = profile_item.select(".h-card")
+
     try:
         h_card = h_card_tag[0]
     except IndexError:
