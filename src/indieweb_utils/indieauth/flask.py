@@ -19,18 +19,18 @@ def _validate_indieauth_response(me: str, response: requests.Response, required_
         message = "An invalid me value was provided."
         raise AuthenticationError(message)
 
-    response = response.json()
+    response_data = response.json()
 
-    if response.get("me") is None:
+    if response_data.get("me") is None:
         raise AuthenticationError("There was an error with the IndieAuth server.")
 
-    if response.get("me").strip("/") != me.strip("/"):
+    if response_data.get("me").strip("/") != me.strip("/"):
         message = "Your domain is not allowed to access this website."
         raise AuthenticationError(message)
 
-    granted_scopes = response.get("scope").split(" ")
+    granted_scopes = response_data.get("scope").split(" ")
 
-    if response.get("scope") is None or any(scope not in granted_scopes for scope in required_scopes):
+    if response_data.get("scope") is None or any(scope not in granted_scopes for scope in required_scopes):
         message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
         raise AuthenticationError(message)
 
