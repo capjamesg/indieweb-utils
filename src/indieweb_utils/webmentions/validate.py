@@ -5,6 +5,8 @@ from urllib import parse as url_parse
 import requests
 from bs4 import BeautifulSoup
 
+from indieweb_utils.webmentions.discovery import discover_endpoints
+
 from ..utils.urls import canonicalize_url
 
 
@@ -13,6 +15,10 @@ class WebmentionValidationError(Exception):
 
 
 class WebmentionIsGone(Exception):
+    pass
+
+
+class NoTokenEndpointForPrivateWebmention(Exception):
     pass
 
 
@@ -32,7 +38,7 @@ def _process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
 
     moderate = True
 
-    if vouch and vouch != "":
+    if vouch:
         vouch_domain = url_parse.urlparse(vouch).netloc
 
         if vouch_domain in vouch_list:
@@ -100,7 +106,34 @@ def _webmention_head_request(session: requests.Session, source: str = "") -> Tup
     return check_source_size, validated_headers
 
 
-def _retrieve_webmention_target(source: str, target_request: Optional[requests.Response] = None) -> BeautifulSoup:
+def _validate_private_webmention(source: str, session: requests.Session, code: str) -> str:
+    source_token_endpoint = discover_endpoints(source, ["token_endpoint"])
+
+    if source_token_endpoint.get("token_endpoint") is None:
+        raise NoTokenEndpointForPrivateWebmention(
+            "The webmention sent is a private webmention but the source has no token endpoint."
+        )
+
+    token_endpoint = source_token_endpoint["token_endpoint"]
+
+    try:
+        token_request = session.post(token_endpoint, data={"grant_type": "authorization_code", "code": code})
+    except requests.exceptions.RequestException:
+        raise WebmentionValidationError(
+            "Token endpoint of source could not be accessed while trying to validate private webmention."
+        )
+
+    if token_request.status_code != 200:
+        raise WebmentionValidationError(
+            "Token endpoint of source returned an error while trying to validate private webmention."
+        )
+
+    return token_request.json().get("access_token")
+
+
+def _retrieve_webmention_target(
+    source: str, code: str = None, target_request: Optional[requests.Response] = None
+) -> BeautifulSoup:
     # Only allow 3 redirects before raising an error
 
     if target_request:
@@ -113,8 +146,15 @@ def _retrieve_webmention_target(source: str, target_request: Optional[requests.R
 
         validated_headers = False
 
+        request_headers = {}
+
+        if code:
+            access_token = _validate_private_webmention(source, session, code)
+
+            request_headers = {"Authorization": f"Bearer {access_token}"}
+
         try:
-            get_source_for_validation = session.get(source)
+            get_source_for_validation = session.get(source, headers=request_headers)
         except requests.exceptions.RequestException:
             raise WebmentionValidationError("Source could not be retrieved.")
 
@@ -135,7 +175,12 @@ def _retrieve_webmention_target(source: str, target_request: Optional[requests.R
 
 
 def validate_webmention(
-    source: str, target: str, vouch: str = "", vouch_list: List[str] = [], target_request: requests.Response = None
+    source: str,
+    target: str,
+    code: str = None,
+    vouch: str = None,
+    vouch_list: List[str] = [],
+    target_request: requests.Response = None,
 ) -> WebmentionCheckResponse:
     """
     Check if a webmention is valid.
@@ -144,6 +189,8 @@ def validate_webmention(
     :type source: str
     :param target: The target URL of the webmention.
     :type target: str
+    :param code: The code to use to validate a private webmention.
+    :type code: str
     :param vouch: The vouch URL of the webmention.
     :type vouch: str
     :param vouch_list: A list of vouch domains.
@@ -169,6 +216,7 @@ def validate_webmention(
 
     :raises WebmentionValidationError: Webmention is invalid.
     :raises WebmentionIsGone: Webmention source returns a 410 Gone code.
+    :raises NoTokenEndpointForPrivateWebmention: Webmention is private but source has no token endpoint.
     """
 
     if source.strip("/") == target.strip("/"):
@@ -183,7 +231,7 @@ def validate_webmention(
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
 
-    parsed_page = _retrieve_webmention_target(source, target_request)
+    parsed_page = _retrieve_webmention_target(source, code, target_request)
 
     # get all <link> tags
     meta_links = parsed_page.find_all("link")

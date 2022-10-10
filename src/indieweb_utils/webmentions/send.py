@@ -65,7 +65,9 @@ def _validate_webmention(source: str, target: str):
         raise UnsupportedProtocolError("Only HTTP/HTTPS URLs are supported.")
 
 
-def send_webmention(source: str, target: str, me: str = None, code: str = None, realm: str = None) -> SendWebmentionResponse:
+def send_webmention(
+    source: str, target: str, me: str = None, code: str = None, realm: str = None
+) -> SendWebmentionResponse:
     """
     Send a webmention to a target URL.
 
