@@ -65,7 +65,7 @@ def _validate_webmention(source: str, target: str):
         raise UnsupportedProtocolError("Only HTTP/HTTPS URLs are supported.")
 
 
-def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionResponse:
+def send_webmention(source: str, target: str, me: str = None, code: str = None, realm: str = None) -> SendWebmentionResponse:
     """
     Send a webmention to a target URL.
 
@@ -75,6 +75,12 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     :type target: str
     :param me: The URL of the user.
     :type me: str
+    :param code: An authorization code that grants access to the Webmention source (optional).
+        See https://indieweb.org/Private-Webmention#Auth_Code_Generation for more information.
+    :type code: str
+    :param realm: A unique value for the intended recipient or audience (optional).
+        See https://indieweb.org/Private-Webmention#Auth_Code_Generation for more information.
+    :type realm: str
     :return: The response from the webmention endpoint.
     :rtype: SendWebmentionResponse
 
@@ -98,7 +104,7 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     _validate_webmention(source, target)
 
     # if domain is not approved, don't allow access
-    if me != "":
+    if me is not None:
         target_domain = url_parse.urlsplit(target).scheme
 
         raw_domain = me
@@ -114,11 +120,20 @@ def send_webmention(source: str, target: str, me: str = "") -> SendWebmentionRes
     if response.endpoint == "":
         raise GenericWebmentionError("No webmention endpoint was found.")
 
+    request_data = {
+        "source": source,
+        "target": target,
+    }
+
+    if code and realm:
+        request_data["code"] = code
+        request_data["realm"] = realm
+
     # make post request to endpoint with source and target as values
     try:
         r = requests.post(
             response.endpoint,
-            data={"source": source, "target": target},
+            data=request_data,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
     except requests.exceptions.RequestException:
