@@ -10,18 +10,6 @@ from flask_functions import AuthenticationError, indieauth_callback_handler
 from ..webmentions.discovery import discover_endpoints
 
 
-def indieauth_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not session.get("me"):
-            flash("You must be logged in to access this page.")
-            return redirect("/login")
-
-        return f(*args, **kwargs)
-
-    return decorated_function
-
-
 def discover_auth_endpoint_decorator(
     client_id: str, callback_url: str, required_scopes: list, domain: str, redirect_failed_destination: str
 ) -> Flask.Response:
