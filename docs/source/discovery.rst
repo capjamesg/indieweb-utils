@@ -106,3 +106,28 @@ This function returns a list with all feeds on a page.
 Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
 
 .. autoclass:: indieweb_utils.FeedUrl
+
+
+Get a Representative h-card
+---------------------------
+
+To find the h-card that is considered representative of a web resource per the
+`Representative h-card Parsing Algorithm <https://microformats.org/wiki/representative-h-card-parsing>`_,
+use the following function:
+
+.. autofunction:: indieweb_utils.get_representative_h_card
+
+This function returns a dictionary with the h-card found on a web page.
+
+Get a Page h-feed
+---------------------------
+
+The `discover_h_feed()` function implements the proposed `microformats2 h-feed discovery algorithm <https://microformats.org/wiki/h-feed#Discovery>`_.
+
+This function looks for a h-feed on a given page. If one is not found, the function looks for a rel tag to a h-feed. If one is found, that document is parsed.
+
+If a h-feed is found on the related document, the h-feed is returned.
+
+This function returns a dictionary with the h-card found on a web page.
+
+.. autofunction:: indieweb_utils.discover_h_feed

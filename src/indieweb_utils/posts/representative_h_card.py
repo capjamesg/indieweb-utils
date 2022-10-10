@@ -27,6 +27,18 @@ def get_representative_h_card(url: str, html: str = "", parsed_mf2: Optional[mf2
     :return: The representative h-card.
     :rtype: dict
 
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog/"
+
+        h_card = indieweb_utils.get_representative_h_card(url)
+
+        print(h_card) # {'type': ['h-card'], 'properties': {...}}
+
     :raises RepresentativeHCardParsingError: Representative h-card could not be parsed.
     """
 
