@@ -1,3 +1,7 @@
+"""
+Utilities to aid the implementation of various IndieWeb specifications and functionalities.
+"""
+
 # Imports added for API backwards compatibility
 
 from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
@@ -27,7 +31,10 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
+
+# add for backwards compatibility
+_discover_endpoints = discover_endpoints
 
 __all__ = [
     "discover_web_page_feeds",
@@ -59,4 +66,5 @@ __all__ = [
     "get_url_summary",
     "InvalidURL",
     "discover_endpoints",
+    "_discover_endpoints"
 ]
