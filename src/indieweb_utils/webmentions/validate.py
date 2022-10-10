@@ -185,6 +185,10 @@ def validate_webmention(
     """
     Check if a webmention is valid.
 
+    :refs: https://indieweb.org/Webmention
+    :refs: https://indieweb.org/Private-Webmention
+    :refs: https://indieweb.org/Vouch
+
     :param source: The source URL of the webmention.
     :type source: str
     :param target: The target URL of the webmention.
