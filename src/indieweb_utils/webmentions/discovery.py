@@ -105,7 +105,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def discover_endpoints(url: str, headers_to_find: List[str]):
+def discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
@@ -138,10 +138,13 @@ def discover_endpoints(url: str, headers_to_find: List[str]):
     """
     response: Dict[str, str] = {}
 
-    try:
-        endpoint_request = requests.get(url, timeout=5)
-    except requests.exceptions.RequestException:
-        raise requests.exceptions.RequestException("Could not connect to the specified URL.")
+    if request:
+        endpoint_request = request
+    else:
+        try:
+            endpoint_request = requests.get(url, timeout=5)
+        except requests.exceptions.RequestException:
+            raise Exception("Could not connect to the specified URL.")
 
     link_headers = _find_links_in_headers(headers=endpoint_request.headers, target_headers=headers_to_find)
 

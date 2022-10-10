@@ -9,10 +9,29 @@ class TestRelMeAuthLinkDiscovery:
 
         return get_valid_relmeauth_links
 
-    def test_rel_me_auth_link_discovery(self, target, index):
-        # NOTE: This test will take a few seconds as it executes multiple requests.
+    @responses.activate
+    def test_rel_me_auth_link_discovery(self, target):
         url = "https://jamesg.blog"
 
-        responses.add(responses.Response(method="GET", url=url, body=index))
+        with open("tests/fixtures/index.html") as f:
+            file_contents = f.read()
+            responses.add(responses.Response(responses.GET, url=url, body=file_contents, status=200))
 
-        assert target(url) == ["https://sr.ht/~capjamesg/"]
+            expected_responses = [
+                "https://indieweb.social/@capjamesg",
+                "https://micro.blog/capjamesg",
+                "https://jamesg.coffee/",
+                "https://www.instagram.com/capjamesg/",
+                "https://indieweb.org/User:Jamesg.blog",
+                "https://github.com/capjamesg",
+                "https://jamesg.blog/assets/key.asc",
+                "mailto:jamesg@jamesg.blog",
+            ]
+
+            results = target(url, html=file_contents, require_rel_me_link_back=False)
+
+            for r in expected_responses:
+                if r not in results:
+                    raise AssertionError(f"Expected {r} to be in {results}")
+
+            assert len(expected_responses) == len(results)
