@@ -3,6 +3,16 @@ Discovery
 
 Indieweb utils provides a number of functions to help you determine properties from webpages.
 
+Discover IndieWeb endpoints
+---------------------------
+
+The `discover_endpoints()` function parses HTTP Link headers and HTML `<link>` tags to find the specified endpoints.
+
+.. autofunction:: indieweb_utils.discover_endpoints
+
+This function only returns the specified endpoints if they can be found. It does not perform any validation to check that the discovered endpoints are valid URLs.
+
+We recommend using the `discover_webmention_endpoint <https://indieweb-utils.readthedocs.io/en/latest/webmention.html#discover-a-webmention-endpoint>`_ function to discover webmention endpoints as this performs additional validation useful in webmention endpoint discovery.
 
 Find an article author
 ------------------------------------
