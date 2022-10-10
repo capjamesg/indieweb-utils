@@ -112,8 +112,8 @@ def discover_endpoints(url: str, headers_to_find: List[str], request: requests.R
     :param url: The URL to discover endpoints for.
     :type url: str
     :param headers_to_find: The headers to find.
-        Common values you may want to use include: microsub, micropub, token_endpoint,
-        authorization_endpoint, webmention.
+        Values you may want to use include: microsub, micropub, token_endpoint,
+        authorization_endpoint, subscribe.
     :type headers_to_find: dict[str, str]
     :return: The discovered endpoints.
     :rtype: dict[str, str]
@@ -125,14 +125,14 @@ def discover_endpoints(url: str, headers_to_find: List[str], request: requests.R
 
         url = "https://jamesg.blog/"
 
-        # find the webmention header on a web page
-        headers_to_find = ["webmention"]
+        # find the microsub rel link on a web page
+        headers_to_find = ["microsub"]
 
         endpoints = indieweb_utils.discover_endpoints(
             url
         )
 
-        print(webmention_endpoint) # {'webmention': 'https://webmention.jamesg.blog/webmention'}
+        print(endpoints) # {'aperture': 'https://aperture.p3k.io/'}
 
     :raises requests.exceptions.RequestException: Error raised while making the network request to discover endpoints.
     """
