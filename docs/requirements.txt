@@ -11,3 +11,4 @@ soupsieve==2.3.1
 urllib3==1.26.7
 webencodings==0.5.1
 indieweb_utils==0.3.1
+pyjwt==2.4.0
