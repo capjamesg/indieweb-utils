@@ -9,7 +9,7 @@ project = "IndieWeb Utils"
 copyright = "capjamesg 2022"
 author = "capjamesg"
 
-sys.path.insert(0, os.path.abspath("../../../src/"))
+sys.path.insert(0, os.path.abspath("../../src/"))
 
 release = "0.3.1"
 version = "0.3.1"

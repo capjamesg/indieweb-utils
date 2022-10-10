@@ -10,4 +10,4 @@ six==1.16.0
 soupsieve==2.3.1
 urllib3==1.26.7
 webencodings==0.5.1
-indieweb_utils==0.2.0
+indieweb_utils==0.3.1
