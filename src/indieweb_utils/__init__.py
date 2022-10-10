@@ -20,6 +20,10 @@ from .indieauth.flask_functions import (
     IndieAuthCallbackResponse,
     indieauth_callback_handler,
 )
+from .indieauth.decorators import (
+    indieauth_callback_response,
+    discover_auth_endpoint_decorator
+)
 from .posts.discovery import discover_author, discover_original_post, get_post_type
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
@@ -70,4 +74,6 @@ __all__ = [
     "InvalidURL",
     "discover_endpoints",
     "_discover_endpoints",
+    "indieauth_callback_response",
+    "discover_auth_endpoint_decorator"
 ]

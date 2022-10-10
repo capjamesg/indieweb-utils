@@ -3,15 +3,15 @@ import hashlib
 import random
 import string
 
-from flask import Flask, flash, redirect, request, session
-from flask_functions import AuthenticationError, indieauth_callback_handler
+from flask import Flask, flash, redirect, request, session, Response
+from .flask_functions import AuthenticationError, indieauth_callback_handler
 
 from ..webmentions.discovery import discover_endpoints
 
 
 def discover_auth_endpoint_decorator(
     client_id: str, callback_url: str, required_scopes: list, domain: str, redirect_failed_destination: str
-) -> Flask.Response:
+) -> Response:
     headers_to_find = ["authorization_endpoint", "token_endpoint"]
 
     headers = discover_endpoints(domain, headers_to_find)
@@ -66,7 +66,7 @@ def indieauth_callback_response(
     required_scopes: list,
     redirect_success_destination: str,
     redirect_failed_destination: str,
-) -> Flask.Response:
+) -> Response:
     code = request.args.get("code")
     state = request.args.get("state")
 
