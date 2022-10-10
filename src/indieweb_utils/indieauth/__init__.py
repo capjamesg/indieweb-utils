@@ -1,4 +1,4 @@
-from .flask import (
+from .flask_functions import (
     _validate_indieauth_response,
     indieauth_callback_handler,
     is_authenticated,

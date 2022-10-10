@@ -215,3 +215,34 @@ An example endpoint response looks like this:
 This function does not check whether a URL has an OAuth provider. Your application should check the list of valid
 rel me links and only use those that integrate with the OAuth providers your RelMeAuth service supports. For example,
 if your service does not support Twitter, you should not present Twitter as a valid authentication option to a user, even if the `get_valid_relmeauth_links()` function found a valid two-way rel=me link.
+
+IndieAuth Login Scaffolding (Flask)
+-----------------------------------
+
+The `indieweb_utils.indieauth.decorators` module contains functions useful for building authentication systems with Flask.
+
+These functions are Flask-specific.
+
+Initiate an authentication request
+----------------------------------
+
+The `discover_auth_endpoint_decorator` function is meant to be used as a response to an endpoint on your site that discovers the IndieAuth endpoint for a given URL.
+
+This function discovers the IndieAuth endpoint for a resource then redirects a user to their IndieAuth endpoint to verify their identity.
+
+.. autofunction:: indieweb_utils.discover_auth_endpoint_decorator
+
+Handle an IndieAuth callback request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `indieauth_callback_response()` function should be used as a response to a callback endpoint on your site. This endpoint should be equal to the `callback_url` specified in the `discover_auth_endpoint_decorator` function.
+
+.. autofunction:: indieweb_utils.indieauth_callback_response
+
+This function will:
+
+1. Call the low-level `indieauth_callback_handler` function to verify the callback response.
+2. Set three values in your Flask session: `me`, `access_token`, and `scope`.
+3. Redirect you to the `redirect_success_destination` argument provided in the function.
+
+If there is an error, a user will be redirected to the value of the `redirect_error_destination` argument.
