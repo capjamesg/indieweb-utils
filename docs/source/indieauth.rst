@@ -196,11 +196,11 @@ Otherwise, set "me" to the URL of the profile that should be able to access your
 
 Setting a me value other than None may be useful if you are building personal services that nobody else should be able to access.
 
-If successful, this function returns an IndieAuthCallbackResponse object that looks like this:
+If successful, this function returns an IndieAuthCallbackResponse object that contains:
 
-.. class:: indieweb_utils.IndieAuthCallbackResponse
+.. autofunction:: indieweb_utils.IndieAuthCallbackResponse
 
-This class contains an endpoint_response value. This value is equal to the JSON response sent by the IndieAuth web server.
+This class contains a `response` value. This value is equal to the JSON response sent by the IndieAuth web server.
 
 An example endpoint response looks like this:
 
