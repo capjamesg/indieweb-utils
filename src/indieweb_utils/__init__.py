@@ -1,6 +1,6 @@
 # Imports added for API backwards compatibility
 
-from .feeds import FeedUrl, discover_web_page_feeds
+from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
 from .indieauth import (
     _validate_indieauth_response,
     get_h_app_item,
@@ -10,6 +10,7 @@ from .indieauth import (
     redeem_code,
     validate_access_token,
     validate_authorization_response,
+    generate_auth_token
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .posts.discovery import discover_author, discover_original_post, get_post_type
@@ -50,4 +51,6 @@ __all__ = [
     "get_valid_relmeauth_links",
     "validate_authorization_response",
     "autolink_tags",
+    "discover_h_feed",
+    "generate_auth_token"
 ]

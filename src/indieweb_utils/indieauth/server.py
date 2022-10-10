@@ -218,7 +218,7 @@ def generate_auth_token(
         import string
 
         try:
-            token = indieweb_utils.indieauth.server.generate_auth_token(
+            token = indieweb_utils.generate_auth_token(
                 me="https://test.example.com/user",
                 client_id="https://example.com",
                 redirect_uri="https://example.com/callback",
