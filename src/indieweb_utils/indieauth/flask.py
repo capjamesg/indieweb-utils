@@ -19,13 +19,18 @@ def _validate_indieauth_response(me: str, response: requests.Response, required_
         message = "An invalid me value was provided."
         raise AuthenticationError(message)
 
-    if response.json().get("me").strip("/") != me.strip("/"):
+    response = response.json()
+
+    if response.get("me") is None:
+        raise AuthenticationError("There was an error with the IndieAuth server.")
+
+    if response.get("me").strip("/") != me.strip("/"):
         message = "Your domain is not allowed to access this website."
         raise AuthenticationError(message)
 
-    granted_scopes = response.json().get("scope").split(" ")
+    granted_scopes = response.get("scope").split(" ")
 
-    if response.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
+    if response.get("scope") is None or any(scope not in granted_scopes for scope in required_scopes):
         message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
         raise AuthenticationError(message)
 
@@ -124,7 +129,7 @@ def indieauth_callback_handler(
 
     _validate_indieauth_response(me, auth_request, required_scopes)
 
-    return IndieAuthCallbackResponse(message="Authentication was successful.", response={})
+    return IndieAuthCallbackResponse(message="Authentication was successful.", response=auth_request.json())
 
 
 def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:
