@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from urllib import parse as url_parse
 
 import mf2py
@@ -15,6 +15,24 @@ class FeedUrl:
     url: str
     mime_type: str
     title: str
+
+
+def _get_page_feed_contents(url: str, html: str) -> Tuple[requests.Response, str]:
+    if html:
+        try:
+            web_page_request = requests.head(url, timeout=10, allow_redirects=True)
+        except requests.RequestException:
+            raise Exception("Request to retrieve URL did not return a valid response.")
+
+    if not html:
+        try:
+            web_page_request = requests.get(url, timeout=10, allow_redirects=True)
+        except requests.RequestException:
+            raise Exception("Request to retrieve URL did not return a valid response.")
+        else:
+            html = web_page_request.text
+
+    return web_page_request, html
 
 
 def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None, html: str = "") -> List[FeedUrl]:
@@ -50,19 +68,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     elif url.startswith("//"):
         url = "https:" + url
 
-    if html:
-        try:
-            web_page_request = requests.head(url, timeout=10, allow_redirects=True)
-        except requests.RequestException:
-            raise Exception("Request to retrieve URL did not return a valid response.")
-
-    if not html:
-        try:
-            web_page_request = requests.get(url, timeout=10, allow_redirects=True)
-        except requests.RequestException:
-            raise Exception("Request to retrieve URL did not return a valid response.")
-        else:
-            html = web_page_request.text
+    web_page_request, html = _get_page_feed_contents(url, html)
 
     soup = BeautifulSoup(html, "lxml")
 

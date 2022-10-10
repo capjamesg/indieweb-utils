@@ -7,7 +7,7 @@ class RequestError(Exception):
     pass
 
 
-def get_parsed_mf2_data(parsed_mf2: mf2py.Parser, html: str = "", url: str = ""):
+def get_parsed_mf2_data(parsed_mf2: mf2py.Parser = None, html: str = None, url: str = ""):
     """
     Return or create an mf2py object from a parsed document, a HTML string, and a URL.
     """
@@ -21,7 +21,7 @@ def get_parsed_mf2_data(parsed_mf2: mf2py.Parser, html: str = "", url: str = "")
     raise RequestError("No soup, url, or HTML document provided.")
 
 
-def get_soup(html: str = "", url: str = "", headers: dict = {}) -> BeautifulSoup():
+def get_soup(html: str = "", url: str = "", headers: dict = dict()) -> BeautifulSoup:
     """
     Return or create a BeautifulSoup object from a HTML string, and a URL.
     """

@@ -107,7 +107,8 @@ def discover_original_post(posse_permalink: str, soup: BeautifulSoup = None, htm
 
         print(original_post_url)
 
-    :raises PostDiscoveryError: A candidate URL cannot be retrieved or when a specified post is not marked up with h-entry.
+    :raises PostDiscoveryError: A candidate URL cannot be retrieved or when a specified
+        post is not marked up with h-entry.
     """
 
     if soup is None:

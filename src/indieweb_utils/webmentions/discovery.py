@@ -105,7 +105,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def _discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None):
+def discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 

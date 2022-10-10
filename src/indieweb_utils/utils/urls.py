@@ -42,6 +42,12 @@ def canonicalize_url(url: str, domain: str, full_url: str = "", protocol: str = 
 
         return protocol + "://" + domain + "/" + "/".join(url.split("/")[3:])
 
+    current_protocol = url_parse.urlsplit(url).scheme
+
+    # this will preserve links like irc:// and mailto:
+    if current_protocol:
+        return url
+
     if ":" in domain:
         text_before_port = domain.split(":")[0]
 
