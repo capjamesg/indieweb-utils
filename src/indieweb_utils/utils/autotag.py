@@ -73,10 +73,10 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = No
 
     if tags is None:
         tags = []
-        
-    tags = set(tags)
 
-    text = re.sub(r"#(\w+)", lambda match: _match_tag(tag_prefix, match.group(), tags), text)
+    tag_list = list(set(tags))
+
+    text = re.sub(r"#(\w+)", lambda match: _match_tag(tag_prefix, match.group(), tag_list), text)
     text = re.sub(r"@(\w+)", lambda match: _match_person_tag(people, match.group()), text)
 
     return text

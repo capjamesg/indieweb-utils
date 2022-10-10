@@ -25,6 +25,7 @@ class TestWebPageFeedDiscovery:
         for feed in actual_feeds:
             assert feed.url in expected_feeds
 
+
 class TestHFeedDiscovery:
     @pytest.fixture
     def target(self):
