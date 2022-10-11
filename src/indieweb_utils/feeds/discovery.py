@@ -46,6 +46,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     :param html: A string with the HTML on a page.
     :type html: str
     :return: A list of FeedUrl objects.
+    :rtype: List[FeedUrl]
 
     Example:
 
