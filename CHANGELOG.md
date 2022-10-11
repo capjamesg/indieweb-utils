@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2022-10-11
+
+### Added
+
+#### Development
+
+- Documentation for the `discover_endpoints` function.
+- The `indieauth_callback_handler` function returns the JSON response from an IndieAuth endpoint represented as a dictionary instead of a blank dictionary.
+- The `discover_endpoints` docstring contains an example about Microsub and an updated common values list. This is because we recommend use of the `discover_webmention_endpoint` function for Webmention endpoint discovery.
+
+#### Functions
+
+- `get_reply_urls` to retrieve all of the URLs to which a specified page is replying.
+- `get_page_name` to find the name of a page per the IndieWeb [Page Name Discovery](https://indieweb.org/page-name-discovery) algorithm.
+- `get_syndicated_copies` to retrieve all of the URLs to which a specified page has been syndicated.
+
+#### Tests
+
+- Added test cases for:
+    - `get_reply_urls`
+    - `get_page_name`
+    - `get_syndicated_copies`
+- Updated test cases for `get_reply_context` were to look for `description` values where appropriate.
+
+### Fixed
+
+- The `indieauth_callback_handler` function no longer raises a JSON error during the `_validate_indieauth_response` function call.
+- The `get_reply_context` function now returns a description based on the first two sentences of the e-content of a specified page if a summary cannot be found when analysing a h-entry.
+- The `get_reply_context` function returns a string `summary` value instead of a dictionary or a list.
+- `get_reply_context` now looks at `og:description` and `twitter:description` meta tags for a description if a `description` value cannot be found. This happens when analysing a page that does not contain a h-entry.
+
 ## [0.3.1] - 2022-10-10
 
 Fixed import issue in `setup.cfg` so PyPi can discover the README for indieweb-utils.
