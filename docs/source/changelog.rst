@@ -8,11 +8,81 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
-[0.3.0] - 2022-10-10
+[0.4.0] - 2022-10-11
 --------------------
 
 Added
 ~~~~~
+
+Development
+^^^^^^^^^^^
+
+-  Documentation for the ``discover_endpoints`` function.
+-  The ``indieauth_callback_handler`` function returns the JSON response
+   from an IndieAuth endpoint represented as a dictionary instead of a
+   blank dictionary.
+-  The ``discover_endpoints`` docstring contains an example about
+   Microsub and an updated common values list. This is because we
+   recommend use of the ``discover_webmention_endpoint`` function for
+   Webmention endpoint discovery.
+
+Functions
+^^^^^^^^^
+
+-  ``get_reply_urls`` to retrieve all of the URLs to which a specified
+   page is replying.
+-  ``get_page_name`` to find the name of a page per the IndieWeb `Page
+   Name Discovery <https://indieweb.org/page-name-discovery>`__
+   algorithm.
+-  ``get_syndicated_copies`` to retrieve all of the URLs to which a
+   specified page has been syndicated.
+
+Tests
+^^^^^
+
+-  Added test cases for:
+
+   -  ``get_reply_urls``
+   -  ``get_page_name``
+   -  ``get_syndicated_copies``
+
+-  Updated test cases for ``get_reply_context`` were to look for
+   ``description`` values where appropriate.
+
+Fixed
+~~~~~
+
+-  The ``indieauth_callback_handler`` function no longer raises a JSON
+   error during the ``_validate_indieauth_response`` function call.
+-  The ``get_reply_context`` function now returns a description based on
+   the first two sentences of the e-content of a specified page if a
+   summary cannot be found when analysing a h-entry.
+-  The ``get_reply_context`` function returns a string ``summary`` value
+   instead of a dictionary or a list.
+-  ``get_reply_context`` now looks at ``og:description`` and
+   ``twitter:description`` meta tags for a description if a
+   ``description`` value cannot be found. This happens when analysing a
+   page that does not contain a h-entry.
+
+.. _section-1:
+
+[0.3.1] - 2022-10-10
+--------------------
+
+Fixed import issue in ``setup.cfg`` so PyPi can discover the README for
+indieweb-utils.
+
+.. _section-2:
+
+[0.3.0] - 2022-10-10
+--------------------
+
+.. _added-1:
+
+Added
+~~~~~
+
+.. _development-1:
 
 Development
 ^^^^^^^^^^^
@@ -30,6 +100,8 @@ Development
    policy.
 -  Split up documentation into more sections to enhance one’s ability to
    navigate the documentation.
+
+.. _functions-1:
 
 Functions
 ^^^^^^^^^
@@ -59,6 +131,8 @@ Functions
       page given a parsed mf2py.Parse object, a HTML string, and a URL.
    -  ``get_soup()`` to retrieve a BeautifulSoup object from a provided
       HTML string and URL.
+
+.. _tests-1:
 
 Tests
 ^^^^^
@@ -107,12 +181,12 @@ Changed
 -  ``canonicalize_url()`` returns the exact URL passed in if the URL
    contains a protocol that is not HTTP or HTTPS.
 
-.. _section-1:
+.. _section-3:
 
 [0.2.0] - 2022-02-15
 --------------------
 
-.. _added-1:
+.. _added-2:
 
 Added
 ~~~~~
@@ -127,7 +201,7 @@ Added
 -  Use urllib to retrieve domain names, protocols, and paths throughout
    the library.
 
-.. _development-1:
+.. _development-2:
 
 Development
 ^^^^^^^^^^^
@@ -137,7 +211,7 @@ Development
 -  New documentation has been added for all functions in the library.
 -  New code snippet examples to function docstrings.
 
-.. _functions-1:
+.. _functions-2:
 
 Functions
 ^^^^^^^^^
