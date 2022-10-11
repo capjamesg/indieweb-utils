@@ -9,15 +9,17 @@ class TestPageNameDiscovery:
 
         return get_page_name
 
-    def test_page_name_discovery(self, target, reply1):
+    @responses.activate
+    def test_page_name_discovery(self, target):
         url = "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
 
-        responses.add(
-            responses.Response(
-                method="GET",
-                url=url,
-                body=reply1,
+        with open("tests/fixtures/reply1.html") as f:
+            responses.add(
+                responses.Response(
+                    method="GET",
+                    url=url,
+                    body=f.read(),
+                )
             )
-        )
 
         assert target(url) == "Integrated IndieWeb Services"

@@ -1,14 +1,11 @@
-from dataclasses import dataclass
-from typing import Any, Dict
-
 import mf2py
+import requests
 from bs4 import BeautifulSoup
 
-import requests
-from ..parsing import get_soup, RequestError
+from ..parsing.parse import RequestError, get_soup
 
 
-def get_page_name(url: str, html: str, soup: BeautifulSoup = None) -> Dict[str, Any]:
+def get_page_name(url: str, html: str = None, soup: BeautifulSoup = None) -> str:
     """
     Retrieve the name of a page using the Page Name Discovery algorithm.
 
@@ -22,9 +19,12 @@ def get_page_name(url: str, html: str, soup: BeautifulSoup = None) -> Dict[str, 
     :rtype: str
     """
 
+    parsed_mf2_tree = None
+
     if html:
         soup = get_soup(html)
-    elif soup is not None:
+
+    if soup is None:
         try:
             contents = requests.get(url, timeout=10)
         except requests.exceptions.RequestException:
@@ -32,10 +32,9 @@ def get_page_name(url: str, html: str, soup: BeautifulSoup = None) -> Dict[str, 
 
         soup = BeautifulSoup(contents.text, "html.parser")
 
-    if html:
-        parsed_mf2_tree = mf2py.parse(doc=html)
-    else:
-        parsed_mf2_tree = mf2py.parse(doc=contents.text)
+        html = contents.text
+
+    parsed_mf2_tree = mf2py.parse(doc=html)
 
     # only search the top level of the tree
     # representative h-entries, which is what this function looks for, should not be lower down
@@ -45,17 +44,17 @@ def get_page_name(url: str, html: str, soup: BeautifulSoup = None) -> Dict[str, 
 
         name = item["properties"].get("name")
 
-        if name:
-            return name
+        if name and len(name) > 0:
+            return name[0]
 
         summary = item["properties"].get("summary")
 
-        if summary:
-            return summary
+        if summary and len(summary) > 0:
+            return summary[0]
 
     page_title = soup.title
 
     if page_title:
-        return page_title.string
+        return page_title.text
 
     return "Untitled"

@@ -68,46 +68,31 @@ def _get_author_properties(author_url: str, h_entry: dict) -> Tuple[str, str, st
     return author_url, author_name, author_image
 
 
-def _process_h_entry_author(
-    h_entry: dict, url: str, domain: str
-) -> Tuple[str, str, str]:
+def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, str, str]:
     parsed_url = url_parse.urlsplit(url)
 
     author_url = url
     author_image = ""
     author_name = ""
 
-    if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"][
-        "author"
-    ][0].get("type") == ["h-card"]:
+    if isinstance(h_entry["properties"]["author"][0], dict) and h_entry["properties"]["author"][0].get("type") == [
+        "h-card"
+    ]:
         h_card = h_entry["properties"]["author"][0]
 
-        author_url, author_name, author_image = _get_author_properties(
-            author_url, h_card
-        )
+        author_url, author_name, author_image = _get_author_properties(author_url, h_card)
 
     elif isinstance(h_entry["properties"]["author"][0], str):
         if h_entry["properties"]["author"][0].startswith("/"):
-            author_url = (
-                parsed_url.scheme
-                + "://"
-                + domain
-                + h_entry["properties"].get("author")[0]
-            )
+            author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
         try:
-            author = mf2py.parse(
-                requests.get(author_url, timeout=10, verify=False).text
-            )
+            author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
         except requests.exceptions.RequestException:
             pass
         else:
-            h_card = [
-                item for item in author["items"] if item.get("type", []) == ["h-card"]
-            ][0]
-            author_url, author_name, author_image = _get_author_properties(
-                author_url, h_card
-            )
+            h_card = [item for item in author["items"] if item.get("type", []) == ["h-card"]][0]
+            author_url, author_name, author_image = _get_author_properties(author_url, h_card)
 
     if author_url is not None and author_url.startswith("/"):
         author_url = parsed_url.scheme + "://" + domain + author_url
@@ -118,12 +103,8 @@ def _process_h_entry_author(
     return author_url, author_image, author_name
 
 
-def _process_post_contents(
-    h_entry: dict, domain: str, author_image: str, summary_word_limit: int
-) -> Tuple[str, str]:
-    if h_entry["properties"].get("content") and h_entry["properties"].get("content")[
-        0
-    ].get("html"):
+def _process_post_contents(h_entry: dict, domain: str, author_image: str, summary_word_limit: int) -> Tuple[str, str]:
+    if h_entry["properties"].get("content") and h_entry["properties"].get("content")[0].get("html"):
         post_body = h_entry["properties"]["content"][0]["html"]
         soup = BeautifulSoup(post_body, "html.parser")
         post_body = soup.text
@@ -161,13 +142,9 @@ def _generate_h_entry_reply_context(
     post_body = ""
 
     if h_entry["properties"].get("author"):
-        author_url, author_image, author_name = _process_h_entry_author(
-            h_entry, url, domain
-        )
+        author_url, author_image, author_name = _process_h_entry_author(h_entry, url, domain)
 
-    author_image, post_body = _process_post_contents(
-        h_entry, domain, author_image, summary_word_limit
-    )
+    author_image, post_body = _process_post_contents(h_entry, domain, author_image, summary_word_limit)
 
     if h_entry["properties"].get("name"):
         p_name = h_entry["properties"]["name"][0]
@@ -175,9 +152,6 @@ def _generate_h_entry_reply_context(
     # get article name
     if h_entry["properties"].get("name"):
         p_name = h_entry["properties"]["name"][0]
-
-    if author_url is not None and not _is_http_url(author_url):
-        author_url = "https://" + author_url
 
     # use domain name as author name if no author name is found
     if not author_name and author_url:
@@ -188,14 +162,10 @@ def _generate_h_entry_reply_context(
     summary = ""
 
     if h_entry["properties"].get("featured"):
-        post_photo_url = canonicalize_url(
-            h_entry["properties"]["featured"][0], domain, url
-        )
+        post_photo_url = canonicalize_url(h_entry["properties"]["featured"][0], domain, url)
 
     if h_entry["properties"].get("video"):
-        post_video_url = canonicalize_url(
-            h_entry["properties"]["video"][0], domain, url
-        )
+        post_video_url = canonicalize_url(h_entry["properties"]["video"][0], domain, url)
 
     # look for featured image to display in reply context
     if post_photo_url is None:
@@ -207,12 +177,7 @@ def _generate_h_entry_reply_context(
         if isinstance(summary, dict):
             summary = summary["value"]
     else:
-        summary = (
-            " ".join(
-                ". ".join(post_body.split(". ")[:2]).split(" ")[:summary_word_limit]
-            )
-            + "..."
-        )
+        summary = " ".join(". ".join(post_body.split(". ")[:2]).split(" ")[:summary_word_limit]) + "..."
 
     return ReplyContext(
         name=p_name,
@@ -226,9 +191,7 @@ def _generate_h_entry_reply_context(
     )
 
 
-def _generate_tweet_reply_context(
-    url: str, twitter_bearer_token: str, webmention_endpoint_url: str
-) -> ReplyContext:
+def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmention_endpoint_url: str) -> ReplyContext:
     tweet_uid = url.strip("/").split("/")[-1]
 
     headers = {"Authorization": f"Bearer {twitter_bearer_token}"}
@@ -241,9 +204,7 @@ def _generate_tweet_reply_context(
             verify=False,
         )
     except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError(
-            "Could not retrieve tweet context from the Twitter API."
-        )
+        raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if r and r.status_code != 200:
         raise ReplyContextRetrievalError(f"Twitter API returned {r.status_code}")
@@ -258,9 +219,7 @@ def _generate_tweet_reply_context(
             verify=False,
         )
     except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError(
-            "Could not retrieve tweet context from the Twitter API."
-        )
+        raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
 
     if get_author and get_author.status_code == 200:
         photo_url = get_author.json()["data"].get("profile_image_url")
@@ -306,9 +265,7 @@ def _get_content_from_html_page(soup: BeautifulSoup, summary_word_limit: int) ->
             if p_tag:
                 p_tag = p_tag.text
 
-            p_tag = (
-                " ".join([w for w in p_tag.split(" ")[:summary_word_limit]]) + " ..."
-            )
+            p_tag = " ".join([w for w in p_tag.split(" ")[:summary_word_limit]]) + " ..."
         else:
             p_tag = ""
 
@@ -375,9 +332,9 @@ def _generate_reply_context_from_main_page(
     meta_description = ""
 
     description_selectors = (
-        "meta[name=description]",
+        "meta[name='description']",
         "meta[property='og:description']",
-        "meta[name=twitter:description]",
+        "meta[name='twitter:description']",
     )
 
     for selector in description_selectors:
@@ -418,9 +375,7 @@ def _generate_reply_context_from_main_page(
     )
 
 
-def get_reply_context(
-    url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75
-) -> ReplyContext:
+def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75) -> ReplyContext:
     """
         Generate reply context for use on your website based on a URL.
 
@@ -465,9 +420,7 @@ def get_reply_context(
         raise ReplyContextRetrievalError("Could not retrieve page content.")
 
     if page_content.status_code != 200:
-        raise ReplyContextRetrievalError(
-            f"Page returned a {page_content.status_code} response."
-        )
+        raise ReplyContextRetrievalError(f"Page returned a {page_content.status_code} response.")
 
     try:
         webmention_endpoint_url_response = discover_webmention_endpoint(url)
@@ -488,14 +441,10 @@ def get_reply_context(
     if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
         h_entry = parsed["items"][0]
 
-        return _generate_h_entry_reply_context(
-            h_entry, url, domain, webmention_endpoint_url, summary_word_limit
-        )
+        return _generate_h_entry_reply_context(h_entry, url, domain, webmention_endpoint_url, summary_word_limit)
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
-        return _generate_tweet_reply_context(
-            url, twitter_bearer_token, webmention_endpoint_url
-        )
+        return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
 
     return _generate_reply_context_from_main_page(
         url, http_headers, domain, webmention_endpoint_url, summary_word_limit
