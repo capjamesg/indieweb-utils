@@ -42,6 +42,7 @@ class TestReplyContext:
         assert reply_context.photo == ""
         assert reply_context.post_html
         assert reply_context.post_text
+        assert reply_context.description == "This post exists to collect my notes on displaying a USB webcam on the Raspberry Pi HDMI outputs. This is not the same as streaming the webcam (easy), and this is not for use with the Raspberry Pi camera module..."
 
     @responses.activate
     def test_reply_context_3(self):
@@ -64,6 +65,7 @@ class TestReplyContext:
         )
         assert reply_context.post_html
         assert reply_context.post_text
+        assert reply_context.description == "Good sound, noise cancelling and spatial audio, with six-hour battery, Android support and cheaper price"
 
     @responses.activate
     def test_reply_context_4(self):
@@ -81,3 +83,4 @@ class TestReplyContext:
         assert reply_context.photo == ""
         assert reply_context.post_html
         assert reply_context.post_text
+        assert reply_context.description == ""
