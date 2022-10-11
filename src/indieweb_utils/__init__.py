@@ -18,6 +18,7 @@ from .indieauth import (
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .posts.discovery import discover_author, discover_original_post, get_post_type
+from .posts.in_reply_to import get_reply_urls
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .utils.autotag import autolink_tags
@@ -60,6 +61,8 @@ __all__ = [
     "redeem_code",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
+    "get_reply_urls",
+    "discover_endpoint",
     "autolink_tags",
     "discover_h_feed",
     "generate_auth_token",
