@@ -8,16 +8,6 @@ import requests
 from ..parsing import get_soup, RequestError
 
 
-class RepresentativeHCardParsingError(Exception):
-    pass
-
-
-@dataclass
-class RepresentativeHCard:
-    # TODO: Fill this out with a full h-card object
-    pass
-
-
 def get_page_name(url: str, html: str, soup: BeautifulSoup = None) -> Dict[str, Any]:
     """
     Retrieve the name of a page using the Page Name Discovery algorithm.
