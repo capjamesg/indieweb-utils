@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List, Optional
 
 import requests
 
@@ -8,21 +9,21 @@ from ..webmentions.discovery import _discover_endpoints
 @dataclass
 class IndieAuthEndpoints:
     metadata_endpoint_found: bool = False
-    issuer: str = None
-    authorization_endpoint: str = None
-    token_endpoint: str = None
-    introspection_endpoint: str = None
-    introspection_endpoint_auth_methods_supported: list = None
-    revocation_endpoint: str = None
-    revocation_endpoint_auth_methods_supported: list = None
-    scopes_supported: list = None
-    response_types_supported: list = None
-    grant_types_supported: list = None
-    service_documentation: str = None
-    code_challenge_methods_supported: list = None
-    authorization_response_iss_parameter_supported: bool = None
-    userinfo_endpoint: str = None
-    ticket_endpoint: str = None
+    issuer: Optional[str] = None
+    authorization_endpoint: Optional[str] = None
+    token_endpoint: Optional[str] = None
+    introspection_endpoint: Optional[str] = None
+    introspection_endpoint_auth_methods_supported: Optional[List[str]] = None
+    revocation_endpoint: Optional[str] = None
+    revocation_endpoint_auth_methods_supported: Optional[List[str]] = None
+    scopes_supported: Optional[List[str]] = None
+    response_types_supported: Optional[List[str]] = None
+    grant_types_supported: Optional[List[str]] = None
+    service_documentation: Optional[str] = None
+    code_challenge_methods_supported: Optional[List[str]] = None
+    authorization_response_iss_parameter_supported: bool = False
+    userinfo_endpoint: Optional[str] = None
+    ticket_endpoint: Optional[str] = None
 
 
 def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
@@ -66,7 +67,7 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
                 token_endpoint=metadata.get("token_endpoint"),
                 introspection_endpoint=metadata.get("introspection_endpoint"),
                 introspection_endpoint_auth_methods_supported=metadata.get(
-                    "introspection_endpoint_auth_methods_supported"
+                    "introspection_endpoint_auth_methods_supported", []
                 ),
                 revocation_endpoint=metadata.get("revocation_endpoint"),
                 revocation_endpoint_auth_methods_supported=metadata.get("revocation_endpoint_auth_methods_supported"),
@@ -83,9 +84,9 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
             )
 
             return indieauth_endpoints
-    else:
-        return IndieAuthEndpoints(
-            authorization_endpoint=endpoints.get("authorization_endpoint"),
-            token_endpoint=endpoints.get("token_endpoint"),
-            ticket_endpoint=endpoints.get("ticket_endpoint"),
-        )
+
+    return IndieAuthEndpoints(
+        authorization_endpoint=endpoints.get("authorization_endpoint"),
+        token_endpoint=endpoints.get("token_endpoint"),
+        ticket_endpoint=endpoints.get("ticket_endpoint"),
+    )
