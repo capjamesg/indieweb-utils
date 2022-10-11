@@ -9,6 +9,7 @@ class TestInReplyToAlgorithm:
 
         return get_reply_urls
 
+    @responses.activate
     def test_in_reply_to_algorithm(self, target, in_reply_to):
         url = "https://aaronparecki.com/2022/09/29/29/"
 

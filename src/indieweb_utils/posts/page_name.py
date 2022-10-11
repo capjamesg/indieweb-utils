@@ -17,6 +17,16 @@ def get_page_name(url: str, html: str = None, soup: BeautifulSoup = None) -> str
     :type html: str
     :return: A representative "name" for the page.
     :rtype: str
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        page_name = indieweb_utils.get_page_name("https://jamesg.blog")
+
+        print(page_name) # "Home | James' Coffee Blog"
     """
 
     parsed_mf2_tree = None

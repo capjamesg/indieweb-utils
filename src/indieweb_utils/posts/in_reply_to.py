@@ -15,6 +15,16 @@ def get_reply_urls(url: str, html: str = None) -> List[str]:
     :type html: str
     :return: A list of all of the URLs to which the given post responds.
     :rtype: list
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        reply_urls = indieweb_utils.get_reply_urls("https://aaronparecki.com/2022/10/10/17/")
+
+        print(reply_urls) # ["https://twitter.com/amandaljudkins/status/1579680989135384576?s=12"]
     """
 
     if html:
