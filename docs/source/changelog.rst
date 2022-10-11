@@ -8,7 +8,7 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
-[0.3.2] - 2022-10-12
+[0.4.0] - 2022-10-11
 --------------------
 
 Added
