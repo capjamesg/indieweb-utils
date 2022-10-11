@@ -12,7 +12,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
         assert reply_context.authors[0].url == "https://jamesg.blog"
         assert reply_context.authors[0].name == "James"
         assert reply_context.authors[0].photo == ""
@@ -35,7 +34,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == "https://aaronparecki.com/2022/01/29/12/raspi-usb-webcam-hdmi"
         assert reply_context.webmention_endpoint == "https://webmention.io/aaronpk/webmention"
         assert reply_context.authors[0].url == author_url
         assert reply_context.authors[0].name == "Aaron Parecki"
@@ -55,7 +53,6 @@ class TestReplyContext:
             responses.add(responses.Response(responses.GET, url=url, body=f.read()))
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == url
         assert reply_context.webmention_endpoint == ""
         assert reply_context.authors[0].url == "https://www.theguardian.com"
         assert reply_context.authors[0].name == ""
@@ -76,7 +73,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == url
         assert reply_context.webmention_endpoint == ""
         assert reply_context.authors[0].url == "https://warmedal.se"
         assert reply_context.authors[0].name == ""

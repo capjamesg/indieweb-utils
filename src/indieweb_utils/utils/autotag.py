@@ -57,15 +57,14 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = No
 
     Example:
 
-    ..code-block:: python
+    .. code-block:: python
 
         import indieweb_utils
 
         note = "I am working on a new #muffin #recipe with @jane"
 
-        people = {
-            "jane": ("Jane Doe", "https://jane.example.com") # tag to use, name of person, domain of person
-        }
+        # tag to use, name of person, domain of person
+        people = { "jane": ("Jane Doe", "https://jane.example.com") }
 
         note_with_tags = indieweb_utils.autolink_tags(note, "/tag/", people, tags=["muffin", "recipe"])
 
@@ -73,10 +72,10 @@ def autolink_tags(text: str, tag_prefix: str, people: dict, tags: List[str] = No
 
     if tags is None:
         tags = []
-        
-    tags = set(tags)
 
-    text = re.sub(r"#(\w+)", lambda match: _match_tag(tag_prefix, match.group(), tags), text)
+    tag_list = list(set(tags))
+
+    text = re.sub(r"#(\w+)", lambda match: _match_tag(tag_prefix, match.group(), tag_list), text)
     text = re.sub(r"@(\w+)", lambda match: _match_person_tag(people, match.group()), text)
 
     return text

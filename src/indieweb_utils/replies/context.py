@@ -6,6 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
+from ..parsing.parse import get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 from ..webmentions.discovery import (
     LocalhostEndpointFound,
@@ -21,6 +22,7 @@ class PostAuthor:
     """
     Information about the author of a post.
     """
+
     name: str
     url: str
     photo: str
@@ -31,8 +33,8 @@ class ReplyContext:
     """
     Context about a web page and its contents.
     """
+
     webmention_endpoint: str
-    post_url: str
     photo: str
     name: str
     video: str
@@ -173,7 +175,6 @@ def _generate_h_entry_reply_context(
 
     return ReplyContext(
         name=p_name,
-        post_url=url,
         post_text=post_body,
         post_html=post_body,
         authors=[PostAuthor(url=author_url, name=author_name, photo=author_image)],
@@ -222,7 +223,6 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
     return ReplyContext(
         name=author_name,
-        post_url=url,
         post_text=r.json()["data"].get("text"),
         post_html=r.json()["data"].get("html"),
         authors=[PostAuthor(url=author_url, name=author_name, photo=photo_url)],
@@ -293,15 +293,17 @@ def _get_favicon(photo_url: str, domain: str) -> str:
 
 
 def _generate_reply_context_from_main_page(
-    url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+    url: str,
+    http_headers: dict,
+    domain: str,
+    webmention_endpoint_url: str,
+    summary_word_limit: int,
+    html: str = "",
+    soup: BeautifulSoup = None,
 ) -> ReplyContext:
 
-    try:
-        request = requests.get(url, headers=http_headers)
-    except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
-
-    soup = BeautifulSoup(request.text, "lxml")
+    if soup is None:
+        soup = get_soup(html, url, headers=http_headers)
 
     page_title = soup.find("title")
 
@@ -332,7 +334,6 @@ def _generate_reply_context_from_main_page(
 
     return ReplyContext(
         name=page_title,
-        post_url=url,
         post_text=p_tag,
         post_html=p_tag,
         authors=[PostAuthor(url=author_url, name="", photo=photo_url)],

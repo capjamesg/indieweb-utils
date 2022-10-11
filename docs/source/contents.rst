@@ -5,6 +5,8 @@ Contents
 
    usage
    discovery
+   urls
+   context
    indieauth
    webmention
    changelog

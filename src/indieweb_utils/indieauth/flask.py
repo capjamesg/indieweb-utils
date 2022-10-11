@@ -19,13 +19,18 @@ def _validate_indieauth_response(me: str, response: requests.Response, required_
         message = "An invalid me value was provided."
         raise AuthenticationError(message)
 
-    if response.json().get("me").strip("/") != me.strip("/"):
+    response_data = response.json()
+
+    if response_data.get("me") is None:
+        raise AuthenticationError("There was an error with the IndieAuth server.")
+
+    if response_data.get("me").strip("/") != me.strip("/"):
         message = "Your domain is not allowed to access this website."
         raise AuthenticationError(message)
 
-    granted_scopes = response.json().get("scope").split(" ")
+    granted_scopes = response_data.get("scope").split(" ")
 
-    if response.json().get("scope") == "" or any(scope not in granted_scopes for scope in required_scopes):
+    if response_data.get("scope") is None or any(scope not in granted_scopes for scope in required_scopes):
         message = f"You need to grant {', '.join(required_scopes).strip(', ')} access to use this tool."
         raise AuthenticationError(message)
 
@@ -68,7 +73,32 @@ def indieauth_callback_handler(
         The endpoint response will be equal to None if the callback failed.
     :rtype: tuple[str, dict]
 
-    :raises AuthenticationError: Authentication process could not be completed due to an error.
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+        from Flask import flask
+
+        app = Flask(__name__)
+
+        @app.route("/indieauth/callback")
+        def callback():
+            response = indieweb_utils.indieauth_callback_handler(
+                code=request.args.get("code"),
+                state=request.args.get("state"),
+                token_endpoint="https://tokens.indieauth.com/token",
+                code_verifier=session["code_verifier"],
+                session_state=session["state"],
+                me=session["me"],
+                callback_url=session["callback_url"],
+                client_id=session["client_id"],
+                required_scopes=["create", "update", "delete"],
+            )
+
+            return response.message
+
+    :raises AuthenticationError: The token endpoint could not be accessed or authentication failed.
     """
 
     if state != session_state:
@@ -99,7 +129,7 @@ def indieauth_callback_handler(
 
     _validate_indieauth_response(me, auth_request, required_scopes)
 
-    return IndieAuthCallbackResponse(message="Authentication was successful.", response={})
+    return IndieAuthCallbackResponse(message="Authentication was successful.", response=auth_request.json())
 
 
 def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved_user: bool = None) -> bool:
@@ -113,7 +143,30 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
     :return: True if the user is authenticated, False otherwise.
     :rtype: bool
 
-    :raises AuthenticationError: Authentication process could not be completed due to an error.
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+        from Flask import flask, request
+
+        app = Flask(__name__)
+
+        @app.route("/")
+        def index():
+            user_is_authenticated = indieweb_utils.is_authenticated(
+                "https://tokens.indieauth.com/token",
+                request.headers,
+                session,
+                "https://example.com/",
+            )
+
+            if user_is_authenticated is False:
+                return "Not authenticated"
+
+            return "Authenticated"
+
+    :raises AuthenticationError: The token endpoint could not be accessed.
     """
     if headers.get("Authorization") is not None:
         access_token = headers["Authorization"].split(" ")[-1]
