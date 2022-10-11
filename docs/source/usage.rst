@@ -29,7 +29,15 @@ To find the name of a page per the `Page Name Discovery Algorithm <https://indie
 
 This function searches:
 
-1. For a h-entry title;
-2. For a h-entry summary;
-3. For a HTML page <title> tag;
-4. Otherwise, returns "Untitled".
+1. For a h-entry title. If one is found, it is returned;
+2. For a h-entry summary. If one is found, it is returned;
+3. For a HTML page <title> tag. If one is found, it is returned;
+
+Otherwise, this function returns "Untitled".
+
+Get all URLs a Post Replies To
+------------------------------
+
+To find all of the URLs to which a reply post is replying, use this function:
+
+.. autofunction:: indieweb_utils.get_reply_urls
