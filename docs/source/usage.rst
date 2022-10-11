@@ -20,72 +20,24 @@ You can import the package using the following line of code:
 
     import indieweb_utils
 
-Canonicalize a URL
+Infer the Name of a Page
 ------------------------
 
-Canonicalization turns a relative URL into a complete URL.
+To find the name of a page per the `Page Name Discovery Algorithm <https://indieweb.org/page-name-discovery>`_, use this function:
 
-To canonicalize a URL, use this function:
+.. autofunction:: indieweb_utils.get_page_name
 
-.. autofunction:: indieweb_utils.canonicalize_url
+This function searches:
 
-This function returns a URL with a protocol, host, and path.
+1. For a h-entry title. If one is found, it is returned;
+2. For a h-entry summary. If one is found, it is returned;
+3. For a HTML page <title> tag. If one is found, it is returned;
 
-The domain of the resource is needed so that it can be added to the URL during canonicalization if the URL is relative.
+Otherwise, this function returns "Untitled".
 
-A complete URL returned by this function looks like this:
+Get all URLs a Post Replies To
+------------------------------
 
-.. code-block:: python
+To find all of the URLs to which a reply post is replying, use this function:
 
-    https://indieweb.org/POSSE
-
-
-Generate Reply Context
-------------------------
-
-To generate reply context for a given page, use the following function:
-
-.. autofunction:: indieweb_utils.get_reply_context
-
-This function returns a ReplyContext object that looks like this:
-
-.. autoclass:: indieweb_utils.ReplyContext
-
-Generate a URL Summary
-----------------------
-
-You can generate a summary of a URL without retrieving the page using the `get_url_summary` function.
-
-By default, this function can generate a summary for the following URLs:
-
-- github.com
-- twitter.com
-- eventbrite.com / eventbrite.co.uk
-- upcoming.com
-- calagator.com
-- events.indieweb.org
-- indieweb.org
-
-.. autofunction:: indieweb_utils.get_url_summary
-
-You can specify custom mappings for other domains using the `custom_mappings` parameter.
-
-This parameter accepts a dictionary of with domain names mapped to lists of tuples with patterns to match and strings to return, like this:
-
-    {
-        "example.com": [
-            (r"example.com/(\d+)", "Example #{}"),
-        ]
-    }
-
-If a summary cannot be generated, this function returns "A post by [domain_name].", where domain name is the domain of the URL you passed into the function.
-
-
-Get a Page h-feed
----------------------------
-
-The `discover_page_feed()` function implements the proposed `microformats2 h-feed discovery algorithm <https://microformats.org/wiki/h-feed#Discovery>`_.
-
-This function looks for a h-feed on a given page. If one is not found, the function looks for a rel tag to a h-feed. If one is found, that document is parsed.
-
-If a h-feed is found on the related document, the h-feed is returned.
+.. autofunction:: indieweb_utils.get_reply_urls

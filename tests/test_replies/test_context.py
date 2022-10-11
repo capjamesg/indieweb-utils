@@ -12,7 +12,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
         assert reply_context.authors[0].url == "https://jamesg.blog"
         assert reply_context.authors[0].name == "James"
         assert reply_context.authors[0].photo == ""
@@ -35,7 +34,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == "https://aaronparecki.com/2022/01/29/12/raspi-usb-webcam-hdmi"
         assert reply_context.webmention_endpoint == "https://webmention.io/aaronpk/webmention"
         assert reply_context.authors[0].url == author_url
         assert reply_context.authors[0].name == "Aaron Parecki"
@@ -44,6 +42,10 @@ class TestReplyContext:
         assert reply_context.photo == ""
         assert reply_context.post_html
         assert reply_context.post_text
+        assert (
+            reply_context.description
+            == "This post exists to collect my notes on displaying a USB webcam on the Raspberry Pi HDMI outputs. This is not the same as streaming the webcam (easy), and this is not for use with the Raspberry Pi camera module..."  # noqa: E501
+        )
 
     @responses.activate
     def test_reply_context_3(self):
@@ -55,7 +57,6 @@ class TestReplyContext:
             responses.add(responses.Response(responses.GET, url=url, body=f.read()))
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == url
         assert reply_context.webmention_endpoint == ""
         assert reply_context.authors[0].url == "https://www.theguardian.com"
         assert reply_context.authors[0].name == ""
@@ -67,6 +68,10 @@ class TestReplyContext:
         )
         assert reply_context.post_html
         assert reply_context.post_text
+        assert (
+            reply_context.description
+            == "Good sound, noise cancelling and spatial audio, with six-hour battery, Android support and cheaper price"  # noqa: E501
+        )
 
     @responses.activate
     def test_reply_context_4(self):
@@ -76,7 +81,6 @@ class TestReplyContext:
 
         reply_context = context.get_reply_context(url=url)
 
-        assert reply_context.post_url == url
         assert reply_context.webmention_endpoint == ""
         assert reply_context.authors[0].url == "https://warmedal.se"
         assert reply_context.authors[0].name == ""
@@ -85,3 +89,4 @@ class TestReplyContext:
         assert reply_context.photo == ""
         assert reply_context.post_html
         assert reply_context.post_text
+        assert reply_context.description == ""

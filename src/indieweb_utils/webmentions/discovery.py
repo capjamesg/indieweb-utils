@@ -105,15 +105,15 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def discover_endpoints(url: str, headers_to_find: List[str]):
+def discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None):
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
     :param url: The URL to discover endpoints for.
     :type url: str
     :param headers_to_find: The headers to find.
-        Common values you may want to use include: microsub, micropub, token_endpoint,
-        authorization_endpoint, webmention.
+        Values you may want to use include: microsub, micropub, token_endpoint,
+        authorization_endpoint, subscribe.
     :type headers_to_find: dict[str, str]
     :return: The discovered endpoints.
     :rtype: dict[str, str]
@@ -125,23 +125,26 @@ def discover_endpoints(url: str, headers_to_find: List[str]):
 
         url = "https://jamesg.blog/"
 
-        # find the webmention header on a web page
-        headers_to_find = ["webmention"]
+        # find the microsub rel link on a web page
+        headers_to_find = ["microsub"]
 
         endpoints = indieweb_utils.discover_endpoints(
             url
         )
 
-        print(webmention_endpoint) # {'webmention': 'https://webmention.jamesg.blog/webmention'}
+        print(endpoints) # {'aperture': 'https://aperture.p3k.io/'}
 
     :raises requests.exceptions.RequestException: Error raised while making the network request to discover endpoints.
     """
     response: Dict[str, str] = {}
 
-    try:
-        endpoint_request = requests.get(url, timeout=5)
-    except requests.exceptions.RequestException:
-        raise requests.exceptions.RequestException("Could not connect to the specified URL.")
+    if request:
+        endpoint_request = request
+    else:
+        try:
+            endpoint_request = requests.get(url, timeout=5)
+        except requests.exceptions.RequestException:
+            raise Exception("Could not connect to the specified URL.")
 
     link_headers = _find_links_in_headers(headers=endpoint_request.headers, target_headers=headers_to_find)
 
@@ -187,7 +190,6 @@ def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, D
 
 
 def _find_links_html(*, body: str, target_headers: List[str]) -> Dict[str, str]:
-    """"""
     soup = BeautifulSoup(body, "html.parser")
     found: Dict[str, str] = {}
 
