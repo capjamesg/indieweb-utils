@@ -10,6 +10,12 @@ To install IndieWeb Utils, use this command:
 
    pip3 install indieweb-utils
 
+You can import the package using the following line of code:
+
+.. code-block:: python
+
+    import indieweb_utils
+
 Below, you will find links to all of the methods available in IndieWeb Utils.
    
 This project is licensed under an MIT license.
@@ -19,7 +25,13 @@ Contents
 
 .. toctree::
 
-   contents
+   usage
+   discovery
+   urls
+   context
+   indieauth
+   webmention
+   changelog
 
 Feature Set
 ----------------
