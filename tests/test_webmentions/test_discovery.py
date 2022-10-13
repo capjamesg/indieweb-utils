@@ -11,6 +11,7 @@ class TestWebmentionEndpointDiscovery:
 
     @responses.activate
     def test_webmention_searches_html(self, target, article, article_url):
+        """Test Webmention endpoint discovery."""
         responses.add(responses.Response(method="GET", url=article_url, body=article))
         get_endpoint = target(article_url)
 
@@ -18,6 +19,7 @@ class TestWebmentionEndpointDiscovery:
 
     @responses.activate
     def test_webmention_searches_header(self, target, article_url):
+        """Test Webmention endpoint discovery with link headers provided."""
         responses.add(
             responses.Response(
                 method="GET",

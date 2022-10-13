@@ -17,6 +17,7 @@ from .indieauth import (
     validate_authorization_response,
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
+from .indieauth.scopes import SCOPE_DEFINITIONS
 from .posts.discovery import discover_author, discover_original_post, get_post_type
 from .posts.in_reply_to import get_reply_urls
 from .posts.page_name import get_page_name
@@ -75,4 +76,5 @@ __all__ = [
     "discover_endpoints",
     "_discover_endpoints",
     "get_page_name",
+    "SCOPE_DEFINITIONS",
 ]

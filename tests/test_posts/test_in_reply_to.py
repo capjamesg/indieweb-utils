@@ -11,6 +11,7 @@ class TestInReplyToAlgorithm:
 
     @responses.activate
     def test_in_reply_to_algorithm(self, target, in_reply_to):
+        """Test the in-reply-to algorithm to find the URLs to which a post is replying."""
         url = "https://aaronparecki.com/2022/09/29/29/"
 
         responses.add(

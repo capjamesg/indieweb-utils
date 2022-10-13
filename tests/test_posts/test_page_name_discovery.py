@@ -10,16 +10,16 @@ class TestPageNameDiscovery:
         return get_page_name
 
     @responses.activate
-    def test_page_name_discovery(self, target):
+    def test_page_name_discovery(self, target, reply1):
+        """Test page name discovery algorithm and ensure it returns the name of a page."""
         url = "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
 
-        with open("tests/fixtures/reply1.html") as f:
-            responses.add(
-                responses.Response(
-                    method="GET",
-                    url=url,
-                    body=f.read(),
-                )
+        responses.add(
+            responses.Response(
+                method="GET",
+                url=url,
+                body=reply1,
             )
+        )
 
         assert target(url) == "Integrated IndieWeb Services"

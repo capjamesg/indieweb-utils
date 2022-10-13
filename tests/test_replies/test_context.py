@@ -5,10 +5,11 @@ from indieweb_utils.replies import context
 
 class TestReplyContext:
     @responses.activate
-    def test_reply_context_1(self):
+    def test_reply_context_1(self, reply1):
+        """Get reply context for a page on jamesg.blog."""
+
         url = "https://jamesg.blog/2022/01/28/integrated-indieweb-services/"
-        with open("tests/fixtures/reply1.html") as f:
-            responses.add(responses.Response(responses.GET, url=url, body=f.read()))
+        responses.add(responses.Response(responses.GET, url=url, body=reply1))
 
         reply_context = context.get_reply_context(url=url)
 
@@ -23,14 +24,14 @@ class TestReplyContext:
         assert reply_context.post_text
 
     @responses.activate
-    def test_reply_context_2(self):
+    def test_reply_context_2(self, reply2, author2):
+        """Get reply context for a page on aaronparecki.com."""
         url = "https://aaronparecki.com/2022/01/29/12/raspi-usb-webcam-hdmi"
         author_url = "https://aaronparecki.com/"
-        with open("tests/fixtures/reply2.html") as f:
-            responses.add(responses.Response(responses.GET, url=url, body=f.read()))
 
-        with open("tests/fixtures/author2.html") as f:
-            responses.add(responses.Response(responses.GET, url=author_url, body=f.read()))
+        responses.add(responses.Response(responses.GET, url=url, body=reply2))
+
+        responses.add(responses.Response(responses.GET, url=author_url, body=author2))
 
         reply_context = context.get_reply_context(url=url)
 
@@ -48,13 +49,14 @@ class TestReplyContext:
         )
 
     @responses.activate
-    def test_reply_context_3(self):
+    def test_reply_context_3(self, reply3):
+        """Get reply context for a page on The Guardian."""
         url = (
             "https://www.theguardian.com/technology/2022/jan/31/"
             "beats-fit-pro-review-apple-workout-ready-airpods-pro-rivals-battery-price"
         )
-        with open("tests/fixtures/reply3.html") as f:
-            responses.add(responses.Response(responses.GET, url=url, body=f.read()))
+
+        responses.add(responses.Response(responses.GET, url=url, body=reply3))
         reply_context = context.get_reply_context(url=url)
 
         assert reply_context.webmention_endpoint == ""
@@ -74,10 +76,11 @@ class TestReplyContext:
         )
 
     @responses.activate
-    def test_reply_context_4(self):
+    def test_reply_context_4(self, reply4):
+        """Get reply context for a page on warmedal.se."""
         url = "https://warmedal.se/~bjorn/posts/2022-01-30-collecting-reply-posts-for-posterity.html"
-        with open("tests/fixtures/reply4.html") as f:
-            responses.add(responses.Response(responses.GET, url=url, body=f.read()))
+
+        responses.add(responses.Response(responses.GET, url=url, body=reply4))
 
         reply_context = context.get_reply_context(url=url)
 

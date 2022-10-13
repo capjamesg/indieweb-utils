@@ -10,10 +10,11 @@ class TestPostTypeDiscovery:
         return get_syndicated_copies
 
     @responses.activate
-    def test_get_syndicated_copies(self, target):
+    def test_get_syndicated_copies(self, target, post):
+        """Test the get_syndicated_copies algorithm to find the URLs to which a post was syndicated."""
         url = "https://aaronparecki.com/2022/09/26/18/eyefi"
-        with open("tests/fixtures/post.html") as f:
-            responses.add(responses.Response(responses.GET, url=url, body=f.read()))
+
+        responses.add(responses.Response(responses.GET, url=url, body=post))
 
         syndicated_copies = target(url=url)
 
