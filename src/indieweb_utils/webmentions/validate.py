@@ -178,7 +178,7 @@ def validate_webmention(
     source: str,
     target: str,
     code: str = None,
-    vouch: str = None,
+    vouch: str = "",
     vouch_list: List[str] = [],
     target_request: requests.Response = None,
 ) -> WebmentionCheckResponse:

@@ -7,6 +7,7 @@ Utilities to aid the implementation of various IndieWeb specifications and funct
 from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
 from .indieauth import (
     _validate_indieauth_response,
+    discover_indieauth_endpoints,
     generate_auth_token,
     get_h_app_item,
     get_profile,
@@ -15,7 +16,6 @@ from .indieauth import (
     redeem_code,
     validate_access_token,
     validate_authorization_response,
-    discover_indieauth_endpoints
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .indieauth.scopes import SCOPE_DEFINITIONS
@@ -79,5 +79,5 @@ __all__ = [
     "get_page_name",
     "SCOPE_DEFINITIONS",
     "generate_auth_token",
-    "discover_indieauth_endpoints"
+    "discover_indieauth_endpoints",
 ]

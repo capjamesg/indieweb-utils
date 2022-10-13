@@ -132,7 +132,7 @@ def discover_endpoints(url: str, headers_to_find: List[str], request: requests.R
             url
         )
 
-        print(endpoints) # {'aperture': 'https://aperture.p3k.io/'}
+        print(endpoints) # {'microsub': 'https://aperture.p3k.io/'}
 
     :raises requests.exceptions.RequestException: Error raised while making the network request to discover endpoints.
     """
