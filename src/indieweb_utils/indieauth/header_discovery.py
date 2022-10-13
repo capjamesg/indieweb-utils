@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import requests
 
-from ..webmentions.discovery import _discover_endpoints
+from ..webmentions.discovery import discover_endpoints
 
 
 @dataclass
@@ -24,6 +24,7 @@ class IndieAuthEndpoints:
     authorization_response_iss_parameter_supported: bool = False
     userinfo_endpoint: Optional[str] = None
     ticket_endpoint: Optional[str] = None
+    raw_metadata_endpoint_response: Optional[dict] = None
 
 
 def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
@@ -47,7 +48,7 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
 
     :raises requests.exceptions.RequestException: If the request to the resource fails.
     """
-    endpoints = _discover_endpoints(
+    endpoints = discover_endpoints(
         url, ["indieauth-metadata", "authorization_endpoint", "token_endpoint", "ticket_endpoint"]
     )
 
@@ -81,6 +82,7 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
                 ),
                 userinfo_endpoint=metadata.get("userinfo_endpoint"),
                 ticket_endpoint=endpoints.get("ticket_endpoint"),
+                raw_metadata_endpoint_response=metadata,
             )
 
             return indieauth_endpoints
