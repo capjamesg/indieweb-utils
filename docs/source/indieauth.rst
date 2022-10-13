@@ -1,5 +1,5 @@
-IndieAuth
-==========
+IndieAuth Features
+==================
 
 The indieweb-utils library provides a number of helper functions that will enable you
 to implement your own IndieAuth authentication and token endpoints in Python.
@@ -24,6 +24,23 @@ To access the scope reference, import the following variable:
 .. code-block:: python
 
     from indieweb_utils import SCOPE_DEFINITIONS
+
+Discover IndieAuth endpoints
+----------------------------
+
+The `discover_indieauth_endpoints()` function retrieves the `indieauth-metadata` endpoint for a web page, if available. It then returns an object with all of the valid values specified in the IndieAuth spec.
+
+If an `indieauth-metadata` endpoint is not found, this function looks for the following endpoint values on the specified web page:
+
+- `authorization_endpoint`
+- `token_endpoint`
+- `ticket_endpoint`
+
+The function will then return these values if they are specified.
+
+This function should be used instead of `discover_endpoints()` because it performs the additional `indieauth-metadata` check that is now required in IndieAuth endpoint discovery.
+
+.. autofunction:: indieweb_utils.discover_indieauth_endpoints
 
 Get a h-app object
 ------------------

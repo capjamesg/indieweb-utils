@@ -15,6 +15,7 @@ from .indieauth import (
     redeem_code,
     validate_access_token,
     validate_authorization_response,
+    discover_indieauth_endpoints
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .indieauth.scopes import SCOPE_DEFINITIONS
@@ -77,4 +78,6 @@ __all__ = [
     "_discover_endpoints",
     "get_page_name",
     "SCOPE_DEFINITIONS",
+    "generate_auth_token",
+    "discover_indieauth_endpoints"
 ]
