@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional, Tuple
 from urllib import parse as url_parse
 
 import requests
@@ -84,13 +84,7 @@ def _check_for_link_to_target(validation_source: requests.Response, target) -> b
     return contains_valid_link_to_target
 
 
-def _retrieve_webmention_target(source: str) -> BeautifulSoup:
-    # Only allow 3 redirects before raising an error
-    session = requests.Session()
-    session.max_redirects = 3
-
-    validated_headers = False
-
+def _webmention_head_request(session: requests.Session, source: str = "") -> Tuple[requests.Response, bool]:
     try:
         check_source_size = session.head(source, timeout=5)
 
@@ -103,10 +97,28 @@ def _retrieve_webmention_target(source: str) -> BeautifulSoup:
         # pass because HEAD request might not be recognised / processed by the client
         pass
 
-    try:
-        get_source_for_validation = session.get(source)
-    except requests.exceptions.RequestException:
-        raise WebmentionValidationError("Source could not be retrieved.")
+    return check_source_size, validated_headers
+
+
+def _retrieve_webmention_target(source: str, target_request: Optional[requests.Response] = None) -> BeautifulSoup:
+    # Only allow 3 redirects before raising an error
+
+    if target_request:
+        validated_headers = _validate_headers(target_request)
+
+        get_source_for_validation = target_request
+    else:
+        session = requests.Session()
+        session.max_redirects = 3
+
+        validated_headers = False
+
+        try:
+            get_source_for_validation = session.get(source)
+        except requests.exceptions.RequestException:
+            raise WebmentionValidationError("Source could not be retrieved.")
+
+        check_source_size, validated_headers = _webmention_head_request(session, source)
 
     if validated_headers is False:
         validated_headers = _validate_headers(check_source_size)
@@ -123,7 +135,7 @@ def _retrieve_webmention_target(source: str) -> BeautifulSoup:
 
 
 def validate_webmention(
-    source: str, target: str, vouch: str = "", vouch_list: List[str] = []
+    source: str, target: str, vouch: str = "", vouch_list: List[str] = [], target_request: requests.Response = None
 ) -> WebmentionCheckResponse:
     """
     Check if a webmention is valid.
@@ -171,7 +183,7 @@ def validate_webmention(
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
 
-    parsed_page = _retrieve_webmention_target(source)
+    parsed_page = _retrieve_webmention_target(source, target_request)
 
     # get all <link> tags
     meta_links = parsed_page.find_all("link")

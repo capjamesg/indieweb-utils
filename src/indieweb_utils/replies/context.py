@@ -6,6 +6,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 
+from ..parsing.parse import get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 from ..webmentions.discovery import (
     LocalhostEndpointFound,
@@ -34,7 +35,6 @@ class ReplyContext:
     """
 
     webmention_endpoint: str
-    post_url: str
     photo: str
     name: str
     video: str
@@ -127,15 +127,24 @@ def _process_post_contents(h_entry: dict, domain: str, author_image: str, summar
         post_body = h_entry["properties"]["content"]
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
+    else:
+        post_body = ""
 
     return author_image, post_body
 
 
 def _generate_h_entry_reply_context(
-    h_entry: dict, url: str, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+    h_entry: dict,
+    url: str,
+    domain: str,
+    webmention_endpoint_url: str,
+    summary_word_limit: int,
 ) -> ReplyContext:
     p_name = ""
     post_body = ""
+    author_image = ""
+    author_name = ""
+    author_url = ""
 
     if h_entry["properties"].get("author"):
         author_url, author_image, author_name = _process_h_entry_author(h_entry, url, domain)
@@ -148,9 +157,6 @@ def _generate_h_entry_reply_context(
     # get article name
     if h_entry["properties"].get("name"):
         p_name = h_entry["properties"]["name"][0]
-
-    if author_url is not None and not _is_http_url(author_url):
-        author_url = "https://" + author_url
 
     # use domain name as author name if no author name is found
     if not author_name and author_url:
@@ -168,14 +174,18 @@ def _generate_h_entry_reply_context(
 
     # look for featured image to display in reply context
     if post_photo_url is None:
-        post_photo_url = _get_featured_image(post_body)
+        post_photo_url = _get_featured_image(post_body, domain)
 
     if h_entry["properties"].get("summary"):
         summary = h_entry["properties"]["summary"][0]
 
+        if isinstance(summary, dict):
+            summary = summary["value"]
+    else:
+        summary = " ".join(". ".join(post_body.split(". ")[:2]).split(" ")[:summary_word_limit]) + "..."
+
     return ReplyContext(
         name=p_name,
-        post_url=url,
         post_text=post_body,
         post_html=post_body,
         authors=[PostAuthor(url=author_url, name=author_name, photo=author_image)],
@@ -208,7 +218,10 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
     try:
         get_author = requests.get(
-            f"{base_url}?user.fields=url,name,profile_image_url,username", headers=headers, timeout=10, verify=False
+            f"{base_url}?user.fields=url,name,profile_image_url,username",
+            headers=headers,
+            timeout=10,
+            verify=False,
         )
     except requests.exceptions.RequestException:
         raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
@@ -224,7 +237,6 @@ def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmentio
 
     return ReplyContext(
         name=author_name,
-        post_url=url,
         post_text=r.json()["data"].get("text"),
         post_html=r.json()["data"].get("html"),
         authors=[PostAuthor(url=author_url, name=author_name, photo=photo_url)],
@@ -265,16 +277,41 @@ def _get_content_from_html_page(soup: BeautifulSoup, summary_word_limit: int) ->
     return p_tag
 
 
-def _get_featured_image(soup: BeautifulSoup):
+def _get_featured_video(soup: BeautifulSoup, domain: str) -> str:
+    video = soup.find("video")
+
+    if video and video.get("src"):
+        return canonicalize_url(video.get("src"), domain)
+
+    return ""
+
+
+def _get_featured_image(soup: BeautifulSoup, domain: str) -> str:
     post_photo_url = ""
 
-    # look for featured image to display in reply context
-    if soup.select(".u-photo"):
-        post_photo_url = soup.select(".u-photo")[0]["src"]
-    elif soup.find("meta", property="og:image") and soup.find("meta", property="og:image")["content"]:
-        post_photo_url = soup.find("meta", property="og:image")["content"]
-    elif soup.find("meta", property="twitter:image") and soup.find("meta", property="twitter:image")["content"]:
-        post_photo_url = soup.find("meta", property="twitter:image")["content"]
+    photo_selectors = (
+        (".u-photo", "src"),
+        ("meta[name='og:image']", "content"),
+        ("meta[name='twitter:image:src']", "content"),
+        ("meta[property='og:image']", "content"),
+        ("meta[property='twitter:image:src']", "content"),
+        (".logo", "src"),
+    )
+
+    for selector, attrib in photo_selectors:
+        if not soup.select(selector):
+            continue
+
+        data = soup.select(selector)[0].get(attrib)
+
+        if not data:
+            continue
+
+        post_photo_url = data
+        break
+
+    if post_photo_url != "":
+        return canonicalize_url(post_photo_url, domain)
 
     return post_photo_url
 
@@ -295,29 +332,45 @@ def _get_favicon(photo_url: str, domain: str) -> str:
 
 
 def _generate_reply_context_from_main_page(
-    url: str, http_headers: dict, domain: str, webmention_endpoint_url: str, summary_word_limit: int
+    url: str,
+    http_headers: dict,
+    domain: str,
+    webmention_endpoint_url: str,
+    summary_word_limit: int,
+    html: str = "",
+    soup: BeautifulSoup = None,
 ) -> ReplyContext:
 
-    try:
-        request = requests.get(url, headers=http_headers)
-    except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError("Could not retrieve the specified URL.")
-
-    soup = BeautifulSoup(request.text, "lxml")
+    if soup is None:
+        soup = get_soup(html, url, headers=http_headers)
 
     page_title = soup.find("title")
 
-    meta_description = soup.find("meta", property="description")
+    meta_description = ""
 
-    if not meta_description:
-        meta_description = ""
+    description_selectors = (
+        "meta[name='description']",
+        "meta[name='og:description']",
+        "meta[name='twitter:description']",
+        "meta[property='description']",
+        "meta[property='og:description']",
+        "meta[property='twitter:description']",
+    )
+
+    for selector in description_selectors:
+        description = soup.select(selector)
+        if description:
+            meta_description = description[0]["content"]
+            break
 
     if page_title:
         page_title = page_title.text
 
     p_tag = _get_content_from_html_page(soup, summary_word_limit)
 
-    post_photo_url = _get_featured_image(soup)
+    post_photo_url = _get_featured_image(soup, domain)
+
+    video_url = _get_featured_video(soup, domain)
 
     favicon = soup.find("link", rel="icon")
 
@@ -332,14 +385,15 @@ def _generate_reply_context_from_main_page(
     if not _is_http_url(domain):
         author_url = "https://" + domain
 
+    meta_description = meta_description.strip().replace("\n\n", " ").replace("\n", " ")
+
     return ReplyContext(
         name=page_title,
-        post_url=url,
         post_text=p_tag,
         post_html=p_tag,
         authors=[PostAuthor(url=author_url, name="", photo=photo_url)],
         photo=post_photo_url,
-        video="",
+        video=video_url,
         webmention_endpoint=webmention_endpoint_url,
         description=meta_description,
     )
@@ -395,20 +449,32 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
         webmention_endpoint_url_response = discover_webmention_endpoint(url)
 
         webmention_endpoint_url = webmention_endpoint_url_response.endpoint
-    except (TargetNotProvided, WebmentionEndpointNotFound, UnacceptableIPAddress, LocalhostEndpointFound):
+    except (
+        TargetNotProvided,
+        WebmentionEndpointNotFound,
+        UnacceptableIPAddress,
+        LocalhostEndpointFound,
+    ):
         webmention_endpoint_url = ""
 
     parsed = mf2py.parse(doc=page_content.text)
 
     domain = parsed_url.netloc
 
-    if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
+    if (
+        parsed["items"]
+        and parsed["items"][0]["type"] == ["h-entry"]
+        and "name" in parsed["items"][0].get("properties", {})
+    ):
         h_entry = parsed["items"][0]
+        print(h_entry)
 
         return _generate_h_entry_reply_context(h_entry, url, domain, webmention_endpoint_url, summary_word_limit)
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
         return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
+
+    print("dsds")
 
     return _generate_reply_context_from_main_page(
         url, http_headers, domain, webmention_endpoint_url, summary_word_limit

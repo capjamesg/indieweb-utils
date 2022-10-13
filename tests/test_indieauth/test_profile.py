@@ -26,15 +26,20 @@ def email_tag():
 
 @responses.activate
 def test_parses_profile(name_tag, photo_tag, me_tag, email_tag):
+    """Test parsing a h-card."""
     url = "http://example.com"
+
+    body = f'<div class="h-card">{name_tag}{photo_tag}{me_tag}{email_tag}</div>'
+
     responses.add(
         responses.Response(
             method="GET",
             url=url,
-            body=f'<div class="h-card">{name_tag}{photo_tag}{me_tag}{email_tag}</div>',
+            body=body,
         )
     )
-    actual = profile.get_profile(me=url)
+    actual = profile.get_profile(url, html=body)
+
     assert actual.name == "John Doe"
     assert actual.photo == "http://example.com/me.jpg"
     assert actual.url == "http://example.com/john"
@@ -43,6 +48,7 @@ def test_parses_profile(name_tag, photo_tag, me_tag, email_tag):
 
 @responses.activate
 def test_handles_missing_email(name_tag, photo_tag, me_tag):
+    """Test email is set to None if no email found."""
     url = "http://example.com"
     responses.add(
         responses.Response(
@@ -72,6 +78,7 @@ def test_handles_missing_url(name_tag, photo_tag):
 
 @responses.activate
 def test_handles_missing_photo(name_tag):
+    """Tests for a None value returned for the 'photo' attribute if a photo is not found."""
     url = "http://example.com"
     responses.add(
         responses.Response(
@@ -101,6 +108,7 @@ def test_handles_missing_name():
 
 @responses.activate
 def test_handles_missing_h_card():
+    """Tests that it returns a profile with the me url as the name if there is no h-card."""
     url = "http://example.com"
     responses.add(
         responses.Response(

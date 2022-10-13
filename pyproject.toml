@@ -1,11 +1,6 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
-[project]
-name = "indieweb_utils"
-authors = [{name = "capjamesg", email = "jamesg@jamesg.blog"}]
-dynamic = ["version", "description"]
+requires = ["setuptools>=42", "mf2py", "jwt"]
+build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 addopts = "--import-mode=importlib"

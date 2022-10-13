@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from urllib import parse as url_parse
 
 import mf2py
@@ -17,7 +17,25 @@ class FeedUrl:
     title: str
 
 
-def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None) -> List[FeedUrl]:
+def _get_page_feed_contents(url: str, html: str) -> Tuple[requests.Response, str]:
+    if html:
+        try:
+            web_page_request = requests.head(url, timeout=10, allow_redirects=True)
+        except requests.RequestException:
+            raise Exception("Request to retrieve URL did not return a valid response.")
+
+    if not html:
+        try:
+            web_page_request = requests.get(url, timeout=10, allow_redirects=True)
+        except requests.RequestException:
+            raise Exception("Request to retrieve URL did not return a valid response.")
+        else:
+            html = web_page_request.text
+
+    return web_page_request, html
+
+
+def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = None, html: str = "") -> List[FeedUrl]:
     """
     Get all feeds on a web page.
 
@@ -25,7 +43,10 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     :type url: str
     :param user_mime_types: A list of mime types whose associated feeds you want to retrieve.
     :type user_mime_types: Optional[List[str]]
+    :param html: A string with the HTML on a page.
+    :type html: str
     :return: A list of FeedUrl objects.
+    :rtype: List[FeedUrl]
 
     Example:
 
@@ -47,14 +68,10 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
         url = "https://" + url
     elif url.startswith("//"):
         url = "https:" + url
-    try:
-        web_page_request = requests.get(url, timeout=10, allow_redirects=True)
 
-        web_page = web_page_request.text
-    except requests.exceptions.RequestException:
-        return []
+    web_page_request, html = _get_page_feed_contents(url, html)
 
-    soup = BeautifulSoup(web_page, "lxml")
+    soup = BeautifulSoup(html, "lxml")
 
     # check for presence of mf2 hfeed
     h_feed = soup.find_all(class_="h-feed")
@@ -99,7 +116,7 @@ def discover_web_page_feeds(url: str, user_mime_types: Optional[List[str]] = Non
     return feeds
 
 
-def discover_h_feed(url: str) -> Dict:
+def discover_h_feed(url: str, html: str = "") -> Dict:
     """
     Find the main h-feed that represents a web page as per the h-feed Discovery algorithm.
 
@@ -107,11 +124,28 @@ def discover_h_feed(url: str) -> Dict:
 
     :param url: The URL of the page whose associated feeds you want to retrieve.
     :type url: str
+    :param html: The HTML of a page whose feeds you want to retrieve
+    :type html: str
     :return: The h-feed data.
     :rtype: dict
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        url = "https://jamesg.blog/"
+
+        hfeed = indieweb_utils.discover_h_feed(url)
+
+        print(hfeed)
     """
 
-    parsed_main_page_mf2 = mf2py.parse(url=url)
+    if html:
+        parsed_main_page_mf2 = mf2py.parse(doc=html)
+    else:
+        parsed_main_page_mf2 = mf2py.parse(url=url)
 
     all_page_feeds = discover_web_page_feeds(url)
 

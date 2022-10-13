@@ -3,6 +3,16 @@ Discovery
 
 Indieweb utils provides a number of functions to help you determine properties from webpages.
 
+Discover IndieWeb endpoints
+---------------------------
+
+The `discover_endpoints()` function parses HTTP Link headers and HTML `<link>` tags to find the specified endpoints.
+
+.. autofunction:: indieweb_utils.discover_endpoints
+
+This function only returns the specified endpoints if they can be found. It does not perform any validation to check that the discovered endpoints are valid URLs.
+
+We recommend using the `discover_webmention_endpoint <https://indieweb-utils.readthedocs.io/en/latest/webmention.html#discover-a-webmention-endpoint>`_ function to discover webmention endpoints as this performs additional validation useful in webmention endpoint discovery.
 
 Find an article author
 ------------------------------------
@@ -106,3 +116,50 @@ This function returns a list with all feeds on a page.
 Each feed is structured as a FeedUrl object. FeedUrl objects contain the following attributes:
 
 .. autoclass:: indieweb_utils.FeedUrl
+
+
+Get a Representative h-card
+---------------------------
+
+To find the h-card that is considered representative of a web resource per the
+`Representative h-card Parsing Algorithm <https://microformats.org/wiki/representative-h-card-parsing>`_,
+use the following function:
+
+.. autofunction:: indieweb_utils.get_representative_h_card
+
+This function returns a dictionary with the h-card found on a web page.
+
+Get a Page h-feed
+---------------------------
+
+The `discover_h_feed()` function implements the proposed `microformats2 h-feed discovery algorithm <https://microformats.org/wiki/h-feed#Discovery>`_.
+
+This function looks for a h-feed on a given page. If one is not found, the function looks for a rel tag to a h-feed. If one is found, that document is parsed.
+
+If a h-feed is found on the related document, the h-feed is returned.
+
+This function returns a dictionary with the h-card found on a web page.
+
+.. autofunction:: indieweb_utils.discover_h_feed
+    
+Infer the Name of a Page
+------------------------
+
+To find the name of a page per the `Page Name Discovery Algorithm <https://indieweb.org/page-name-discovery>`_, use this function:
+
+.. autofunction:: indieweb_utils.get_page_name
+
+This function searches:
+
+1. For a h-entry title. If one is found, it is returned;
+2. For a h-entry summary. If one is found, it is returned;
+3. For a HTML page <title> tag. If one is found, it is returned;
+
+Otherwise, this function returns "Untitled".
+
+Get all URLs a Post Replies To
+------------------------------
+
+To find all of the URLs to which a reply post is replying, use this function:
+
+.. autofunction:: indieweb_utils.get_reply_urls

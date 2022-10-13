@@ -1,3 +1,7 @@
+"""
+Utilities to aid the implementation of various IndieWeb specifications and functionalities.
+"""
+
 # Imports added for API backwards compatibility
 
 from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
@@ -14,9 +18,14 @@ from .indieauth import (
     discover_indieauth_endpoints
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
+from .indieauth.scopes import SCOPE_DEFINITIONS
 from .posts.discovery import discover_author, discover_original_post, get_post_type
+from .posts.in_reply_to import get_reply_urls
+from .posts.page_name import get_page_name
+from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
+from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url
 from .webmentions import (
@@ -27,7 +36,10 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.5.0"
+
+# add for backwards compatibility
+_discover_endpoints = discover_endpoints
 
 __all__ = [
     "discover_web_page_feeds",
@@ -53,10 +65,19 @@ __all__ = [
     "redeem_code",
     "get_valid_relmeauth_links",
     "validate_authorization_response",
+    "get_syndicated_copies",
+    "discover_endpoint",
+    "get_reply_urls",
+    "discover_endpoint",
+    "autolink_tags",
     "discover_h_feed",
-    "generate_auth_token" "get_url_summary",
+    "generate_auth_token",
+    "get_url_summary",
     "InvalidURL",
     "discover_endpoints",
+    "_discover_endpoints",
+    "get_page_name",
+    "SCOPE_DEFINITIONS",
     "generate_auth_token",
     "discover_indieauth_endpoints"
 ]
