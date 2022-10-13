@@ -61,6 +61,18 @@ def reply4() -> str:
 
 
 @pytest.fixture
+def reply5() -> str:
+    with open("tests/fixtures/reply5.html") as f:
+        return f.read()
+
+
+@pytest.fixture
+def reply6() -> str:
+    with open("tests/fixtures/reply6.html") as f:
+        return f.read()
+
+
+@pytest.fixture
 def author2() -> str:
     with open("tests/fixtures/author2.html") as f:
         return f.read()

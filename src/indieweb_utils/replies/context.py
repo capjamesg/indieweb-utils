@@ -127,6 +127,8 @@ def _process_post_contents(h_entry: dict, domain: str, author_image: str, summar
         post_body = h_entry["properties"]["content"]
 
         post_body = " ".join(post_body.split(" ")[:summary_word_limit]) + " ..."
+    else:
+        post_body = ""
 
     return author_image, post_body
 
@@ -140,6 +142,9 @@ def _generate_h_entry_reply_context(
 ) -> ReplyContext:
     p_name = ""
     post_body = ""
+    author_image = ""
+    author_name = ""
+    author_url = ""
 
     if h_entry["properties"].get("author"):
         author_url, author_image, author_name = _process_h_entry_author(h_entry, url, domain)
@@ -169,7 +174,7 @@ def _generate_h_entry_reply_context(
 
     # look for featured image to display in reply context
     if post_photo_url is None:
-        post_photo_url = _get_featured_image(post_body)
+        post_photo_url = _get_featured_image(post_body, domain)
 
     if h_entry["properties"].get("summary"):
         summary = h_entry["properties"]["summary"][0]
@@ -272,13 +277,25 @@ def _get_content_from_html_page(soup: BeautifulSoup, summary_word_limit: int) ->
     return p_tag
 
 
-def _get_featured_image(soup: BeautifulSoup) -> str:
+def _get_featured_video(soup: BeautifulSoup, domain: str) -> str:
+    video = soup.find("video")
+
+    if video and video.get("src"):
+        return canonicalize_url(video.get("src"), domain)
+
+    return ""
+
+
+def _get_featured_image(soup: BeautifulSoup, domain: str) -> str:
     post_photo_url = ""
 
     photo_selectors = (
         (".u-photo", "src"),
-        ("meta[property='og:image']", "content"),
+        ("meta[name='og:image']", "content"),
         ("meta[name='twitter:image:src']", "content"),
+        ("meta[property='og:image']", "content"),
+        ("meta[property='twitter:image:src']", "content"),
+        (".logo", "src"),
     )
 
     for selector, attrib in photo_selectors:
@@ -294,7 +311,7 @@ def _get_featured_image(soup: BeautifulSoup) -> str:
         break
 
     if post_photo_url != "":
-        return canonicalize_url(post_photo_url)
+        return canonicalize_url(post_photo_url, domain)
 
     return post_photo_url
 
@@ -333,8 +350,11 @@ def _generate_reply_context_from_main_page(
 
     description_selectors = (
         "meta[name='description']",
-        "meta[property='og:description']",
+        "meta[name='og:description']",
         "meta[name='twitter:description']",
+        "meta[property='description']",
+        "meta[property='og:description']",
+        "meta[property='twitter:description']",
     )
 
     for selector in description_selectors:
@@ -348,7 +368,9 @@ def _generate_reply_context_from_main_page(
 
     p_tag = _get_content_from_html_page(soup, summary_word_limit)
 
-    post_photo_url = _get_featured_image(soup)
+    post_photo_url = _get_featured_image(soup, domain)
+
+    video_url = _get_featured_video(soup, domain)
 
     favicon = soup.find("link", rel="icon")
 
@@ -363,13 +385,15 @@ def _generate_reply_context_from_main_page(
     if not _is_http_url(domain):
         author_url = "https://" + domain
 
+    meta_description = meta_description.strip().replace("\n\n", " ").replace("\n", " ")
+
     return ReplyContext(
         name=page_title,
         post_text=p_tag,
         post_html=p_tag,
         authors=[PostAuthor(url=author_url, name="", photo=photo_url)],
         photo=post_photo_url,
-        video="",
+        video=video_url,
         webmention_endpoint=webmention_endpoint_url,
         description=meta_description,
     )
@@ -438,13 +462,20 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
 
     domain = parsed_url.netloc
 
-    if parsed["items"] and parsed["items"][0]["type"] == ["h-entry"]:
+    if (
+        parsed["items"]
+        and parsed["items"][0]["type"] == ["h-entry"]
+        and "name" in parsed["items"][0].get("properties", {})
+    ):
         h_entry = parsed["items"][0]
+        print(h_entry)
 
         return _generate_h_entry_reply_context(h_entry, url, domain, webmention_endpoint_url, summary_word_limit)
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
         return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
+
+    print("dsds")
 
     return _generate_reply_context_from_main_page(
         url, http_headers, domain, webmention_endpoint_url, summary_word_limit
