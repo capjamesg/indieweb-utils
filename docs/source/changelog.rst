@@ -8,8 +8,39 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
+[0.5.0] - 2022-10-13
+--------------------
+
+Added
+~~~~~
+
+-  ``get_reply_context`` now performs discovery on ``property`` and
+   ``name`` values for og:image, twitter:image:src, description,
+   og:description, and twitter:description tags.
+
+Tests
+~~~~~
+
+-  Added new tests for the ``get_reply_context`` function.
+-  Added ``responses.activate`` decorators to remaining tests that did
+   not already have this decorator present. This ensures all tests run
+   on the contents of local files rather than making network requests to
+   get data from a page.
+
+Fixed
+~~~~~
+
+-  ``get_reply_context`` would use a h-entry even if the h-entry only
+   provided a URL and no other content.
+-  ``indieweb_utils.SCOPE_DEFINITIONS`` can now be imported into a
+   project. This previously returned an ``ImportError`` exception.
+
+.. _section-1:
+
 [0.4.0] - 2022-10-11
 --------------------
+
+.. _added-1:
 
 Added
 ~~~~~
@@ -37,6 +68,8 @@ Functions
 -  ``get_syndicated_copies`` to retrieve all of the URLs to which a
    specified page has been syndicated.
 
+.. _tests-1:
+
 Tests
 ^^^^^
 
@@ -48,6 +81,8 @@ Tests
 
 -  Updated test cases for ``get_reply_context`` were to look for
    ``description`` values where appropriate.
+
+.. _fixed-1:
 
 Fixed
 ~~~~~
@@ -64,7 +99,7 @@ Fixed
    ``description`` value cannot be found. This happens when analysing a
    page that does not contain a h-entry.
 
-.. _section-1:
+.. _section-2:
 
 [0.3.1] - 2022-10-10
 --------------------
@@ -72,12 +107,12 @@ Fixed
 Fixed import issue in ``setup.cfg`` so PyPi can discover the README for
 indieweb-utils.
 
-.. _section-2:
+.. _section-3:
 
 [0.3.0] - 2022-10-10
 --------------------
 
-.. _added-1:
+.. _added-2:
 
 Added
 ~~~~~
@@ -132,7 +167,7 @@ Functions
    -  ``get_soup()`` to retrieve a BeautifulSoup object from a provided
       HTML string and URL.
 
-.. _tests-1:
+.. _tests-2:
 
 Tests
 ^^^^^
@@ -181,12 +216,12 @@ Changed
 -  ``canonicalize_url()`` returns the exact URL passed in if the URL
    contains a protocol that is not HTTP or HTTPS.
 
-.. _section-3:
+.. _section-4:
 
 [0.2.0] - 2022-02-15
 --------------------
 
-.. _added-2:
+.. _added-3:
 
 Added
 ~~~~~
