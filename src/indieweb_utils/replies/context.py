@@ -401,35 +401,34 @@ def _generate_reply_context_from_main_page(
 
 def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75) -> ReplyContext:
     """
-        Generate reply context for use on your website based on a URL.
+    Generate reply context for use on your website based on a URL.
 
-        :param url: The URL of the post to generate reply context for.
-        :type url: str
-        :param twitter_bearer_token: The optional Twitter bearer token to use.
-            This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter
-    URL.
-        :type twitter_bearer_token: str
-        :param summary_word_limit: The maximum number of words to include in the summary (default 75).
-        :type summary_word_limit: int
-        :return: A ReplyContext object with information about the specified web page.
-        :rtype: ReplyContext
+    :param url: The URL of the post to generate reply context for.
+    :type url: str
+    :param twitter_bearer_token: The optional Twitter bearer token to use.
+        This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
+    :type twitter_bearer_token: str
+    :param summary_word_limit: The maximum number of words to include in the summary (default 75).
+    :type summary_word_limit: int
+    :return: A ReplyContext object with information about the specified web page.
+    :rtype: ReplyContext
 
-        Example:
+    Example:
 
-        .. code-block:: python
+    .. code-block:: python
 
-            import indieweb_utils
+        import indieweb_utils
 
-            context = indieweb_utils.get_reply_context(
-                url="https://jamesg.blog",
-                summary_word_limit=50
-            )
+        context = indieweb_utils.get_reply_context(
+            url="https://jamesg.blog",
+            summary_word_limit=50
+        )
 
-            # print the name of the specified page to the console
-            print(context.name) # "Home | James' Coffee Blog"
+        # print the name of the specified page to the console
+        print(context.name) # "Home | James' Coffee Blog"
 
-        :raises ReplyContextRetrievalError: Reply context cannot be retrieved.
-        :raises UnsupportedScheme: The specified URL does not use http:// or https://.
+    :raises ReplyContextRetrievalError: Reply context cannot be retrieved.
+    :raises UnsupportedScheme: The specified URL does not use http:// or https://.
     """
 
     parsed_url = url_parse.urlsplit(url)
