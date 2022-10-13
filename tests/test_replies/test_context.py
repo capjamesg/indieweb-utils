@@ -20,8 +20,8 @@ class TestReplyContext:
         assert reply_context.photo == "https://jamesg.blog/assets/latte_1.jpeg"
         assert reply_context.name == "Integrated IndieWeb Services"
         assert reply_context.video == ""
-        assert reply_context.post_html
-        assert reply_context.post_text
+        assert reply_context.post_html is not None
+        assert reply_context.post_text is not None
 
     @responses.activate
     def test_reply_context_2(self, reply2, author2):
@@ -45,8 +45,8 @@ class TestReplyContext:
             reply_context.description
             == "This post exists to collect my notes on displaying a USB webcam on the Raspberry Pi HDMI outputs. This is not the same as streaming the webcam (easy), and this is not for use with the Raspberry Pi camera module..."  # noqa: E501
         )
-        assert reply_context.post_html
-        assert reply_context.post_text
+        assert reply_context.post_html is not None
+        assert reply_context.post_text is not None
 
     @responses.activate
     def test_reply_context_3(self, reply3):
@@ -72,8 +72,8 @@ class TestReplyContext:
             reply_context.description
             == "Good sound, noise cancelling and spatial audio, with six-hour battery, Android support and cheaper price"  # noqa: E501
         )
-        assert reply_context.post_html
-        assert reply_context.post_text
+        assert reply_context.post_html is not None
+        assert reply_context.post_text is not None
 
     @responses.activate
     def test_reply_context_4(self, reply4):
@@ -91,8 +91,8 @@ class TestReplyContext:
         assert reply_context.video == ""
         assert reply_context.photo == ""
         assert reply_context.description == ""
-        assert reply_context.post_html
-        assert reply_context.post_text
+        assert reply_context.post_html is not None
+        assert reply_context.post_text is not None
 
     @responses.activate
     def test_reply_context_5(self, reply5):
@@ -114,8 +114,8 @@ class TestReplyContext:
             reply_context.description
             == "Beaker is a new peer-to-peer browser for a Web where users control their data and websites are hosted locally."  # noqa
         )
-        assert reply_context.post_html
-        assert reply_context.post_text
+        assert reply_context.post_html is not None
+        assert reply_context.post_text is not None
 
     @responses.activate
     def test_reply_context_6(self, reply6):
@@ -136,8 +136,8 @@ class TestReplyContext:
             reply_context.photo
             == "https://www.w3.org/community/src/templates/wordpress/StoryTeller/img/cgbg-logo.png"  # noqa
         )
-        assert reply_context.post_html
-        assert reply_context.post_text
+        assert reply_context.post_html is not None
+        assert reply_context.post_text is not None
         assert (
             reply_context.description
             == "A community group dedicated to creating sustainable websites. This group will not publish specifications."  # noqa
