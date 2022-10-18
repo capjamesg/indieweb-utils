@@ -467,14 +467,11 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
         and "name" in parsed["items"][0].get("properties", {})
     ):
         h_entry = parsed["items"][0]
-        print(h_entry)
 
         return _generate_h_entry_reply_context(h_entry, url, domain, webmention_endpoint_url, summary_word_limit)
 
     if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
         return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
-
-    print("dsds")
 
     return _generate_reply_context_from_main_page(
         url, http_headers, domain, webmention_endpoint_url, summary_word_limit
