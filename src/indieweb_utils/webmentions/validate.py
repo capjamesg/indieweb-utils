@@ -26,6 +26,8 @@ class NoTokenEndpointForPrivateWebmention(Exception):
 class WebmentionCheckResponse:
     webmention_is_valid: bool
     vouch_check_has_passed: bool
+    source_text: str
+    source_tree: BeautifulSoup
 
 
 def _process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
@@ -133,7 +135,7 @@ def _validate_private_webmention(source: str, session: requests.Session, code: s
 
 def _retrieve_webmention_target(
     source: str, code: str = None, target_request: Optional[requests.Response] = None
-) -> BeautifulSoup:
+) -> Tuple[BeautifulSoup, str]:
     # Only allow 3 redirects before raising an error
 
     if target_request:
@@ -171,7 +173,7 @@ def _retrieve_webmention_target(
 
     parse_page = BeautifulSoup(get_source_for_validation.text, "html.parser")
 
-    return parse_page
+    return parse_page, get_source_for_validation.text
 
 
 def validate_webmention(
@@ -235,10 +237,10 @@ def validate_webmention(
     if target_protocol not in ["http", "https"]:
         raise WebmentionValidationError("Target must use either a http:// or https:// URL scheme.")
 
-    parsed_page = _retrieve_webmention_target(source, code, target_request)
+    parsed_page_html_tree, page_html = _retrieve_webmention_target(source, code, target_request)
 
     # get all <link> tags
-    meta_links = parsed_page.find_all("link")
+    meta_links = parsed_page_html_tree.find_all("link")
 
     for link in meta_links:
         # use meta http-equiv status spec to detect 410s https://indieweb.org/meta_http-equiv_status
@@ -246,7 +248,7 @@ def validate_webmention(
         if link.get("http-equiv", "") == "Status" and link.get("content", "") == "410 Gone":
             raise WebmentionIsGone("Webmention source returned 410 Gone code.")
 
-    contains_valid_link_to_target = _check_for_link_to_target(parsed_page, target)
+    contains_valid_link_to_target = _check_for_link_to_target(parsed_page_html_tree, target)
 
     # Might want to comment out this if statement for testing
     if not contains_valid_link_to_target:
@@ -254,4 +256,9 @@ def validate_webmention(
 
     moderate = _process_vouch(vouch, source, vouch_list)
 
-    return WebmentionCheckResponse(webmention_is_valid=True, vouch_check_has_passed=moderate)
+    return WebmentionCheckResponse(
+        webmention_is_valid=True,
+        vouch_check_has_passed=moderate,
+        source_text=page_html,
+        source_tree=parsed_page_html_tree,
+    )

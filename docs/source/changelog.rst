@@ -8,8 +8,40 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
+[0.6.0] - 2022-10-18
+--------------------
+
+Added
+~~~~~
+
+Development
+^^^^^^^^^^^
+
+-  Support for sending private Webmentions in the ``send_webmention``
+   function.
+-  Support for validating private Webmentions in the
+   ``validate_webmention`` function.
+
+Functions
+^^^^^^^^^
+
+-  ``discover_indieauth_endpoints`` function to discover endpoints
+   mentioned in the `IndieAuth
+   spec <https://indieauth.spec.indieweb.org/>`__ and ticket endpoints
+   used in `TicketAuth <https://indieweb.org/IndieAuth_Ticket_Auth>`__,
+   a proposed extension to IndieAuth.
+
+Tests
+~~~~~
+
+-  Added tests for ``discover_indieauth_endpoints`` function.
+
+.. _section-1:
+
 [0.5.0] - 2022-10-13
 --------------------
+
+.. _added-1:
 
 Added
 ~~~~~
@@ -17,6 +49,8 @@ Added
 -  ``get_reply_context`` now performs discovery on ``property`` and
    ``name`` values for og:image, twitter:image:src, description,
    og:description, and twitter:description tags.
+
+.. _tests-1:
 
 Tests
 ~~~~~
@@ -35,15 +69,17 @@ Fixed
 -  ``indieweb_utils.SCOPE_DEFINITIONS`` can now be imported into a
    project. This previously returned an ``ImportError`` exception.
 
-.. _section-1:
+.. _section-2:
 
 [0.4.0] - 2022-10-11
 --------------------
 
-.. _added-1:
+.. _added-2:
 
 Added
 ~~~~~
+
+.. _development-1:
 
 Development
 ^^^^^^^^^^^
@@ -57,6 +93,8 @@ Development
    recommend use of the ``discover_webmention_endpoint`` function for
    Webmention endpoint discovery.
 
+.. _functions-1:
+
 Functions
 ^^^^^^^^^
 
@@ -68,7 +106,7 @@ Functions
 -  ``get_syndicated_copies`` to retrieve all of the URLs to which a
    specified page has been syndicated.
 
-.. _tests-1:
+.. _tests-2:
 
 Tests
 ^^^^^
@@ -99,7 +137,7 @@ Fixed
    ``description`` value cannot be found. This happens when analysing a
    page that does not contain a h-entry.
 
-.. _section-2:
+.. _section-3:
 
 [0.3.1] - 2022-10-10
 --------------------
@@ -107,17 +145,17 @@ Fixed
 Fixed import issue in ``setup.cfg`` so PyPi can discover the README for
 indieweb-utils.
 
-.. _section-3:
+.. _section-4:
 
 [0.3.0] - 2022-10-10
 --------------------
 
-.. _added-2:
+.. _added-3:
 
 Added
 ~~~~~
 
-.. _development-1:
+.. _development-2:
 
 Development
 ^^^^^^^^^^^
@@ -136,7 +174,7 @@ Development
 -  Split up documentation into more sections to enhance one’s ability to
    navigate the documentation.
 
-.. _functions-1:
+.. _functions-2:
 
 Functions
 ^^^^^^^^^
@@ -167,7 +205,7 @@ Functions
    -  ``get_soup()`` to retrieve a BeautifulSoup object from a provided
       HTML string and URL.
 
-.. _tests-2:
+.. _tests-3:
 
 Tests
 ^^^^^
@@ -216,12 +254,12 @@ Changed
 -  ``canonicalize_url()`` returns the exact URL passed in if the URL
    contains a protocol that is not HTTP or HTTPS.
 
-.. _section-4:
+.. _section-5:
 
 [0.2.0] - 2022-02-15
 --------------------
 
-.. _added-3:
+.. _added-4:
 
 Added
 ~~~~~
@@ -236,7 +274,7 @@ Added
 -  Use urllib to retrieve domain names, protocols, and paths throughout
    the library.
 
-.. _development-2:
+.. _development-3:
 
 Development
 ^^^^^^^^^^^
@@ -246,7 +284,7 @@ Development
 -  New documentation has been added for all functions in the library.
 -  New code snippet examples to function docstrings.
 
-.. _functions-2:
+.. _functions-3:
 
 Functions
 ^^^^^^^^^

@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2022-10-18
+
+### Added
+
+#### Development
+
+- Support for sending private Webmentions in the `send_webmention` function.
+- New docstrings documenting parameters used to send a private webmention using the `send_webmention` function.
+- Support for validating private Webmentions in the `validate_webmention` function.
+- New docstrings documenting parameters used to validate a private webmention with the `validate_webmention` function.
+- `validate_webmention` returns the text and a parsed Beautiful Soup tree of the source of a validated Webmention in the `WebmentionCheckResponse` return object.
+
+#### Functions
+
+- `discover_indieauth_endpoints` function to discover endpoints mentioned in the [IndieAuth spec](https://indieauth.spec.indieweb.org/) and ticket endpoints used in [TicketAuth](https://indieweb.org/IndieAuth_Ticket_Auth), a proposed extension to IndieAuth.
+
+### Tests
+
+- Added tests for `discover_indieauth_endpoints` function.
+
+
 ## [0.5.0] - 2022-10-13
 
 ### Added
