@@ -149,8 +149,10 @@ def send_webmention(
 
     if r.status_code not in valid_status_codes:
         if message == "":
-            raise GenericWebmentionError("Target Webmention endpoint returned a status code that was not 200, 201, or 202.") 
-            
+            raise GenericWebmentionError(
+                "Target Webmention endpoint returned a status code that was not 200, 201, or 202."
+            )
+
         raise GenericWebmentionError(message)
 
     return SendWebmentionResponse(
