@@ -8,19 +8,47 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
+[0.6.1] - 2022-10-21
+--------------------
+
+Development
+~~~~~~~~~~~
+
+-  ``send_webmention`` now looks for a message in a ``message`` key and
+   has a fallback if one cannot be found. This information is returned
+   in the ``title`` and ``description`` values in the Webmention
+   response. The message will be blank if one cannot be found.
+
+Fixed
+~~~~~
+
+-  Fixed a bug where the ``send_webmention`` function raised an error
+   when trying to retrieve a message from an endpoint.
+
+.. _section-1:
+
 [0.6.0] - 2022-10-18
 --------------------
 
 Added
 ~~~~~
 
+.. _development-1:
+
 Development
 ^^^^^^^^^^^
 
 -  Support for sending private Webmentions in the ``send_webmention``
    function.
+-  New docstrings documenting parameters used to send a private
+   webmention using the ``send_webmention`` function.
 -  Support for validating private Webmentions in the
    ``validate_webmention`` function.
+-  New docstrings documenting parameters used to validate a private
+   webmention with the ``validate_webmention`` function.
+-  ``validate_webmention`` returns the text and a parsed Beautiful Soup
+   tree of the source of a validated Webmention in the
+   ``WebmentionCheckResponse`` return object.
 
 Functions
 ^^^^^^^^^
@@ -36,7 +64,7 @@ Tests
 
 -  Added tests for ``discover_indieauth_endpoints`` function.
 
-.. _section-1:
+.. _section-2:
 
 [0.5.0] - 2022-10-13
 --------------------
@@ -61,6 +89,8 @@ Tests
    on the contents of local files rather than making network requests to
    get data from a page.
 
+.. _fixed-1:
+
 Fixed
 ~~~~~
 
@@ -69,7 +99,7 @@ Fixed
 -  ``indieweb_utils.SCOPE_DEFINITIONS`` can now be imported into a
    project. This previously returned an ``ImportError`` exception.
 
-.. _section-2:
+.. _section-3:
 
 [0.4.0] - 2022-10-11
 --------------------
@@ -79,7 +109,7 @@ Fixed
 Added
 ~~~~~
 
-.. _development-1:
+.. _development-2:
 
 Development
 ^^^^^^^^^^^
@@ -120,7 +150,7 @@ Tests
 -  Updated test cases for ``get_reply_context`` were to look for
    ``description`` values where appropriate.
 
-.. _fixed-1:
+.. _fixed-2:
 
 Fixed
 ~~~~~
@@ -137,7 +167,7 @@ Fixed
    ``description`` value cannot be found. This happens when analysing a
    page that does not contain a h-entry.
 
-.. _section-3:
+.. _section-4:
 
 [0.3.1] - 2022-10-10
 --------------------
@@ -145,7 +175,7 @@ Fixed
 Fixed import issue in ``setup.cfg`` so PyPi can discover the README for
 indieweb-utils.
 
-.. _section-4:
+.. _section-5:
 
 [0.3.0] - 2022-10-10
 --------------------
@@ -155,7 +185,7 @@ indieweb-utils.
 Added
 ~~~~~
 
-.. _development-2:
+.. _development-3:
 
 Development
 ^^^^^^^^^^^
@@ -254,7 +284,7 @@ Changed
 -  ``canonicalize_url()`` returns the exact URL passed in if the URL
    contains a protocol that is not HTTP or HTTPS.
 
-.. _section-5:
+.. _section-6:
 
 [0.2.0] - 2022-02-15
 --------------------
@@ -274,7 +304,7 @@ Added
 -  Use urllib to retrieve domain names, protocols, and paths throughout
    the library.
 
-.. _development-3:
+.. _development-4:
 
 Development
 ^^^^^^^^^^^
