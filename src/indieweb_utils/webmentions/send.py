@@ -66,7 +66,12 @@ def _validate_webmention(source: str, target: str):
 
 
 def send_webmention(
-    source: str, target: str, me: str = None, code: str = None, realm: str = None
+    source: str,
+    target: str,
+    me: str = None,
+    code: str = None,
+    realm: str = None,
+    target_webmention_endpoint: str = None,
 ) -> SendWebmentionResponse:
     """
     Send a webmention to a target URL.
@@ -83,6 +88,8 @@ def send_webmention(
     :param realm: A unique value for the intended recipient or audience (optional).
         See https://indieweb.org/Private-Webmention#Auth_Code_Generation for more information.
     :type realm: str
+    :param target_webmention_endpoint: The webmention endpoint of the target URL.
+        If this value is provided, Webmention endpoint discovery on the target will be skipped.
     :return: The response from the webmention endpoint.
     :rtype: SendWebmentionResponse
 
@@ -93,9 +100,9 @@ def send_webmention(
         import indieweb_utils
 
         response = indieweb_utils.send_webmention(
-            "https://example.com",
-            "https://example.example.com/post/1",
-            "https://test.example"
+            source="https://example.com",
+            target="https://example.example.com/post/1",
+            me="https://test.example"
         )
 
     :raises TargetIsNotApprovedDomain: Target is not in list of approved domains.
@@ -117,10 +124,10 @@ def send_webmention(
         if not target_domain.endswith(raw_domain):
             raise TargetIsNotApprovedDomain("Target must be a {me} post.")
 
-    response = discovery.discover_webmention_endpoint(target)
+    if not target_webmention_endpoint:
+        response = discovery.discover_webmention_endpoint(target)
 
-    if response.endpoint == "":
-        raise GenericWebmentionError("No webmention endpoint was found.")
+        target_webmention_endpoint = response.endpoint
 
     request_data = {
         "source": source,
@@ -134,7 +141,7 @@ def send_webmention(
     # make post request to endpoint with source and target as values
     try:
         r = requests.post(
-            response.endpoint,
+            target_webmention_endpoint,
             data=request_data,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
