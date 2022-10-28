@@ -14,7 +14,7 @@ The documentation for this project is available at `indieweb-utils.readthedocs.i
 License
 -------
 
-The code in this project is licensed under the `Zero-Clause BSD License <LICENSE>`_.
+The code in this project is licensed under the `Zero-Clause BSD License <LICENSE.md>`_.
 
 The documentation in this project is licensed under a `CC BY-SA 4.0 license <https://creativecommons.org/licenses/by-sa/4.0/>`_.
 
