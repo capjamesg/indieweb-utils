@@ -31,6 +31,8 @@ Contents
    context
    indieauth
    webmention
+   trackback
+   rsd
    changelog
 
 Feature Set
