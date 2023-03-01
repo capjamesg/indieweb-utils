@@ -1,12 +1,16 @@
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+
 import requests
+from bs4 import BeautifulSoup
 
 from ..utils.urls import canonicalize_url
 
+
 class InvalidStatusCodeError(Exception):
     """Raised when the server returns an invalid status code."""
+
     pass
+
 
 def rsd_discovery(url: str, attribute: str):
     """Discover an RSD attribute from a URL.
@@ -26,7 +30,7 @@ def rsd_discovery(url: str, attribute: str):
 
     if get_rsd_request.status_code != 200:
         raise InvalidStatusCodeError("The server returned a status code of {}.".format(get_rsd_request.status_code))
-    
+
     soup = BeautifulSoup(get_rsd_request.text, "html.parser")
 
     rsd = soup.find("link", rel="EditURI")
@@ -38,14 +42,14 @@ def rsd_discovery(url: str, attribute: str):
 
     if get_rsd_request.status_code != 200:
         raise InvalidStatusCodeError("The server returned a status code of {}.".format(get_rsd_request.status_code))
-    
+
     soup = BeautifulSoup(get_rsd_request.text, "html.parser")
 
     trackback_url = soup.find(attribute)
 
     if not trackback_url:
         return ""
-    
+
     domain = urlparse(url).netloc
 
     return canonicalize_url(trackback_url.text, domain)
