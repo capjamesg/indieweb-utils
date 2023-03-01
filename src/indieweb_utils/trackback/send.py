@@ -3,10 +3,8 @@ from bs4 import BeautifulSoup
 from bs4 import Comment
 from urllib.parse import urlparse
 
-from indieweb_utils import canonicalize_url
-
-# from ..utils.urls import canonicalize_url
-
+from ..utils.urls import canonicalize_url
+from ..rsd.discover import rsd_discovery
 class TrackbackError(Exception):
     """Base class for trackback errors."""
     pass
@@ -20,49 +18,25 @@ class InvalidStatusCodeError(TrackbackError):
     pass
 
 def rsd_trackback_discovery(url: str):
+    """
+    Discover the trackback URL from a URL using RSD.
+
+    :param url: The URL to discover the trackback URL from.
+    :returns: The trackback URL.
+    """
     return rsd_discovery(url, "trackback:ping")
 
-def rsd_discovery(url: str, attribute: str):
-    """Discover an RSD attribute from a URL.
-
-    :param url: The URL to discover the RSD attribute from.
-    :param attribute: The attribute to discover.
-    :returns: The value of the attribute.
-    """
-
-    get_rsd_request = requests.get(url)
-
-    if get_rsd_request.status_code != 200:
-        raise InvalidStatusCodeError("The server returned a status code of {}.".format(get_rsd_request.status_code))
-    
-    soup = BeautifulSoup(get_rsd_request.text, "html.parser")
-
-    rsd = soup.find("link", rel="EditURI")
-
-    if not rsd:
-        return ""
-
-    get_rsd_request = requests.get(rsd.get("href"))
-
-    if get_rsd_request.status_code != 200:
-        raise InvalidStatusCodeError("The server returned a status code of {}.".format(get_rsd_request.status_code))
-    
-    soup = BeautifulSoup(get_rsd_request.text, "html.parser")
-
-    trackback_url = soup.find(attribute)
-
-    if not trackback_url:
-        return ""
-    
-    domain = urlparse(url).netloc
-
-    return canonicalize_url(trackback_url.text, domain)
-
 def discover_trackback_url(url: str):
-    """Discover the trackback URL from a URL.
+    """
+    Discover the trackback URL from a URL.
     
     :param url: The URL to discover the trackback URL from.
     :returns: The trackback URL.
+
+    Example:
+        from indieweb_utils import discover_trackback_url
+
+        discover_trackback_url('http://example.com/post/123')
     """
 
     get_trackback_url_request = requests.get(url)
@@ -101,7 +75,8 @@ def discover_trackback_url(url: str):
 
 
 def send_trackback(target_url, source_url, title: str = None, excerpt: str = None, blog_name: str = None):
-    """Send a trackback to a URL.
+    """
+    Send a trackback to a URL.
 
     :param target_url: The URL to send the trackback to.
     :param source_url: The URL of your post.
@@ -109,6 +84,21 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
     :param excerpt: An excerpt of your post.
     :param blog_name: The name of your blog.
     :returns: The status code and message from the server.
+
+    :raises ConnectionError: Raised when a connection error occurs.
+    :raises InvalidStatusCodeError: Raised when the server returns an invalid status code.
+    :raises TrackbackError: Raised when the server returns an invalid response.
+
+    Example:
+        from indieweb_utils import send_trackback
+
+        send_trackback(
+            target_url='http://example.com/post/123',
+            source_url='http://example.com/post/123#trackback',
+            title='My Post',
+            excerpt='This is my post',
+            blog_name='My Blog'
+        )
     """
 
     try:
