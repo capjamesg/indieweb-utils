@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [0.7.0] - 2023-03-01
+
+### Added
+
+#### Development
+
+- `rsd_discovery` function to find values associated with keys in a [Really Simple Discovery](https://en.wikipedia.org/wiki/Really_Simple_Discovery) file.
+- `send_trackback` function to send a Trackback to a specified URL.
+- `discover_trackback_url` function to discover the Trackback endpoint for a specified URL.
+
 # [0.6.2] - 2022-10-21
 
 ### Development
