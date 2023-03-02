@@ -28,6 +28,8 @@ def process_trackback(url: str, content_type: str = None, method: str = None, va
 
     Example:
 
+    .. code-block:: python
+
         from indieweb_utils import process_trackback
 
         process_trackback(

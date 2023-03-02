@@ -20,6 +20,9 @@ def rsd_discovery(url: str, attribute: str):
     :returns: The value of the attribute.
 
     Example:
+
+    .. code-block:: python
+    
         from indieweb.utils import rsd_discovery
 
         # discover the RSD document for a given URL
