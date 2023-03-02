@@ -30,7 +30,11 @@ def process_trackback(url: str, content_type: str = None, method: str = None, va
 
         from indieweb_utils import process_trackback
 
-        process_trackback('http://example.com/post/123', content_type='application/x-www-form-urlencoded', method='POST')
+        process_trackback(
+            'http://example.com/post/123',
+            content_type='application/x-www-form-urlencoded',
+            method='POST'
+        )
     """
 
     if method and method != "POST":
