@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [0.7.1] - 2023-03-02
+
+### Added
+
+#### Development
+
+- `process_trackback` function to process a Trackback request and return a response.
+- `SUCCESSFUL_PING` and `ERROR_PING` constants to use in the `process_trackback` function and for use in custom Trackback validation logic.
+
+### Fixed
+
+- Fixed import statements for `rsd_trackback_discovery`, `discover_trackback_url`, and `send_trackback` functions so that they can all be imported from the top-level of the library.
+
 # [0.7.0] - 2023-03-01
 
 ### Added
