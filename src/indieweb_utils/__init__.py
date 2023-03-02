@@ -26,7 +26,14 @@ from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .rsd import rsd_discovery
-from .trackback import discover_trackback_url, rsd_trackback_discovery, send_trackback, process_trackback, SUCCESSFUL_PING, ERROR_PING
+from .trackback import (
+    ERROR_PING,
+    SUCCESSFUL_PING,
+    discover_trackback_url,
+    process_trackback,
+    rsd_trackback_discovery,
+    send_trackback,
+)
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url
