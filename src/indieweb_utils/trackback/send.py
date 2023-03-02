@@ -101,6 +101,9 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
     :raises TrackbackError: Raised when the server returns an invalid response.
 
     Example:
+
+    .. code-block:: python
+    
         from indieweb_utils import send_trackback
 
         send_trackback(
