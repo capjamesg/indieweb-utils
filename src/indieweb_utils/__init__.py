@@ -25,6 +25,8 @@ from .posts.page_name import get_page_name
 from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
+from .rsd import rsd_discovery
+from .trackback import discover_trackback_url, rsd_trackback_discovery, send_trackback, process_trackback, SUCCESSFUL_PING, ERROR_PING
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url
@@ -36,7 +38,7 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 # add for backwards compatibility
 _discover_endpoints = discover_endpoints
@@ -80,4 +82,11 @@ __all__ = [
     "SCOPE_DEFINITIONS",
     "generate_auth_token",
     "discover_indieauth_endpoints",
+    "rsd_discovery",
+    "rsd_trackback_discovery",
+    "discover_trackback_url",
+    "send_trackback",
+    "process_trackback",
+    "SUCCESSFUL_PING",
+    "ERROR_PING",
 ]
