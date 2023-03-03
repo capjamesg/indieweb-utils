@@ -143,11 +143,3 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
 
     if soup.find("error") and soup.find("error").text != "0":
         raise TrackbackError("The server returned an error: {}".format(soup.find("message").text))
-
-send_trackback(
-    target_url='https://arxiv.org/abs/1706.03762',
-    source_url='https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d?gi=4424b163c3a7&source=rss----7f60cf5620c9---4',
-    title='Transformer Models 101: Getting Started -- Part 1',
-    excerpt='',
-    blog_name='Towards Data Science'
-)
