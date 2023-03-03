@@ -103,21 +103,23 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
     Example:
 
     .. code-block:: python
-    
+
         from indieweb_utils import send_trackback
 
         send_trackback(
-            target_url='http://example.com/post/123',
             source_url='http://example.com/post/123#trackback',
+            target_url='http://example.com/post/123',
             title='My Post',
             excerpt='This is my post',
             blog_name='My Blog'
         )
     """
 
+    endpoint_url = discover_trackback_url(target_url)
+
     try:
         send_trackback_request = requests.post(
-            target_url,
+            endpoint_url,
             data={"url": source_url, "title": title, "excerpt": excerpt, "blog_name": blog_name},
             headers={
                 "User-Agent": "IndieWeb Utils",
@@ -142,14 +144,10 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
     if soup.find("error") and soup.find("error").text != "0":
         raise TrackbackError("The server returned an error: {}".format(soup.find("message").text))
 
-
-new_trackback_url = discover_trackback_url("https://arxiv.org/abs/1706.03762/")
-
-if new_trackback_url:
-    send_trackback(
-        new_trackback_url,
-        "https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d/",
-        title="",
-        excerpt="",
-        blog_name="",
-    )
+send_trackback(
+    target_url='https://arxiv.org/abs/1706.03762',
+    source_url='https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d?gi=4424b163c3a7&source=rss----7f60cf5620c9---4',
+    title='Transformer Models 101: Getting Started -- Part 1',
+    excerpt='',
+    blog_name='Towards Data Science'
+)

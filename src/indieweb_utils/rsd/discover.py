@@ -22,7 +22,7 @@ def rsd_discovery(url: str, attribute: str):
     Example:
 
     .. code-block:: python
-    
+
         from indieweb.utils import rsd_discovery
 
         # discover the RSD document for a given URL
