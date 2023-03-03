@@ -31,6 +31,14 @@ def rsd_trackback_discovery(url: str):
 
     :param url: The URL to discover the trackback URL from.
     :returns: The trackback URL.
+
+    Example:
+
+    .. code-block:: python
+    
+        from indieweb_utils import rsd_trackback_discovery
+
+        rsd_trackback_discovery('http://example.com/post/123')
     """
     return rsd_discovery(url, "trackback:ping")
 
@@ -43,6 +51,9 @@ def discover_trackback_url(url: str):
     :returns: The trackback URL.
 
     Example:
+
+    .. code-block:: python
+
         from indieweb_utils import discover_trackback_url
 
         discover_trackback_url('http://example.com/post/123')
@@ -103,21 +114,23 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
     Example:
 
     .. code-block:: python
-    
+
         from indieweb_utils import send_trackback
 
         send_trackback(
-            target_url='http://example.com/post/123',
             source_url='http://example.com/post/123#trackback',
+            target_url='http://example.com/post/123',
             title='My Post',
             excerpt='This is my post',
             blog_name='My Blog'
         )
     """
 
+    endpoint_url = discover_trackback_url(target_url)
+
     try:
         send_trackback_request = requests.post(
-            target_url,
+            endpoint_url,
             data={"url": source_url, "title": title, "excerpt": excerpt, "blog_name": blog_name},
             headers={
                 "User-Agent": "IndieWeb Utils",
@@ -141,15 +154,4 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
 
     if soup.find("error") and soup.find("error").text != "0":
         raise TrackbackError("The server returned an error: {}".format(soup.find("message").text))
-
-
-new_trackback_url = discover_trackback_url("https://arxiv.org/abs/1706.03762/")
-
-if new_trackback_url:
-    send_trackback(
-        new_trackback_url,
-        "https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d/",
-        title="",
-        excerpt="",
-        blog_name="",
-    )
+    
