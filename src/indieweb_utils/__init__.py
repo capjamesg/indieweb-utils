@@ -5,6 +5,7 @@ Utilities to aid the implementation of various IndieWeb specifications and funct
 # Imports added for API backwards compatibility
 
 from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
+from .images import reduce_image_size
 from .indieauth import (
     _validate_indieauth_response,
     discover_indieauth_endpoints,
@@ -26,6 +27,7 @@ from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .rsd import rsd_discovery
+from .salmention import receive_salmention
 from .trackback import (
     ERROR_PING,
     SUCCESSFUL_PING,
@@ -36,7 +38,7 @@ from .trackback import (
 )
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
-from .utils.urls import canonicalize_url
+from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
 from .webmentions import (
     SendWebmentionResponse,
     discover_endpoints,
@@ -44,8 +46,9 @@ from .webmentions import (
     send_webmention,
     validate_webmention,
 )
+from .pagination import Paginator
 
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 
 # add for backwards compatibility
 _discover_endpoints = discover_endpoints
@@ -96,4 +99,10 @@ __all__ = [
     "process_trackback",
     "SUCCESSFUL_PING",
     "ERROR_PING",
+    "receive_salmention",
+    "is_site_url",
+    "remove_tracking_params",
+    "reduce_image_size",
+    "slugify",
+    "Paginator",
 ]

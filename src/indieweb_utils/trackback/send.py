@@ -25,7 +25,7 @@ class InvalidStatusCodeError(TrackbackError):
     pass
 
 
-def rsd_trackback_discovery(url: str):
+def rsd_trackback_discovery(url: str) -> str:
     """
     Discover the trackback URL from a URL using RSD.
 
@@ -35,7 +35,7 @@ def rsd_trackback_discovery(url: str):
     Example:
 
     .. code-block:: python
-    
+
         from indieweb_utils import rsd_trackback_discovery
 
         rsd_trackback_discovery('http://example.com/post/123')
@@ -43,7 +43,7 @@ def rsd_trackback_discovery(url: str):
     return rsd_discovery(url, "trackback:ping")
 
 
-def discover_trackback_url(url: str):
+def discover_trackback_url(url: str) -> str:
     """
     Discover the trackback URL from a URL.
 
@@ -96,7 +96,7 @@ def discover_trackback_url(url: str):
     return ""
 
 
-def send_trackback(target_url, source_url, title: str = None, excerpt: str = None, blog_name: str = None):
+def send_trackback(target_url, source_url, title: str = None, excerpt: str = None, blog_name: str = None) -> None:
     """
     Send a trackback to a URL.
 
@@ -154,4 +154,3 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
 
     if soup.find("error") and soup.find("error").text != "0":
         raise TrackbackError("The server returned an error: {}".format(soup.find("message").text))
-    

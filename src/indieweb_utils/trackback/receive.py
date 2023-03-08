@@ -1,3 +1,4 @@
+from typing import List
 from urllib.parse import urlparse
 
 SUCCESSFUL_PING = """
@@ -16,7 +17,9 @@ ERROR_PING = """
 """
 
 
-def process_trackback(url: str, content_type: str = None, method: str = None, valid_domains: list = None):
+def process_trackback(
+    url: str, content_type: str = None, method: str = None, valid_domains: list = None
+) -> List[str, bool]:
     """
     Validate and process a trackback request.
 
@@ -24,7 +27,8 @@ def process_trackback(url: str, content_type: str = None, method: str = None, va
     :param content_type: The content type of the request.
     :param method: The request method.
     :param valid_domains: A list of valid domains to accept trackbacks from.
-    :returns: The trackback response.
+    :returns: The trackback response and whether the Trackback is valid.
+    :rtype: List[str, bool]
 
     Example:
 
