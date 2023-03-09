@@ -92,9 +92,9 @@ def process_salmention(
 
     .. code-block:: python
 
-        from indieweb_utils import receive_salmention
+        from indieweb_utils import process_salmention
 
-        receive_salmention('<html>...</html>', '<html>...</html>')
+        process_salmention('<html>...</html>', '<html>...</html>')
     """
 
     new_parsed_mf2_tree = mf2py.parse(current_page_contents)

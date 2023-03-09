@@ -1,3 +1,3 @@
-from .salmention import SalmentionParsedResponse, receive_salmention
+from .salmention import SalmentionParsedResponse, process_salmention
 
-__all__ = ["receive_salmention", "SalmentionParsedResponse"]
+__all__ = ["process_salmention", "SalmentionParsedResponse"]

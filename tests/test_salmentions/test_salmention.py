@@ -1,1 +1,1 @@
-from indieweb_utils.salmention import receive_salmention
+from indieweb_utils.salmention import process_salmention

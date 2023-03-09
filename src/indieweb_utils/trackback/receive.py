@@ -1,4 +1,4 @@
-from typing import List
+from typing import Tuple
 from urllib.parse import urlparse
 
 SUCCESSFUL_PING = """
@@ -19,7 +19,7 @@ ERROR_PING = """
 
 def process_trackback(
     url: str, content_type: str = None, method: str = None, valid_domains: list = None
-) -> List[str, bool]:
+) -> Tuple[str, bool]:
     """
     Validate and process a trackback request.
 
@@ -44,14 +44,14 @@ def process_trackback(
     """
 
     if method and method != "POST":
-        return ERROR_PING.format("Invalid request method.")
+        return ERROR_PING.format("Invalid request method."), False
 
     if content_type and content_type != "application/x-www-form-urlencoded":
-        return ERROR_PING.format("Invalid content type.")
+        return ERROR_PING.format("Invalid content type."), False
 
     domain = urlparse(url).netloc
 
     if valid_domains and domain not in valid_domains:
-        return ERROR_PING.format("Invalid domain.")
+        return ERROR_PING.format("Invalid domain."), False
 
-    return SUCCESSFUL_PING
+    return SUCCESSFUL_PING, True
