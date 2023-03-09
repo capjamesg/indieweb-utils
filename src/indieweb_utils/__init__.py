@@ -39,6 +39,7 @@ from .trackback import (
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
+from .utils import add_footnote_links
 from .webmentions import (
     SendWebmentionResponse,
     discover_endpoints,
@@ -105,4 +106,5 @@ __all__ = [
     "reduce_image_size",
     "slugify",
     "Paginator",
+    "add_footnote_links"
 ]

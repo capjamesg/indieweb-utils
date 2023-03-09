@@ -33,6 +33,7 @@ Contents
    webmention
    trackback
    rsd
+   content
    changelog
 
 Feature Set
