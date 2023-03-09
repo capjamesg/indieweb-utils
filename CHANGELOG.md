@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [0.8.0] - 2023-03-09
+
+### Added
+
+#### Development
+
+This PR contains numerous additions to the IndieWeb Utils library. These features will be released together as v0.8.0.
+
+The features in this PR are:
+
+- `add_footnote_links()` replaces [n] and [^n] links with HTML `<a>` tags that link to each other.
+- `reduce_image_size()` abstracts the PIL resize feature to provide an easy utility for image resizing.
+- `Paginator` class creates paginated list with generators to navigate through each page in the list.
+- `process_salmention()` compares stored and live version of a page to find new and deleted responses. Optionally, Webmentions can be sent to all response URLs that are present on both pages.
+- `remove_tracking_parameters()` removes UTM parameters and optionally custom provided parameters from a URL.
+- `is_site_url()` checks if a URL is on a specified domain.
+- `slugify()` removes all characters in a URL that are not alphanumerics, a period, a dash, or an underscore.
+- Added types for Trackback code that did not have complete typing.
+
+# [0.7.2] - 2023-03-02
+
+[Released without changelog notes. Requires backfilling.]
+
 # [0.7.1] - 2023-03-02
 
 ### Added
