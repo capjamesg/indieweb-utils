@@ -225,6 +225,3 @@ def slugify(url: str, remove_extension: bool = False, allowed_chars: list = ["-"
     path = "/" + path
 
     return path
-
-
-print(slugify("indieweb.html", True))

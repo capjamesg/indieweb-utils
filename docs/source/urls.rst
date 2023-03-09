@@ -67,3 +67,15 @@ Check if a URL is of a given domain
 The `is_site_url()` function checks if a URL is of a given domain.
 
 .. autofunction:: indieweb_utils.is_site_url
+
+Reduce characters in a URL slug
+-----------------------------------------
+
+The `slugify()` function takes a URL and removes all characters that are not:
+
+- Alphanumeric characters
+- Periods
+- Dashes
+- Underscores
+
+You can override the default list of characters to remove by passing in a list of strings to the `allowed_chars` argument (although this argument still enforces the alphanumeric requirement).
