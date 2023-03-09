@@ -5,6 +5,7 @@ Utilities to aid the implementation of various IndieWeb specifications and funct
 # Imports added for API backwards compatibility
 
 from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
+from .images import reduce_image_size
 from .indieauth import (
     _validate_indieauth_response,
     discover_indieauth_endpoints,
@@ -19,6 +20,7 @@ from .indieauth import (
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .indieauth.scopes import SCOPE_DEFINITIONS
+from .pagination import Paginator
 from .posts.discovery import discover_author, discover_original_post, get_post_type
 from .posts.in_reply_to import get_reply_urls
 from .posts.page_name import get_page_name
@@ -26,6 +28,7 @@ from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .rsd import rsd_discovery
+from .salmention import SalmentionParsedResponse, receive_salmention
 from .trackback import (
     ERROR_PING,
     SUCCESSFUL_PING,
@@ -34,9 +37,10 @@ from .trackback import (
     rsd_trackback_discovery,
     send_trackback,
 )
+from .utils import add_footnote_links
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
-from .utils.urls import canonicalize_url
+from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
 from .webmentions import (
     SendWebmentionResponse,
     discover_endpoints,
@@ -45,7 +49,7 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.7.2"
+__version__ = "0.8.0"
 
 # add for backwards compatibility
 _discover_endpoints = discover_endpoints
@@ -96,4 +100,12 @@ __all__ = [
     "process_trackback",
     "SUCCESSFUL_PING",
     "ERROR_PING",
+    "receive_salmention",
+    "is_site_url",
+    "remove_tracking_params",
+    "reduce_image_size",
+    "slugify",
+    "Paginator",
+    "add_footnote_links",
+    "SalmentionParsedResponse",
 ]

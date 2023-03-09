@@ -33,6 +33,10 @@ Contents
    webmention
    trackback
    rsd
+   content
+   salmention
+   paginator
+   images
    changelog
 
 Feature Set

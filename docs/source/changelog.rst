@@ -8,32 +8,135 @@ Changelog <https://keepachangelog.com/en/1.0.0/>`__, and this project
 adheres to `Semantic
 Versioning <https://semver.org/spec/v2.0.0.html>`__.
 
-[0.6.1] - 2022-10-21
---------------------
+[0.8.0] - 2023-03-09
+====================
+
+Added
+-----
 
 Development
 ~~~~~~~~~~~
+
+This PR contains numerous additions to the IndieWeb Utils library. These
+features will be released together as v0.8.0.
+
+The features in this PR are:
+
+-  ``add_footnote_links()`` replaces [n] and [^n] links with HTML
+   ``<a>`` tags that link to each other.
+-  ``reduce_image_size()`` abstracts the PIL resize feature to provide
+   an easy utility for image resizing.
+-  ``Paginator`` class creates paginated list with generators to
+   navigate through each page in the list.
+-  ``process_salmention()`` compares stored and live version of a page
+   to find new and deleted responses. Optionally, Webmentions can be
+   sent to all response URLs that are present on both pages.
+-  ``remove_tracking_parameters()`` removes UTM parameters and
+   optionally custom provided parameters from a URL.
+-  ``is_site_url()`` checks if a URL is on a specified domain.
+-  ``slugify()`` removes all characters in a URL that are not
+   alphanumerics, a period, a dash, or an underscore.
+-  Added types for Trackback code that did not have complete typing.
+
+.. _section-1:
+
+[0.7.2] - 2023-03-02
+====================
+
+[Released without changelog notes. Requires backfilling.]
+
+.. _section-2:
+
+[0.7.1] - 2023-03-02
+====================
+
+.. _added-1:
+
+Added
+-----
+
+.. _development-1:
+
+Development
+~~~~~~~~~~~
+
+-  ``process_trackback`` function to process a Trackback request and
+   return a response.
+-  ``SUCCESSFUL_PING`` and ``ERROR_PING`` constants to use in the
+   ``process_trackback`` function and for use in custom Trackback
+   validation logic.
+
+Fixed
+-----
+
+-  Fixed import statements for ``rsd_trackback_discovery``,
+   ``discover_trackback_url``, and ``send_trackback`` functions so that
+   they can all be imported from the top-level of the library.
+
+.. _section-3:
+
+[0.7.0] - 2023-03-01
+====================
+
+.. _added-2:
+
+Added
+-----
+
+.. _development-2:
+
+Development
+~~~~~~~~~~~
+
+-  ``rsd_discovery`` function to find values associated with keys in a
+   `Really Simple
+   Discovery <https://en.wikipedia.org/wiki/Really_Simple_Discovery>`__
+   file.
+-  ``send_trackback`` function to send a Trackback to a specified URL.
+-  ``discover_trackback_url`` function to discover the Trackback
+   endpoint for a specified URL.
+
+.. _section-4:
+
+[0.6.2] - 2022-10-21
+====================
+
+.. _development-3:
+
+Development
+-----------
 
 -  ``send_webmention`` now looks for a message in a ``message`` key and
    has a fallback if one cannot be found. This information is returned
    in the ``title`` and ``description`` values in the Webmention
    response. The message will be blank if one cannot be found.
 
+.. _fixed-1:
+
 Fixed
-~~~~~
+-----
 
 -  Fixed a bug where the ``send_webmention`` function raised an error
    when trying to retrieve a message from an endpoint.
 
-.. _section-1:
+.. _section-5:
+
+[0.6.1] - 2022-10-21
+--------------------
+
+No change. Changes moved to 0.6.2.
+
+.. _section-6:
 
 [0.6.0] - 2022-10-18
 --------------------
 
+.. _added-3:
+
 Added
 ~~~~~
 
-.. _development-1:
+.. _development-4:
 
 Development
 ^^^^^^^^^^^
@@ -64,12 +167,12 @@ Tests
 
 -  Added tests for ``discover_indieauth_endpoints`` function.
 
-.. _section-2:
+.. _section-7:
 
 [0.5.0] - 2022-10-13
 --------------------
 
-.. _added-1:
+.. _added-4:
 
 Added
 ~~~~~
@@ -89,7 +192,7 @@ Tests
    on the contents of local files rather than making network requests to
    get data from a page.
 
-.. _fixed-1:
+.. _fixed-2:
 
 Fixed
 ~~~~~
@@ -99,17 +202,17 @@ Fixed
 -  ``indieweb_utils.SCOPE_DEFINITIONS`` can now be imported into a
    project. This previously returned an ``ImportError`` exception.
 
-.. _section-3:
+.. _section-8:
 
 [0.4.0] - 2022-10-11
 --------------------
 
-.. _added-2:
+.. _added-5:
 
 Added
 ~~~~~
 
-.. _development-2:
+.. _development-5:
 
 Development
 ^^^^^^^^^^^
@@ -150,7 +253,7 @@ Tests
 -  Updated test cases for ``get_reply_context`` were to look for
    ``description`` values where appropriate.
 
-.. _fixed-2:
+.. _fixed-3:
 
 Fixed
 ~~~~~
@@ -167,7 +270,7 @@ Fixed
    ``description`` value cannot be found. This happens when analysing a
    page that does not contain a h-entry.
 
-.. _section-4:
+.. _section-9:
 
 [0.3.1] - 2022-10-10
 --------------------
@@ -175,17 +278,17 @@ Fixed
 Fixed import issue in ``setup.cfg`` so PyPi can discover the README for
 indieweb-utils.
 
-.. _section-5:
+.. _section-10:
 
 [0.3.0] - 2022-10-10
 --------------------
 
-.. _added-3:
+.. _added-6:
 
 Added
 ~~~~~
 
-.. _development-3:
+.. _development-6:
 
 Development
 ^^^^^^^^^^^
@@ -284,12 +387,12 @@ Changed
 -  ``canonicalize_url()`` returns the exact URL passed in if the URL
    contains a protocol that is not HTTP or HTTPS.
 
-.. _section-6:
+.. _section-11:
 
 [0.2.0] - 2022-02-15
 --------------------
 
-.. _added-4:
+.. _added-7:
 
 Added
 ~~~~~
@@ -304,7 +407,7 @@ Added
 -  Use urllib to retrieve domain names, protocols, and paths throughout
    the library.
 
-.. _development-4:
+.. _development-7:
 
 Development
 ^^^^^^^^^^^

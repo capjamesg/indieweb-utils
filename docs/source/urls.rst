@@ -51,3 +51,33 @@ Here is an example value for a person tag database:
     }
 
 This function maps the `@james` tag with the name "James' Coffee Blog" and the URL "https://jamesg.blog/". More people can be added as keys to the dictionary.
+
+Remove tracking parameters from a URL
+-----------------------------------------
+
+The `remove_tracking_params()` function removes tracking parameters from a URL.
+
+This function removes all `utm_*` parameters from a URL by default. You can specify your own parameters or starts of parameters to remove by passing in a list of strings to the `custom_params` argument.
+
+.. autofunction:: indieweb_utils.remove_tracking_params
+
+Check if a URL is of a given domain
+-----------------------------------------
+
+The `is_site_url()` function checks if a URL is of a given domain.
+
+.. autofunction:: indieweb_utils.is_site_url
+
+Reduce characters in a URL slug
+-----------------------------------------
+
+The `slugify()` function takes a URL and removes all characters that are not:
+
+- Alphanumeric characters
+- Periods
+- Dashes
+- Underscores
+
+You can override the default list of characters to remove by passing in a list of strings to the `allowed_chars` argument (This argument still enforces the alphanumeric requirement).
+
+.. autofunction:: indieweb_utils.slugify

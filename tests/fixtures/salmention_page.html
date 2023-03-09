@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)https://jamesg.blog/2023/03/03/send-trackback/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+    
+      <title>Send a Trackback in Two Lines of Code | James' Coffee Blog</title>
+    
+
+    <link rel="stylesheet" href="./new_files/styles.css">
+    <link rel="stylesheet" href="./new_files/annotate.css">
+
+    <link href="mailto:jamesg@jamesg.blog" rel="me">
+
+    <!-- This link specifies a manifest that states a search engine you can use on my site. -->
+    <link rel="search" type="application/opensearchdescription+xml" title="IndieWeb Search" href="https://jamesg.blog/assets/opensearch.xml">
+
+    <!-- This link contains information that mobile devices use to render progressive web apps (PWAs).
+        PWAs make websites feel more native to some mobile devices when a web page is added to a device home screen
+        or saved as a device app. -->
+    <link rel="manifest" href="https://jamesg.blog/assets/manifest.json">
+
+    
+      <meta name="description" content="IndieWeb Utils v0.7.2 is out. In this release, we introduce utilities to help you work with Really Simple Discovery and Trackbacks. The additions to the library were inspired by this week&#39;s Homebrew Website Club London / Europe meetup. One discussion point was how arXiv supports receiving Trackbacks, an old standard used to notify one site that you have linked to another. Given arXiv&#39;s support of Trackbacks -- and its application as a way to build community around research papers -- I decided to add a few helper functions to IndieWeb Utils.">
+    
+    
+    
+      <meta property="og:image" content="/assets/trackback.png">
+    
+
+    <link rel="webmention" href="https://webmention.jamesg.blog/endpoint">
+    <link rel="pingback" href="https://webmention.io/jamesg.blog/xmlrpc">
+
+    <link rel="icon" href="https://jamesg.blog/favicon.ico">
+
+    <link rel="apple-touch-icon-precomposed" href="https://jamesg.blog/favicon.ico">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta rel="canonical" href="https://jamesg.blog/2023/03/03/send-trackback/">
+
+    <script type="text/javascript" src="./new_files/indieconfig.js"></script>
+    <script type="text/javascript" src="./new_files/webaction.js"></script>
+
+    <link rel="self" href="https://jamesg.blog/2023/03/03/send-trackback/">
+
+    <!-- This script lets someone link directly to a particular piece of text in a page.
+        See https://jamesg.blog/2022/10/11/fragmention-links/ for more information. -->
+    <script src="./new_files/annotate.js"></script>
+
+    
+
+    
+
+    <!-- The styles below show up when a user has dark mode enabled on my site.
+        The logic for when these styles are applied is in a script further down on the page. -->
+    <style id="darkmode" media="none">
+      html, .citation_box, details, summary, .social li {
+        background-color: #1F2937;
+      }
+      .highlight {
+        color: black;
+      }
+      .highlight a {
+        color: blue;
+        border-bottom: 2px dotted blue;
+      }
+      .highlight a:hover {
+        color: violet;
+      }
+      a {
+        color: lightgreen;
+        border-bottom: 2px dotted lightgreen;
+      }
+      a:hover {
+        color: #ccc;
+      }
+      h1, h2, h3 {
+        color: orange;
+      }
+      .social_interaction, .webmention {
+        background: none;
+      }
+      p, li, dt, dd, .indieweb_footer, input, label {
+        color: white;
+      }
+      input, textarea, code, pre, main {
+        background-color: #0c2548;
+        color: #ccc;
+      }
+    </style>
+    <link href="./new_files/prism.css" rel="stylesheet">
+  <style type="text/css">
+@font-face {
+  font-weight: 400;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Book.woff2') format('woff2');
+}
+
+@font-face {
+  font-weight: 500;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-weight: 700;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-weight: 900;
+  font-style:  normal;
+  font-family: 'Circular-Loom';
+
+  src: url('chrome-extension://liecbddmkiiihnedobmlmillhodjkdmb/fonts/CircularXXWeb-Black.woff2') format('woff2');
+}</style></head>
+  <body data-loom-blur-type="NONE">
+    <main>
+        <!-- Skip link so that screen reader users can skip narration of the navigation bar. -->
+      <a href="https://jamesg.blog/2023/03/03/send-trackback/#main" class="accessibility_label">Skip to main content</a>
+    	<nav id="top_navigation">
+	<p><a href="https://jamesg.blog/" rel="home">James' Coffee Blog <span aria-hidden="true" class="seasonal_emoji">☕</span></a></p>
+	<ul>
+		<li><a href="https://jamesg.blog/indieweb/">IndieWeb</a></li>
+		<li><a href="https://jamesg.blog/coffee/">Coffee</a></li>
+		<li><a href="https://jamesg.blog/projects/">Projects</a></li>
+		<li><a href="https://jamesg.blog/interviews/">Interviews</a></li>
+		<li><a href="https://jamesg.coffee/">Notes</a></li>
+		<li><a onclick="toggleTheme();">Dark Mode</a></li><li><a href="https://jamesg.blog/2023/03/03/send-trackback/#" onclick="document.querySelector(&#39;command-k&#39;).open(); return false;">Search</a></li>
+	</ul>
+</nav>
+      <!-- This code applies dark mode to a page if:
+            1. A visitor has dark mode enabled on their system and hasn't disabled dark mode using the button
+                in the site site navigation bar.
+            2. A visitor has enabled dark mode using the button in the site navigation bar.
+            Preferences for dark mode are saved across page views.
+            See https://github.com/capjamesg/darkmode.js for more info. -->
+      <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.getElementById('darkmode').media = "all";
+        }
+
+        if (localStorage.getItem('darkmode') == "true") {
+          document.getElementById('darkmode').media = "all";
+        } else if (localStorage.getItem('darkmode') == "false") {
+          document.getElementById('darkmode').media = "none";
+        }
+
+        var navigation = document.getElementById("top_navigation");
+        var ul = navigation.getElementsByTagName("ul")[0];
+        
+        var li = document.createElement("li");
+        var dark_style = document.getElementById("darkmode");
+  
+        if (dark_style.media === "all") {
+          li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+        } else {
+          li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+        }
+
+        var last_li = ul.getElementsByTagName("li")[ul.getElementsByTagName("li").length - 1];
+
+        ul.insertBefore(li, last_li);
+  
+        function toggleTheme() {
+          if (dark_style.media === "all") {
+            dark_style.media = "none";
+            li.innerHTML = "<a onclick='toggleTheme();'>Dark Mode</a>";
+            localStorage.setItem('darkmode', 'false');
+          } else {
+            dark_style.media = "all";
+            li.innerHTML = "<a onclick='toggleTheme();'>Light Mode</a>";
+            localStorage.setItem('darkmode', 'true');
+          }
+        }
+      </script>
+      <script>var hovercards = {}</script><script>var hovercards = {"https://indieweb-utils.readthedocs.io/en/latest": {"title": "Welcome to IndieWeb Utils documentation! \u2014 IndieWeb Utils 0.7.2 documentation", "description": "", "photo": "https://indieweb-utils.readthedocs.io/_static/indieweb.png"}, "https://indieweb.org/Webmention": {"title": "Webmention", "description": "Webmention is an open web standard (W3C Recommendation) for conversations and interactions across the web, a powerful building block used for a growing distributed network of peer-to-peer comments, likes, reposts, and other responses across the web.", "photo": ""}}</script><div id="main">
+    	 <article class="h-entry">
+	<header>
+		<h1 class="p-name">Send a Trackback in Two Lines of Code</h1>
+		<p><em>Written by <a rel="author" class="p-author h-card" href="https://jamesg.blog/">James</a>. Published on
+			<a href="https://jamesg.blog/2023/03"><time class="dt-published" datetime="2023-03-03T00:00:00">March 03, 2023</time></a>
+			 under the <a href="https://jamesg.blog/category/indieweb" class="p-category">IndieWeb</a> category.</em></p>
+		
+		
+		<a href="./new_files/trackback.png" class="noborder"><img src="./new_files/trackback.png" alt="A screenshot of the IndieWeb Utils Trackback documentation." class="u-featured"></a>
+		
+	</header>
+	<section class="e-content special-image social_interaction">
+		<p><a href="https://indieweb-utils.readthedocs.io/en/latest/">IndieWeb Utils v0.7.2 is out</a>. In this release, we introduce utilities to help you work with Really Simple Discovery and Trackbacks. The additions to the library were inspired by this week's Homebrew Website Club London / Europe meetup. One discussion point was how arXiv supports receiving Trackbacks, an old standard used to notify one site that you have linked to another. Given arXiv's support of Trackbacks -- and its application as a way to build community around research papers -- I decided to add a few helper functions to IndieWeb Utils.</p>
+<p>The new Trackback additions to IndieWeb Utils let you discover a Trackback endpoint, send a Trackback, and validate the response from a Trackback. You can send a Trackback in two lines of code! For the full documentation related to all of the new features, check out the <a href="https://indieweb-utils.readthedocs.io/en/latest/">library homepage</a>.</p>
+<p>To send a Trackback, you can use this code:</p>
+<div class="code-toolbar"><pre class="language-python" tabindex="0"><code class="language-python">
+<span class="token keyword">from</span> indieweb_utils <span class="token keyword">import</span> send_trackback
+
+<span class="token keyword">try</span><span class="token punctuation">:</span>
+  send_trackback<span class="token punctuation">(</span>
+      target_url<span class="token operator">=</span><span class="token string">'https://example.com/target'</span><span class="token punctuation">,</span>
+      source_url<span class="token operator">=</span><span class="token string">'https://example.com/source'</span><span class="token punctuation">,</span>
+      title<span class="token operator">=</span><span class="token string">'My Blog Post'</span><span class="token punctuation">,</span>
+      excerpt<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span>
+      blog_name<span class="token operator">=</span><span class="token string">'My Blog'</span>
+  <span class="token punctuation">)</span>
+<span class="token keyword">except</span> Exception<span class="token punctuation">:</span>
+  <span class="token keyword">raise</span> Exception
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Python</span></div><div class="toolbar-item"><button class="copy-to-clipboard-button" type="button" data-copy-state="copy"><span>Copy</span></button></div></div></div>
+
+<p>The function requires two parameters:</p>
+<ol>
+<li>The URL to which you want to send the Trackback ("the target") and;</li>
+<li>The URL that links to the target ("the source").</li>
+</ol>
+<p>You can also specify a title, excerpt, and blog name, although these are optional as per the specification.</p>
+<p>In the above example, I have wrapped the <code>send_trackback()</code> function call in an exception catch block. This will catch any errors that might come up and report them to the console. The library includes two errors: <code>indieweb_utils.trackback.send.ConnectionError</code> (a connection to the endpoint could not be made) and <code>indieweb_utils.trackback.send.InvalidStatusCodeError</code> (the endpoint returned a status code that indicates a successful request was not made). General <code>requests</code> exceptions may also be raised.</p>
+<p>I hope this code makes it more convenient for you to send Trackbacks!</p>
+<p><em>P.S. The <a href="https://indieweb.org/Webmention">Webmention protocol</a> also facilitates notifying a site when you have linked to them, but has several improvements (i.e. Webmention has verification steps in the spec to prevent spam, RDF is not required).</em></p>
+<p><a href="https://news.indieweb.org/en" class="u-syndication">Also posted on IndieNews</a>.</p>
+		
+			<p>Tagged in <a href="https://jamesg.blog/tag/indieweb/">IndieWeb</a>.</p>
+		
+	</section>
+	
+	
+	<section class="webmention">
+    <h2>Responses</h2>
+    <div id="webmentions"></div>
+    <h2>Comment on this post</h2>
+    <p>Respond to this post by sending a <a href="https://indieweb.org/Webmention">Webmention</a>.</p>
+</section>
+	<footer>
+		<p>Link to this article: <a class="u-url" href="https://jamesg.blog/2023/03/03/send-trackback/">https://jamesg.blog/2023/03/03/send-trackback/</a></p>
+		<p>Have a comment? Email me at <a href="mailto:readers@jamesg.blog?subject=Send%20a%20Trackback%20in%20Two%20Lines%20of%20Code">readers@jamesg.blog</a>.</p>
+		<div class="bottom-navigation">
+      <section class="webmention">
+    <h2>Responses</h2>
+    <div id="webmentions" class="h-feed">
+      
+      <a class="reaction" rel="nofollow ugc" title="Ton Zijlstra replied" href="https://www.zylstra.org/blog/2023/01/22704/">
+        
+        💬
+        
+      </a>
+     <a class="source h-entry" rel="nofollow ugc" href="https://www.zylstra.org/blog/2023/01/22704/">Ton Zijlstra</a> <span class="name p-name">highlight.js, an extension to highlight text on web pages</span></li><li>
+      <a class="reaction" rel="nofollow ugc" title="Jan Boddez replied" href="https://jan.boddez.net/notes/aecca7a4c1">
+        
+        <img src="https://jan.boddez.net/images/photo.jpg" loading="lazy" decoding="async" alt="Jan Boddez">
+      
+        💬
+        
+      </a>
+     <a class="source" rel="nofollow ugc" href="https://jan.boddez.net/notes/aecca7a4c1">Jan Boddez</a> <span class="text">Cool, James!
+Two questions:
+
+Is this, or are you planning to make it, compatible with text fragments?
+
+
+And: I have to admit I was a bit confused reading that title, as highlight.js, as far as I’m aware, is a rather popular (well over 20k GitHub stars, for what it’s worth) code highlighting solution.</span></li></ul>
+    </div>
+    <h2>Comment on this post</h2>
+    <p>Respond to this post by sending a <a href="https://indieweb.org/Webmention">Webmention</a>.</p>
+</section>
+			
+			
+		</div>
+	</footer>
+</article>
+      </div>
+      <p class="accessibility_label"><a href="https://jamesg.blog/2023/03/03/send-trackback/#main">Go Back to the Top</a></p>
+      <footer>
+	<ul>
+		<li><a href="https://jamesg.blog/search/?time_machine=true">Time Machine</a></li>
+		<li><a href="https://jamesg.blog/coffee/maps/">Coffee Maps</a></li>
+		<li><a href="https://jamesg.blog/talks/">Talks</a></li>
+		<li><a href="https://jamesg.blog/sitemap/">Sitemap</a></li>
+		<li><a href="https://jamesg.blog/archive/">Web Log Archive</a></li>
+		<li><a href="https://jamesg.blog/privacy/" rel="privacy-policy">Privacy</a></li>
+		<li><a href="https://jamesg.blog/feeds/posts.xml">RSS</a></li>
+	</ul>
+	<div class="indieweb_footer">
+		<a href="https://indieweb.org/Webmention" class="button-link"><img src="./new_files/webmention_button.webp" alt="Webmention logo indicating that you can send a webmention to this blog" width="80" height="15"></a>
+		<a href="https://indieweb.org/" class="button-link"><img src="./new_files/indieweb_button.webp" alt="IndieWeb logo" width="80" height="15"></a><br>
+		<a href="https://microformats.org/" class="button-link"><img src="./new_files/microformats_button.webp" alt="Microformats logo" width="80" height="15"></a><br>
+		<a href="https://xn--sr8hvo.ws/%F0%9F%98%85%F0%9F%8F%BD%E3%8A%97%EF%B8%8F/previous">←</a>
+		  IndieWeb Webring
+		<a href="https://xn--sr8hvo.ws/%F0%9F%98%85%F0%9F%8F%BD%E3%8A%97%EF%B8%8F/next">→</a>
+		<!-- I use lights.png in my Christmas theme. It takes me a while to re-find the lights every year so I thought I'd leave them commented here. -->
+		<!-- <img src="/assets/lights.png" alt="" /> -->
+	</div>
+</footer>
+
+<script src="./new_files/webmention.min.js" async=""></script>
+<script src="./new_files/seasonal.js"></script>
+      
+        <!-- This script lets me add hovercards to links. When you hover over a link in an
+            article, a card should appear with some meta information about the link.
+            Read more about this script at https://jamesg.blog/2022/10/12/hovercards/ -->
+        <script src="./new_files/hovercard.js"></script>
+      
+    </main>
+    <template></template>
+    <command-k></command-k>
+    <script src="./new_files/commandk.js"></script>
+    <script>
+        function searchFunction (searchField, shadowRoot) {
+            fetch(`https://jamesg.blog/qs/search?q=${searchField.value}`)
+            .then((response) => response.json())
+            .then((data) => {
+                shadowRoot.querySelector('#command-k-search-results').innerHTML = '';
+                data.forEach((result) => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    const category = document.createElement('span');
+                    a.href = result.url;
+                    category.innerText = result.category;
+                    a.innerText = result.title;
+                    li.appendChild(a);
+                    category.classList.add('category');
+                    li.appendChild(category);
+                    shadowRoot.querySelector('#command-k-search-results').appendChild(li);
+                    shadowRoot.querySelector('#command-k-search-results').appendChild(li);
+                });
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'k' && e.metaKey) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (e.key === 'k' && e.ctrlKey) {
+                e.preventDefault();
+                document.querySelector('command-k').open();
+            }
+        });
+    </script>
+    
+    <!-- This script enables code syntax highlighting on my blog post and code snippet pages. -->
+    <script src="./new_files/prism.js"></script>
+    
+  
+<loom-container id="lo-engage-ext-container"><loom-shadow classname="resolved"></loom-shadow></loom-container><loom-container id="lo-companion-container"><loom-shadow classname="resolved"></loom-shadow></loom-container></body></html>
