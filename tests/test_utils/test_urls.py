@@ -17,9 +17,11 @@ from indieweb_utils import utils
 def test_canonicalize_url(url, domain, expected):
     assert utils.canonicalize_url(url=url, domain=domain) == expected
 
+
 def test_remove_tracking_params():
     url = "https://example.com/?utm_source=twitter&utm_medium=social&utm_campaign=indieweb"
     assert utils.remove_tracking_params(url) == "https://example.com/"
+
 
 def test_is_site_url():
     url = "https://example.com/test/"

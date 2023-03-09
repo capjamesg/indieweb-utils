@@ -20,6 +20,7 @@ from .indieauth import (
 )
 from .indieauth.flask import IndieAuthCallbackResponse, indieauth_callback_handler
 from .indieauth.scopes import SCOPE_DEFINITIONS
+from .pagination import Paginator
 from .posts.discovery import discover_author, discover_original_post, get_post_type
 from .posts.in_reply_to import get_reply_urls
 from .posts.page_name import get_page_name
@@ -47,7 +48,6 @@ from .webmentions import (
     send_webmention,
     validate_webmention,
 )
-from .pagination import Paginator
 
 __version__ = "0.7.3"
 

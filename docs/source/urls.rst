@@ -78,4 +78,6 @@ The `slugify()` function takes a URL and removes all characters that are not:
 - Dashes
 - Underscores
 
-You can override the default list of characters to remove by passing in a list of strings to the `allowed_chars` argument (although this argument still enforces the alphanumeric requirement).
+You can override the default list of characters to remove by passing in a list of strings to the `allowed_chars` argument (This argument still enforces the alphanumeric requirement).
+
+.. autofunction:: indieweb_utils.slugify
