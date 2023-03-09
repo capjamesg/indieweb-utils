@@ -28,7 +28,7 @@ from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .rsd import rsd_discovery
-from .salmention import SalmentionParsedResponse, receive_salmention
+from .salmention import SalmentionParsedResponse, process_salmention
 from .trackback import (
     ERROR_PING,
     SUCCESSFUL_PING,
@@ -100,7 +100,7 @@ __all__ = [
     "process_trackback",
     "SUCCESSFUL_PING",
     "ERROR_PING",
-    "receive_salmention",
+    "process_salmention",
     "is_site_url",
     "remove_tracking_params",
     "reduce_image_size",
