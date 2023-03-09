@@ -25,7 +25,6 @@ Contents
 
 .. toctree::
 
-   usage
    discovery
    urls
    context

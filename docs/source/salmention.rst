@@ -15,7 +15,7 @@ The function returns:
 
 .. autofunction:: indieweb_utils.process_salmention
 
-There are two pre-defined helper constants that you can pass in the `supported_types`_ parameter of the `receive_salmention()` function:
+There are two pre-defined helper constants that you can pass in the `supported_types`_ parameter of the `process_salmention()` function:
 
 - `indieweb_utils.salmention.salmention.SUPPORTED_TYPES`_ - All supported types of mentions
 - `indieweb_utils.salmention.salmention.EXPANDED_SUPPORTED_TYPES`_ - All supported types of mentions except replies

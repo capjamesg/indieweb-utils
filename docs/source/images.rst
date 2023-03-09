@@ -1,5 +1,5 @@
 Images
-====
+======
 
 The `reduce_image_size()` function uses the Python Imaging Library (PIL) to create a smaller version of an image.
 
