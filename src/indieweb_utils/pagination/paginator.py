@@ -40,6 +40,22 @@ class Paginator:
 
             yield p
 
+    def previous_page(self) -> List[Dict[str, Any]]:
+        """
+        Get the previous page of objects.
+
+        :param current_page: The current page.
+        :return: A list of objects.
+        """
+
+        for p in self.pages:
+            if self.current_page == 0:
+                raise StopIteration
+
+            self.current_page -= 1
+
+            yield p
+
     def get_page(self, page: int) -> List[Dict[str, Any]]:
         """
         Get a specific page of objects.
