@@ -28,7 +28,7 @@ from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .rsd import rsd_discovery
-from .salmention import receive_salmention
+from .salmention import receive_salmention, SalmentionParsedResponse
 from .trackback import (
     ERROR_PING,
     SUCCESSFUL_PING,
@@ -106,5 +106,6 @@ __all__ = [
     "reduce_image_size",
     "slugify",
     "Paginator",
-    "add_footnote_links"
+    "add_footnote_links",
+    "SalmentionParsedResponse"
 ]
