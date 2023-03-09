@@ -149,3 +149,8 @@ def process_salmention(
     return SalmentionParsedResponse(
         new_nested_responses, urls_webmentions_sent, deleted_posts
     )
+    # 1. Send Webmention from /salmention/3 to /salmention/2/
+    # 2. Send Webmention to /salmention/1/ telling it that /salmention/2/ has been updated
+    # 3. /salmention/1/ compares old /salmention/2/ with new /salmention/2/
+    # 4. /salmention/1/ shows all new responses inline
+    # 5. Send Webmentions to all posts that are the same
