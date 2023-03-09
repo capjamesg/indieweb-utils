@@ -1,8 +1,10 @@
-from typing import List, Tuple, Dict, Any
 import dataclasses
+from typing import Any, Dict, List, Tuple
 
 import mf2py
+
 from ..webmentions import send_webmention
+
 
 @dataclasses.dataclass
 class SalmentionParsedResponse:
@@ -61,11 +63,7 @@ def _get_nested_h_entry(parsed_mf2_tree: dict, supported_types: list) -> List[di
             entries.append(entry)
 
         if entry.get("type") == ["h-feed"]:
-            entries.append(
-                _get_nested_h_entry(
-                    entry.get("children"), supported_types
-                )
-            )
+            entries.append(_get_nested_h_entry(entry.get("children"), supported_types))
 
     return entries
 
@@ -75,7 +73,7 @@ def process_salmention(
     original_post_contents: str,
     page_url: str,
     supported_types: list = SUPPORTED_TYPES,
-    send_upstream_webmentions: bool = True
+    send_upstream_webmentions: bool = True,
 ) -> Tuple[List[dict], List[str], List[str]]:
     """
     Process a Salmention. Call this function only when you receive a Webmention
@@ -103,16 +101,12 @@ def process_salmention(
     new_nested_entry = _get_nested_h_entry(new_parsed_mf2_tree, supported_types)
 
     original_parsed_mf2_tree = mf2py.parse(original_post_contents)
-    original_nested_entry = _get_nested_h_entry(
-        original_parsed_mf2_tree, supported_types
-    )
+    original_nested_entry = _get_nested_h_entry(original_parsed_mf2_tree, supported_types)
 
     # return new nested responses
     new_nested_responses = []
 
-    all_original_urls = [
-        x["properties"].get("url", [])[0] for x in original_nested_entry
-    ]
+    all_original_urls = [x["properties"].get("url", [])[0] for x in original_nested_entry]
 
     all_new_urls = [x["properties"].get("url", [])[0] for x in new_nested_entry]
 
@@ -133,22 +127,17 @@ def process_salmention(
         if response["properties"]["url"][0] not in all_new_urls:
             new_nested_responses.append(response)
 
-
     for url in urls_in_both:
         if url == page_url or send_upstream_webmentions == False:
             continue
 
         try:
-            send_webmention(
-                url, page_url
-            )
+            send_webmention(url, page_url)
             urls_webmentions_sent["success"].append(url)
         except Exception as e:
             urls_webmentions_sent["failed"].append(url)
 
-    return SalmentionParsedResponse(
-        new_nested_responses, urls_webmentions_sent, deleted_posts
-    )
+    return SalmentionParsedResponse(new_nested_responses, urls_webmentions_sent, deleted_posts)
     # 1. Send Webmention from /salmention/3 to /salmention/2/
     # 2. Send Webmention to /salmention/1/ telling it that /salmention/2/ has been updated
     # 3. /salmention/1/ compares old /salmention/2/ with new /salmention/2/

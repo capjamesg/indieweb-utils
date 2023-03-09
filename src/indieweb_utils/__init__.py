@@ -28,7 +28,7 @@ from .posts.posse import get_syndicated_copies
 from .posts.representative_h_card import get_representative_h_card
 from .replies import ReplyContext, get_reply_context
 from .rsd import rsd_discovery
-from .salmention import receive_salmention, SalmentionParsedResponse
+from .salmention import SalmentionParsedResponse, receive_salmention
 from .trackback import (
     ERROR_PING,
     SUCCESSFUL_PING,
@@ -37,10 +37,10 @@ from .trackback import (
     rsd_trackback_discovery,
     send_trackback,
 )
+from .utils import add_footnote_links
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
-from .utils import add_footnote_links
 from .webmentions import (
     SendWebmentionResponse,
     discover_endpoints,
@@ -107,5 +107,5 @@ __all__ = [
     "slugify",
     "Paginator",
     "add_footnote_links",
-    "SalmentionParsedResponse"
+    "SalmentionParsedResponse",
 ]

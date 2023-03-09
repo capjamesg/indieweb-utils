@@ -1,4 +1,5 @@
 from .autotag import autolink_tags
+from .footnotes import add_footnote_links
 from .url_summary import InvalidURL, get_url_summary
 from .urls import (
     _is_http_url,
@@ -7,7 +8,6 @@ from .urls import (
     remove_tracking_params,
     slugify,
 )
-from .footnotes import add_footnote_links
 
 __all__ = [
     "canonicalize_url",
@@ -18,5 +18,5 @@ __all__ = [
     "remove_tracking_params",
     "is_site_url",
     "slugify",
-    "add_footnote_links"
+    "add_footnote_links",
 ]
