@@ -11,10 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Development
 
-This PR contains numerous additions to the IndieWeb Utils library. These features will be released together as v0.8.0.
-
-The features in this PR are:
-
 - `add_footnote_links()` replaces [n] and [^n] links with HTML `<a>` tags that link to each other.
 - `reduce_image_size()` abstracts the PIL resize feature to provide an easy utility for image resizing.
 - `Paginator` class creates paginated list with generators to navigate through each page in the list.
