@@ -39,7 +39,7 @@ Here are a few quick code snippets for actions enabled by IndieWeb Utils.
 get reply context about a URL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: python
 
    import indieweb_utils
    
