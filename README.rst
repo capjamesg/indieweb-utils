@@ -16,6 +16,8 @@ Python indieweb-utils Library
 
 .. image:: https://img.shields.io/pypi/pyversions/indieweb-utils
    :target: https://badge.fury.io/py/indieweb-utils
+|
+
 
 **indieweb-utils** is a Python library that provides building blocks for people implementing IndieWeb applications. This library contains implementations for some specifications that may be useful in IndieWeb applications.
 
