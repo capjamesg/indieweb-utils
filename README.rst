@@ -4,6 +4,18 @@ Python indieweb-utils Library
 .. image:: https://readthedocs.org/projects/indieweb-utils/badge/?version=latest
    :target: https://indieweb-utils.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
+   
+.. image:: https://badge.fury.io/py/indieweb-utils.svg
+   :target: https://badge.fury.io/py/indieweb-utils
+   
+.. image:: https://img.shields.io/pypi/dm/indieweb-utils
+   :target: https://pypistats.org/packages/indieweb-utils
+
+.. image:: https://img.shields.io/pypi/l/indieweb-utils
+   :target: https://github.com/capjamesg/indieweb-utils/blob/main/LICENSE
+
+.. image:: https://img.shields.io/pypi/pyversions/indieweb-utils
+   :target: https://badge.fury.io/py/indieweb-utils
 
 **indieweb-utils** is a Python library that provides building blocks for people implementing IndieWeb applications. This library contains implementations for some specifications that may be useful in IndieWeb applications.
 
