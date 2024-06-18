@@ -26,7 +26,7 @@ setuptools.setup(
     python_requires=">=3.6",
     install_requires=[
         "mf2py==1.1.2",
-        "requests==2.32.2",
+        "requests",
         "beautifulsoup4==4.10.0",
         "lxml==4.9.1",
         "pyjwt==2.4.0",
