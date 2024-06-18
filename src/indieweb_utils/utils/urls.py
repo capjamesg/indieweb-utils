@@ -99,8 +99,7 @@ def _is_http_url(url: str) -> bool:
     """
     return url_parse.urlsplit(url).scheme in ["http", "https"]
 
-
-def remove_tracking_params(url: str, custom_params: list) -> str:
+def remove_tracking_params(url: str, custom_params: list = []) -> str:
     """
     Remove all UTM tracking parameters from a URL.
 
@@ -128,9 +127,14 @@ def remove_tracking_params(url: str, custom_params: list) -> str:
 
     query = url_parse.parse_qs(parsed_url.query)
 
+    keys_to_remove = []
+
     for key in query.keys():
-        if key.startswith("utm_") or key.startswith(custom_params):
-            del query[key]
+        if key.startswith("utm_") or key in custom_params:
+            keys_to_remove.append(key)
+
+    for key in keys_to_remove:
+        del query[key]
 
     new_query = url_parse.urlencode(query, doseq=True)
 
@@ -139,7 +143,6 @@ def remove_tracking_params(url: str, custom_params: list) -> str:
     )
 
     return new_url
-
 
 def is_site_url(url: str, domain: str) -> bool:
     """
