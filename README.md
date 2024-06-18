@@ -1,16 +1,10 @@
 # Python indieweb-utils Library
 
 [![Documentation Status](https://readthedocs.org/projects/indieweb-utils/badge/?version=latest)](https://indieweb-utils.readthedocs.io/en/latest/?badge=latest)
-
 [![image](https://badge.fury.io/py/indieweb-utils.svg)](https://badge.fury.io/py/indieweb-utils)
-
 [![image](https://img.shields.io/pypi/dm/indieweb-utils)](https://pypistats.org/packages/indieweb-utils)
-
 [![image](https://img.shields.io/pypi/l/indieweb-utils)](https://github.com/capjamesg/indieweb-utils/blob/main/LICENSE)
-
 [![image](https://img.shields.io/pypi/pyversions/indieweb-utils)](https://badge.fury.io/py/indieweb-utils)
-
-| 
 
 **indieweb-utils** provides building blocks for people implementing IndieWeb applications in Python. Discover IndieWeb endpoints, find feeds on a page, infer page names, generate reply contexts, and more!
 
