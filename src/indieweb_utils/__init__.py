@@ -4,7 +4,7 @@ Utilities to aid the implementation of various IndieWeb specifications and funct
 
 # Imports added for API backwards compatibility
 
-from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds
+from .feeds import FeedUrl, discover_h_feed, discover_web_page_feeds, retrieve_feed_contents
 from .images import reduce_image_size
 from .indieauth import (
     _validate_indieauth_response,
@@ -108,4 +108,5 @@ __all__ = [
     "Paginator",
     "add_footnote_links",
     "SalmentionParsedResponse",
+    "retrieve_feed_contents"
 ]

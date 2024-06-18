@@ -13,6 +13,30 @@ class UnsupportedFeedFormat(Exception):
 
 
 def retrieve_feed_contents(feed, format="jsonfeed"):
+    """
+    Retrieve the contents from a feed.
+
+    This function returns contents as a JSON Feed.
+
+    :param feed: The URL of the feed.
+    :type feed: str
+    :param format: The format to return the feed in.
+    :type format: str
+    :return: The contents of the feed.
+    :rtype: dict
+
+    Example:
+
+    .. code-block:: python
+
+        import indieweb_utils
+
+        feed = "https://jamesg.blog/feeds/posts.xml"
+
+        feed_contents = indieweb_utils.retrieve_feed_contents(feed)
+
+        print(feed_contents)
+    """
     FEED_IDENTIFICATION = {
         "rss+xml": rss.to_activities,
         "atom+xml": atom.atom_to_activities,
