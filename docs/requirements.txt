@@ -3,7 +3,7 @@ bs4==0.0.1
 certifi==2023.7.22
 charset-normalizer==2.0.9
 html5lib==1.1
-idna==3.3
+idna==3.7
 mf2py==1.1.2
 requests==2.32.0
 six==1.16.0
