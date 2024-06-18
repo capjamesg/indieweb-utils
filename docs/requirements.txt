@@ -5,7 +5,7 @@ charset-normalizer==2.0.9
 html5lib==1.1
 idna==3.3
 mf2py==1.1.2
-requests==2.32.0
+requests==2.32.2
 six==1.16.0
 soupsieve==2.3.1
 urllib3==1.26.18
