@@ -26,4 +26,4 @@ jobs:
 
     - name: Running tox
       run: |
-        tox
+        python -m pytest tests/* 
