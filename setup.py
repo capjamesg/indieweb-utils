@@ -6,12 +6,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="indieweb-utils",
-    version="0.9.0",
+    version="0.9.1",
     author="capjamesg",
     author_email="jamesg@jamesg.blog",
     description="Utilities to aid the implementation of various IndieWeb specifications and functionalities.",
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     url="https://github.com/capjamesg/indieweb-utils",
     project_urls={
         "Bug Tracker": "https://github.com/capjamesg/indieweb-utils/issues"
