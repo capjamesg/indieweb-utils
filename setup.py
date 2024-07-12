@@ -28,7 +28,7 @@ setuptools.setup(
         "mf2py==1.1.2",
         "requests",
         "beautifulsoup4==4.10.0",
-        "lxml==4.9.1",
+        "lxml",
         "pyjwt==2.4.0",
         "jwt==1.3.1",
         "granary",
