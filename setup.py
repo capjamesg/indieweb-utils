@@ -25,10 +25,10 @@ setuptools.setup(
     packages=find_packages(where="src"),
     python_requires=">=3.6",
     install_requires=[
-        "mf2py==1.1.2",
+        "mf2py",
         "requests",
-        "beautifulsoup4==4.10.0",
-        "lxml==4.9.1",
+        "beautifulsoup4",
+        "lxml",
         "pyjwt==2.4.0",
         "jwt==1.3.1",
         "granary",
