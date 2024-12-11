@@ -1,7 +1,7 @@
-mf2py==1.1.2
+mf2py
 requests
-beautifulsoup4==4.10.0
+beautifulsoup4
 lxml
-pyjwt==2.4.0
+pyjwt
 Pillow
 granary
