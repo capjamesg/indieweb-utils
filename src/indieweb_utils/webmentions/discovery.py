@@ -2,6 +2,7 @@ import ipaddress
 from dataclasses import dataclass
 from typing import Dict, List
 from urllib import parse as url_parse
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -201,12 +202,9 @@ def _find_links_html(*, body: str, target_headers: List[str], domain: str = None
     for link in soup.find_all("link"):
         try:
             rel = link.get("rel", [])[0]
-            if domain:
-                href = canonicalize_url(link.get("href"), domain)
-            else:
-                href = link.get("href")
+            href = urljoin("https://", domain + link.get("href"))
         except IndexError:
             continue
-        if _is_http_url(href) and rel in target_headers:
+        if rel in target_headers:
             found[rel] = href
     return found
