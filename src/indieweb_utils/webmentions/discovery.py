@@ -202,7 +202,7 @@ def _find_links_html(*, body: str, target_headers: List[str], domain: str = None
     for link in soup.find_all("link"):
         try:
             rel = link.get("rel", [])[0]
-            href = urljoin("https://", domain + link.get("href"))
+            href = urljoin("https://" + domain, link.get("href", ""))
         except IndexError:
             continue
         if rel in target_headers:
