@@ -6,7 +6,7 @@ from urllib import parse as url_parse
 import requests
 from bs4 import BeautifulSoup
 
-from ..utils.urls import _is_http_url
+from ..utils.urls import _is_http_url, canonicalize_url
 
 _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 
