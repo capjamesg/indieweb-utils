@@ -97,7 +97,7 @@ def _is_http_url(url: str) -> bool:
     """
     Determine if URL is http or not
     """
-    return url_parse.urlsplit(url).scheme in ["http", "https"]
+    return (url_parse.urlsplit(url).scheme in ["http", "https"]) or url.startswith("/") or url.startswith("//")
 
 def remove_tracking_params(url: str, custom_params: list = []) -> str:
     """
