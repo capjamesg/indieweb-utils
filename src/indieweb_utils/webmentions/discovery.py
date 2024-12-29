@@ -151,7 +151,12 @@ def discover_endpoints(url: str, headers_to_find: List[str], request: requests.R
     for header in link_headers:
         response[header] = link_headers[header]["url"]
 
-    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find))
+    try:
+        domain = url_parse.urlsplit(url).netloc
+    except:
+        domain = None
+
+    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find, domain=domain))
     return response
 
 
@@ -189,14 +194,17 @@ def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, D
     return found
 
 
-def _find_links_html(*, body: str, target_headers: List[str]) -> Dict[str, str]:
+def _find_links_html(*, body: str, target_headers: List[str], domain: str = None) -> Dict[str, str]:
     soup = BeautifulSoup(body, "html.parser")
     found: Dict[str, str] = {}
 
     for link in soup.find_all("link"):
         try:
             rel = link.get("rel", [])[0]
-            href = link.get("href")
+            if domain:
+                href = canonicalize_url(link.get("href"), domain)
+            else:
+                href = link.get("href")
         except IndexError:
             continue
         if _is_http_url(href) and rel in target_headers:
