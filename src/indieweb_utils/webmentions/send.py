@@ -147,9 +147,13 @@ def send_webmention(
         )
     except requests.exceptions.RequestException:
         raise CouldNotConnectToWebmentionEndpoint("Could not connect to the receiver's webmention endpoint.")
-
-    message = str(r.json().get("summary", ""))
-
+    
+    # if response is a JSON document
+    if r.headers.get("Content-Type") == "application/json":
+        message = str(r.json().get("summary", ""))
+    else:
+        message = ""
+        
     valid_status_codes = (200, 201, 202)
 
     headers = [Header(name=str(k), value=str(v)) for k, v in r.headers.items()]
