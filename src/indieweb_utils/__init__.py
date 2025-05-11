@@ -38,6 +38,7 @@ from .trackback import (
     send_trackback,
 )
 from .utils import add_footnote_links
+from .utils.rel_edit import discover_edit_links
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
