@@ -106,7 +106,7 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None):
+def discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None, bs4_html: str = None) -> Dict[str, str]:
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
@@ -157,7 +157,7 @@ def discover_endpoints(url: str, headers_to_find: List[str], request: requests.R
     except:
         domain = None
 
-    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find, domain=domain))
+    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find, domain=domain, html_tag=[]))
     return response
 
 
@@ -195,14 +195,18 @@ def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, D
     return found
 
 
-def _find_links_html(*, body: str, target_headers: List[str], domain: str = None) -> Dict[str, str]:
-    soup = BeautifulSoup(body, "html.parser")
+def _find_links_html(*, body: str, target_headers: List[str], domain: str = None, html_tag: list = ["link"], bs4_html = None) -> Dict[str, str]:
+    if bs4_html:
+        soup = bs4_html
+    else:
+        soup = BeautifulSoup(body, "html.parser")
+
     found: Dict[str, str] = {}
 
-    for link in soup.find_all("link"):
+    for link in soup.find_all(html_tag):
         try:
             rel = link.get("rel", [])[0]
-            href = urljoin("https://" + domain, link.get("href", ""))
+            href = canonicalize_url(url=link.get("href", ""), domain=domain)
         except IndexError:
             continue
         if rel in target_headers:
