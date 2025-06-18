@@ -8,7 +8,7 @@ mf2py==1.1.2
 requests
 six==1.16.0
 soupsieve==2.3.1
-urllib3==1.26.19
+urllib3==2.5.0
 webencodings==0.5.1
 indieweb_utils==0.9.1
 pyjwt==2.4.0
