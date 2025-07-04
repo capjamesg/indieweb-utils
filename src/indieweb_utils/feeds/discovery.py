@@ -91,7 +91,7 @@ def discover_web_page_feeds(
         "application/mf2+json",
         "application/atom+xml",
         "application/feed+json",
-        "application/jf2feed_json",
+        "application/jf2feed+json",
     }
 
     feeds: List[FeedUrl] = []
