@@ -157,7 +157,7 @@ def discover_endpoints(url: str, headers_to_find: List[str], request: requests.R
     except:
         domain = None
 
-    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find, domain=domain, html_tag=[]))
+    response.update(_find_links_html(body=endpoint_request.text, target_headers=headers_to_find, domain=domain))
     return response
 
 
