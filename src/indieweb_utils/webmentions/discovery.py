@@ -106,7 +106,9 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
     return WebmentionDiscoveryResponse(endpoint=endpoint)
 
 
-def discover_endpoints(url: str, headers_to_find: List[str], request: requests.Response = None, bs4_html: str = None) -> Dict[str, str]:
+def discover_endpoints(
+    url: str, headers_to_find: List[str], request: requests.Response = None, bs4_html: str = None
+) -> Dict[str, str]:
     """
     Return a dictionary of specified endpoint locations for the given URL, if available.
 
@@ -195,7 +197,9 @@ def _find_links_in_headers(*, headers, target_headers: List[str]) -> Dict[str, D
     return found
 
 
-def _find_links_html(*, body: str, target_headers: List[str], domain: str = None, html_tag: list = ["link"], bs4_html = None) -> Dict[str, str]:
+def _find_links_html(
+    *, body: str, target_headers: List[str], domain: str = None, html_tag: list = ["link"], bs4_html=None
+) -> Dict[str, str]:
     if bs4_html:
         soup = bs4_html
     else:

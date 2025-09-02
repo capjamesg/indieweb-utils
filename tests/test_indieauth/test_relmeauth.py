@@ -19,7 +19,7 @@ class TestRelMeAuthLinkDiscovery:
         expected_responses = [
             "https://indieweb.social/@capjamesg",
             "https://micro.blog/capjamesg",
-            "https://jamesg.coffee/",
+            "https://jamesg.coffee",
             "https://www.instagram.com/capjamesg/",
             "https://indieweb.org/User:Jamesg.blog",
             "https://github.com/capjamesg",

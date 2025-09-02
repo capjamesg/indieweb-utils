@@ -111,9 +111,7 @@ def discover_web_page_feeds(
     if h_feed:
         feeds.append(FeedUrl(url=url, mime_type="text/html", title=page_title.text))
 
-    http_headers = _find_links_in_headers(
-        headers=web_page_request.headers, target_headers=["alternate", "feed"]
-    )
+    http_headers = _find_links_in_headers(headers=web_page_request.headers, target_headers=["alternate", "feed"])
 
     for rel, item in http_headers.items():
         feed_mime_type = item.get("mime_type", "")
@@ -159,29 +157,19 @@ def discover_h_feed(url: str, html: str = "") -> Dict:
 
     all_page_feeds = discover_web_page_feeds(url)
 
-    get_mf2_feed = [
-        feed for feed in all_page_feeds if feed.mime_type == "text/mf2+html"
-    ]
+    get_mf2_feed = [feed for feed in all_page_feeds if feed.mime_type == "text/mf2+html"]
 
     if len(get_mf2_feed) > 0:
         feed = get_mf2_feed[0].url
 
         parsed_feed = mf2py.parse(url=feed)
 
-        h_feed = [
-            item
-            for item in parsed_feed["items"]
-            if item.get("type") and item.get("type")[0] == "h-feed"
-        ]
+        h_feed = [item for item in parsed_feed["items"] if item.get("type") and item.get("type")[0] == "h-feed"]
 
         if h_feed:
             return h_feed[0]
 
-    h_feed = [
-        item
-        for item in parsed_main_page_mf2["items"]
-        if item.get("type") and item.get("type")[0] == "h-feed"
-    ]
+    h_feed = [item for item in parsed_main_page_mf2["items"] if item.get("type") and item.get("type")[0] == "h-feed"]
 
     if h_feed:
         return h_feed[0]

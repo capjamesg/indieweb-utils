@@ -42,6 +42,7 @@ from .utils.rel_edit import discover_edit_links
 from .utils.autotag import autolink_tags
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
+from .utils.web_bot_auth import HTTPSignatureKeyResolver, signed_web_bot_auth_request
 from .webmentions import (
     SendWebmentionResponse,
     discover_endpoints,
@@ -109,5 +110,7 @@ __all__ = [
     "Paginator",
     "add_footnote_links",
     "SalmentionParsedResponse",
-    "retrieve_feed_contents"
+    "retrieve_feed_contents",
+    "HTTPSignatureKeyResolver",
+    "signed_web_bot_auth_request",
 ]

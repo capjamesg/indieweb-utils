@@ -1,6 +1,7 @@
 from urllib import parse as url_parse
 from urllib.parse import urljoin
 
+
 def canonicalize_url(url: str, domain: str = "", full_url: str = "", protocol: str = "https") -> str:
     """
     Return a canonical URL for the given URL.
@@ -31,7 +32,18 @@ def canonicalize_url(url: str, domain: str = "", full_url: str = "", protocol: s
         print(webmention_endpoint) # https://jamesg.blog/contact/
     """
 
-    return urljoin(protocol + "://" + domain, url)
+    if url.startswith(domain):
+        url = url[len(domain) :]
+
+    parsed_url = url_parse.urlparse(urljoin(protocol + "://" + domain, url))
+
+    # remove port
+    if parsed_url.scheme == "http" and parsed_url.port == 80:
+        parsed_url = parsed_url._replace(netloc=parsed_url.hostname)
+    elif parsed_url.scheme == "https" and parsed_url.port == 443:
+        parsed_url = parsed_url._replace(netloc=parsed_url.hostname)
+
+    return parsed_url.geturl()
 
 
 def _is_http_url(url: str) -> bool:
@@ -39,6 +51,7 @@ def _is_http_url(url: str) -> bool:
     Determine if URL is http or not
     """
     return url_parse.urlsplit(url).scheme in ["http", "https"] or url.startswith("/") or url.startswith("//")
+
 
 def remove_tracking_params(url: str, custom_params: list = []) -> str:
     """
@@ -84,6 +97,7 @@ def remove_tracking_params(url: str, custom_params: list = []) -> str:
     )
 
     return new_url
+
 
 def is_site_url(url: str, domain: str) -> bool:
     """

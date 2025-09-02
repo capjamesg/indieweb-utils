@@ -167,9 +167,17 @@ def _generate_h_entry_reply_context(
     summary = ""
 
     if h_entry["properties"].get("featured"):
-        post_photo_url = canonicalize_url(h_entry["properties"]["featured"][0], domain, url)
+        if isinstance(h_entry["properties"]["featured"][0], dict):
+            h_entry_url = h_entry["properties"]["featured"][0].get("value")
+        else:
+            h_entry_url = h_entry["properties"]["featured"][0]
+        post_photo_url = canonicalize_url(h_entry_url, domain, url)
 
     if h_entry["properties"].get("video"):
+        if isinstance(h_entry["properties"]["video"][0], dict):
+            h_entry_url = h_entry["properties"]["video"][0].get("value")
+        else:
+            h_entry_url = h_entry["properties"]["video"][0]
         post_video_url = canonicalize_url(h_entry["properties"]["video"][0], domain, url)
 
     # look for featured image to display in reply context
@@ -193,57 +201,6 @@ def _generate_h_entry_reply_context(
         video=post_video_url,
         webmention_endpoint=webmention_endpoint_url,
         description=summary,
-    )
-
-
-def _generate_tweet_reply_context(url: str, twitter_bearer_token: str, webmention_endpoint_url: str) -> ReplyContext:
-    tweet_uid = url.strip("/").split("/")[-1]
-
-    headers = {"Authorization": f"Bearer {twitter_bearer_token}"}
-
-    try:
-        r = requests.get(
-            f"https://api.twitter.com/2/tweets/{tweet_uid}?tweet.fields=author_id",
-            headers=headers,
-            timeout=10,
-            verify=False,
-        )
-    except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
-
-    if r and r.status_code != 200:
-        raise ReplyContextRetrievalError(f"Twitter API returned {r.status_code}")
-
-    base_url = f"https://api.twitter.com/2/users/{r.json()['data'].get('author_id')}"
-
-    try:
-        get_author = requests.get(
-            f"{base_url}?user.fields=url,name,profile_image_url,username",
-            headers=headers,
-            timeout=10,
-            verify=False,
-        )
-    except requests.exceptions.RequestException:
-        raise ReplyContextRetrievalError("Could not retrieve tweet context from the Twitter API.")
-
-    if get_author and get_author.status_code == 200:
-        photo_url = get_author.json()["data"].get("profile_image_url")
-        author_name = get_author.json()["data"].get("name")
-        author_url = "https://twitter.com/" + get_author.json()["data"].get("username")
-    else:
-        photo_url = ""
-        author_name = ""
-        author_url = ""
-
-    return ReplyContext(
-        name=author_name,
-        post_text=r.json()["data"].get("text"),
-        post_html=r.json()["data"].get("html"),
-        authors=[PostAuthor(url=author_url, name=author_name, photo=photo_url)],
-        photo=photo_url,
-        video="",
-        webmention_endpoint=webmention_endpoint_url,
-        description=r.json()["data"].get("text"),
     )
 
 
@@ -399,15 +356,12 @@ def _generate_reply_context_from_main_page(
     )
 
 
-def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_limit: int = 75) -> ReplyContext:
+def get_reply_context(url: str, summary_word_limit: int = 75) -> ReplyContext:
     """
     Generate reply context for use on your website based on a URL.
 
     :param url: The URL of the post to generate reply context for.
     :type url: str
-    :param twitter_bearer_token: The optional Twitter bearer token to use.
-        This token is used to retrieve a Tweet from Twitter's API if you want to generate context using a Twitter URL.
-    :type twitter_bearer_token: str
     :param summary_word_limit: The maximum number of words to include in the summary (default 75).
     :type summary_word_limit: int
     :return: A ReplyContext object with information about the specified web page.
@@ -469,9 +423,6 @@ def get_reply_context(url: str, twitter_bearer_token: str = "", summary_word_lim
         h_entry = parsed["items"][0]
 
         return _generate_h_entry_reply_context(h_entry, url, domain, webmention_endpoint_url, summary_word_limit)
-
-    if parsed_url.netloc == "twitter.com" and twitter_bearer_token is not None:
-        return _generate_tweet_reply_context(url, twitter_bearer_token, webmention_endpoint_url)
 
     return _generate_reply_context_from_main_page(
         url, http_headers, domain, webmention_endpoint_url, summary_word_limit

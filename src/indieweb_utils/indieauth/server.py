@@ -266,7 +266,6 @@ def redeem_code(
     algorithms: list = ["HS256"],
     **kwargs
 ) -> TokenEndpointResponse:
-
     """
     Redeems an IndieAuth code for an access token.
 
