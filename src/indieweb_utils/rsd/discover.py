@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from ..utils.urls import canonicalize_url
-
+from ..constants import USER_AGENT
 
 class InvalidStatusCodeError(Exception):
     """Raised when the server returns an invalid status code."""
@@ -29,7 +29,7 @@ def rsd_discovery(url: str, attribute: str):
         rsd_discovery('http://example.com', 'trackback:ping')
     """
 
-    get_rsd_request = requests.get(url)
+    get_rsd_request = requests.get(url, headers={"User-Agent": USER_AGENT})
 
     if get_rsd_request.status_code != 200:
         raise InvalidStatusCodeError("The server returned a status code of {}.".format(get_rsd_request.status_code))
@@ -41,7 +41,7 @@ def rsd_discovery(url: str, attribute: str):
     if not rsd:
         return ""
 
-    get_rsd_request = requests.get(rsd.get("href"))
+    get_rsd_request = requests.get(rsd.get("href"), headers={"User-Agent": USER_AGENT})
 
     if get_rsd_request.status_code != 200:
         raise InvalidStatusCodeError("The server returned a status code of {}.".format(get_rsd_request.status_code))

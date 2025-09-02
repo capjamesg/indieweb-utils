@@ -2,7 +2,7 @@ import ipaddress
 from dataclasses import dataclass
 from typing import Dict, List
 from urllib import parse as url_parse
-from urllib.parse import urljoin
+from ..constants import USER_AGENT
 
 import requests
 from bs4 import BeautifulSoup
@@ -145,7 +145,7 @@ def discover_endpoints(
         endpoint_request = request
     else:
         try:
-            endpoint_request = requests.get(url, timeout=5)
+            endpoint_request = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=5)
         except requests.exceptions.RequestException:
             raise Exception("Could not connect to the specified URL.")
 

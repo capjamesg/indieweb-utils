@@ -1,14 +1,13 @@
 from indieweb_utils.webmentions.discovery import discover_endpoints, _find_links_html
 import requests
-from typing import Dict, List
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-
+from ..constants import USER_AGENT
 
 def discover_edit_links(url: str, request: requests.Response = None):
     if not request:
         try:
-            request = requests.get(url, timeout=5)
+            request = requests.get(url, headers={"User-Agent": USER_AGENT, "timeout": "5"})
         except requests.exceptions.RequestException:
             raise Exception("Could not connect to the specified URL.")
 

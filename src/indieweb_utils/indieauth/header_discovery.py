@@ -4,7 +4,7 @@ from typing import List, Optional
 import requests
 
 from ..webmentions.discovery import discover_endpoints
-
+from ..constants import USER_AGENT
 
 @dataclass
 class IndieAuthEndpoints:
@@ -54,7 +54,7 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
 
     if endpoints.get("indieauth-metadata"):
         try:
-            response = requests.get(endpoints["indieauth-metadata"], timeout=5)
+            response = requests.get(endpoints["indieauth-metadata"], headers={"User-Agent": USER_AGENT}, timeout=5)
         except requests.exceptions.RequestException:
             raise requests.exceptions.RequestException("Could not connect to the specified URL.")
 

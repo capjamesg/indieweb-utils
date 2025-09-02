@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from ..parsing.parse import RequestError, get_soup
-
+from ..constants import USER_AGENT
 
 def get_page_name(url: str, html: str = None, soup: BeautifulSoup = None) -> str:
     """
@@ -36,7 +36,7 @@ def get_page_name(url: str, html: str = None, soup: BeautifulSoup = None) -> str
 
     if soup is None:
         try:
-            contents = requests.get(url, timeout=10)
+            contents = requests.get(url, headers={"User-Agent": USER_AGENT},timeout=10)
         except requests.exceptions.RequestException:
             raise RequestError("Request to retrieve URL did not return a valid response.")
 

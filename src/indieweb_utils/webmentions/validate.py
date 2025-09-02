@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 from urllib import parse as url_parse
+from ..constants import USER_AGENT
 
 import requests
 from bs4 import BeautifulSoup
@@ -45,7 +46,7 @@ def _process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
 
         if vouch_domain in vouch_list:
             try:
-                r = requests.get(vouch, timeout=5)
+                r = requests.get(vouch, headers={"User-Agent": USER_AGENT}, timeout=5)
             except requests.exceptions.RequestException:
                 return moderate
 

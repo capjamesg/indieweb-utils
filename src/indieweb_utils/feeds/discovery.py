@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from ..utils.urls import _is_http_url, canonicalize_url
 from ..webmentions.discovery import _find_links_in_headers
-
+from ..constants import USER_AGENT
 
 @dataclasses.dataclass
 class FeedUrl:
@@ -18,7 +18,7 @@ class FeedUrl:
     social: bool = False
 
 
-def _get_page_feed_contents(url: str, html: str, user_agent: str = "") -> Tuple[requests.Response, str]:
+def _get_page_feed_contents(url: str, html: str, user_agent: str = USER_AGENT) -> Tuple[requests.Response, str]:
     if html:
         try:
             web_page_request = requests.head(url, timeout=10, allow_redirects=True, headers={"User-Agent": user_agent})

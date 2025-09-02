@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 
 import requests
-
+from ..constants import USER_AGENT
 
 @dataclass
 class IndieAuthCallbackResponse:
@@ -36,7 +36,6 @@ def _validate_indieauth_response(me: str, response: requests.Response, required_
 
 
 def indieauth_callback_handler(
-    *,
     code: str,
     state: str,
     token_endpoint: str,
@@ -177,7 +176,7 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
         return False
 
     try:
-        check_token = requests.get(token_endpoint, headers={"Authorization": f"Bearer {access_token}"}, timeout=5)
+        check_token = requests.get(token_endpoint, headers={"Authorization": f"Bearer {access_token}", "User-Agent": USER_AGENT}, timeout=5)
     except requests.exceptions.Timeout:
         raise AuthenticationError("The specified token endpoint timed out.")
     except requests.exceptions.RequestException:

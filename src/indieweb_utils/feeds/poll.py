@@ -1,8 +1,7 @@
 import requests
 from granary import atom, jsonfeed, microformats2, rss
 
-USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
-
+from ..constants import USER_AGENT
 
 class FailedToFetchFeed(Exception):
     pass

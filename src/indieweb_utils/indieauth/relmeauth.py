@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 from ..parsing.parse import get_parsed_mf2_data
 from ..utils.urls import canonicalize_url
+from ..constants import USER_AGENT
 
 
 def get_valid_relmeauth_links(
@@ -53,12 +54,17 @@ def get_valid_relmeauth_links(
 
     valid_rel_me_links: Set[str] = set()
 
+    # if starts with mailto, add anyway
+    for url in mf2_data["rels"].get("me", []):
+        if url.startswith("mailto:"):
+            valid_rel_me_links.add(url)
+
     if require_rel_me_link_back is False:
         return list(set(rel_me_links))
 
     for link in rel_me_links:
         try:
-            link_valid = requests.get(link, timeout=5)
+            link_valid = requests.get(link, headers={"User-Agent": USER_AGENT}, timeout=5)
         except requests.exceptions.RequestException:
             continue
 

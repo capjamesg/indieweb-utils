@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup, Comment
 
 from ..rsd.discover import rsd_discovery
 from ..utils.urls import canonicalize_url
-
+from ..constants import USER_AGENT
 
 class TrackbackError(Exception):
     """Base class for trackback errors."""
@@ -59,7 +59,7 @@ def discover_trackback_url(url: str) -> str:
         discover_trackback_url('http://example.com/post/123')
     """
 
-    get_trackback_url_request = requests.get(url)
+    get_trackback_url_request = requests.get(url, headers={"User-Agent": USER_AGENT})
 
     if get_trackback_url_request.status_code != 200:
         raise InvalidStatusCodeError(

@@ -1,5 +1,6 @@
 import requests
 from PIL import Image
+from ..constants import USER_AGENT
 
 
 def reduce_image_size(url=None, image_data=None, pil_image=None, reduction_size=0.5, height=None, width=None):
@@ -31,7 +32,7 @@ def reduce_image_size(url=None, image_data=None, pil_image=None, reduction_size=
         raise Exception("Please provide either a URL, image data, or a PIL.Image object.")
 
     if url:
-        image_data = requests.get(url).content
+        image_data = requests.get(url, headers={"User-Agent": USER_AGENT}).content
         image = Image.open(image_data)
 
     if image_data:

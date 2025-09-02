@@ -15,6 +15,7 @@ from ..webmentions.discovery import (
     WebmentionEndpointNotFound,
     discover_webmention_endpoint,
 )
+from ..constants import USER_AGENT
 
 
 @dataclass
@@ -87,7 +88,7 @@ def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, 
             author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
         try:
-            author = mf2py.parse(requests.get(author_url, timeout=10, verify=False).text)
+            author = mf2py.parse(requests.get(author_url, headers={"User-Agent": USER_AGENT}, timeout=10, verify=False).text)
         except requests.exceptions.RequestException:
             pass
         else:
@@ -278,7 +279,7 @@ def _get_favicon(photo_url: str, domain: str) -> str:
         photo_url = "https://" + domain + photo_url
 
     try:
-        r = requests.get(photo_url, timeout=10, verify=False)
+        r = requests.get(photo_url, headers={"User-Agent": USER_AGENT}, timeout=10, verify=False)
 
         if r.status_code != 200:
             photo_url = ""
@@ -386,7 +387,7 @@ def get_reply_context(url: str, summary_word_limit: int = 75) -> ReplyContext:
     """
 
     parsed_url = url_parse.urlsplit(url)
-    http_headers = {"Accept": "text/html", "User-Agent": "indieweb_utils"}
+    http_headers = {"Accept": "text/html", "User-Agent": USER_AGENT}
 
     if parsed_url.scheme not in ["http", "https"]:
         raise UnsupportedScheme(f"{parsed_url.scheme} is not supported.")

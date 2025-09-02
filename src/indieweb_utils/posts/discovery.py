@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 from ..parsing.parse import get_parsed_mf2_data, get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
+from ..constants import USER_AGENT
 
 # This regex identifies permashortlink citations in the form of (example.com slug)
 # Permashortlink citations may be used as a link to a post that does not contain a hyperlink
@@ -26,7 +27,7 @@ class PostTypeFormattingError(Exception):
 
 def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post: BeautifulSoup) -> str:
     try:
-        request = requests.get(candidate_url, timeout=5)
+        request = requests.get(candidate_url, headers={"User-Agent": USER_AGENT}, timeout=5)
     except requests.exceptions.RequestException:
         raise PostDiscoveryError("Could not get candidate url")
 
@@ -368,7 +369,7 @@ def _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domai
 
     if url_to_check and url_parse.urlsplit(url_to_check).netloc == posse_domain:
         try:
-            r = requests.get(url_to_check, timeout=10, allow_redirects=True)
+            r = requests.get(url_to_check, headers={"User-Agent": USER_AGENT}, timeout=10, allow_redirects=True)
         except requests.exceptions.RequestException:
             # handler will prevent exception due to timeout, if one occurs
             pass
