@@ -178,6 +178,7 @@ def generate_auth_token(
     code_challenge_method: str,
     final_scope: str,
     secret_key: str,
+    code_challenge: str,
     **kwargs
 ) -> AuthTokenResponse:
     """
@@ -231,16 +232,9 @@ def generate_auth_token(
     if response_type not in ["code", "id"]:
         raise AuthenticationError("Only code and id response types are supported.")
 
-    code_verifier = generate_token()
-
-    sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
-
-    code_challenge = base64.urlsafe_b64encode(sha256_code.encode("utf-8")).decode("utf-8")
-
     encoded_code = jwt.encode(
         {
             "me": me,
-            "code_verifier": code_verifier,
             "expires": int(time.time()) + 3600,
             "client_id": client_id,
             "redirect_uri": redirect_uri,
@@ -253,7 +247,7 @@ def generate_auth_token(
         algorithm="HS256",
     )
 
-    return AuthTokenResponse(code=encoded_code, code_verifier=code_verifier, code_challenge=code_challenge)
+    return AuthTokenResponse(code=encoded_code, code_verifier="", code_challenge=code_challenge)
 
 
 def redeem_code(
@@ -325,10 +319,10 @@ def redeem_code(
         raise AuthenticationError("Code is invalid.")
 
     if code_verifier is not None and decoded_code["code_challenge_method"] == "S256":
-        sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
+        sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).digest()
 
         # urls must be encoded with url safe base64, not just standard base64
-        code_challenge = base64.urlsafe_b64encode(sha256_code.encode("utf-8")).decode("utf-8")
+        code_challenge = base64.urlsafe_b64encode(sha256_code).rstrip(b"=").decode("utf-8")
 
         if code_challenge != decoded_code["code_challenge"]:
             raise AuthenticationError("Code challenge in decoded code was invalid.")
