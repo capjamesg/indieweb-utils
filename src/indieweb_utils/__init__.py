@@ -51,7 +51,7 @@ from .webmentions import (
     validate_webmention,
 )
 
-__version__ = "0.9.2"
+__version__ = "0.10.0"
 
 # add for backwards compatibility
 _discover_endpoints = discover_endpoints
