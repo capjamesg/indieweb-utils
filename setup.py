@@ -4,9 +4,14 @@ from setuptools import find_packages
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open("./src/indieweb_utils/__init__.py", "r") as f:
+    content = f.read()
+    # from https://www.py4u.net/discuss/139845
+    version = re.search(r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content).group(1)
+
 setuptools.setup(
     name="indieweb-utils",
-    version="0.9.1",
+    version=version,
     author="capjamesg",
     author_email="jamesg@jamesg.blog",
     description="Utilities to aid the implementation of various IndieWeb specifications and functionalities.",
@@ -29,7 +34,7 @@ setuptools.setup(
         "requests",
         "beautifulsoup4",
         "lxml",
-        "pyjwt==2.4.0",
+        "pyjwt",
         "granary",
         "Pillow"
     ],
