@@ -178,7 +178,7 @@ def generate_auth_token(
     code_challenge_method: str,
     final_scope: str,
     secret_key: str,
-    code_challenge: str,
+    expiry_seconds: int = 3600,
     **kwargs
 ) -> AuthTokenResponse:
     """
@@ -232,10 +232,19 @@ def generate_auth_token(
     if response_type not in ["code", "id"]:
         raise AuthenticationError("Only code and id response types are supported.")
 
+    code_verifier = generate_token()
+
+    sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
+
+    code_challenge = base64.urlsafe_b64encode(sha256_code.encode("utf-8")).decode("utf-8")
+    
+    iat = int(time.time())
+
     encoded_code = jwt.encode(
         {
             "me": me,
-            "expires": int(time.time()) + 3600,
+            "exp": iat + expiry_seconds,
+            "iat": iat,
             "client_id": client_id,
             "redirect_uri": redirect_uri,
             "scope": final_scope,
@@ -247,7 +256,7 @@ def generate_auth_token(
         algorithm="HS256",
     )
 
-    return AuthTokenResponse(code=encoded_code, code_verifier="", code_challenge=code_challenge)
+    return AuthTokenResponse(code=encoded_code, code_verifier=code_verifier, code_challenge=code_challenge, exp=expiry_seconds, iat=iat)
 
 
 def redeem_code(
@@ -260,6 +269,7 @@ def redeem_code(
     algorithms: list = ["HS256"],
     **kwargs
 ) -> TokenEndpointResponse:
+
     """
     Redeems an IndieAuth code for an access token.
 
@@ -319,10 +329,10 @@ def redeem_code(
         raise AuthenticationError("Code is invalid.")
 
     if code_verifier is not None and decoded_code["code_challenge_method"] == "S256":
-        sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+        sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
 
         # urls must be encoded with url safe base64, not just standard base64
-        code_challenge = base64.urlsafe_b64encode(sha256_code).rstrip(b"=").decode("utf-8")
+        code_challenge = base64.urlsafe_b64encode(sha256_code.encode("utf-8")).decode("utf-8")
 
         if code_challenge != decoded_code["code_challenge"]:
             raise AuthenticationError("Code challenge in decoded code was invalid.")
@@ -336,21 +346,24 @@ def redeem_code(
 
     scope = decoded_code["scope"]
     me = decoded_code["me"]
+    exp = decoded_code["exp"]
+    iat = decoded_code["iat"]
 
     access_token = jwt.encode(
         {
             "me": me,
-            "expires": int(time.time()) + 360000,
             "client_id": client_id,
             "redirect_uri": redirect_uri,
             "scope": scope,
+            "exp": exp,
+            "iat": iat,
             **kwargs,
         },
         secret_key,
         algorithm="HS256",
     )
 
-    return TokenEndpointResponse(access_token=access_token, token_type="bearer", scope=scope, me=me)
+    return TokenEndpointResponse(access_token=access_token, token_type="bearer", scope=scope, me=me, exp=exp, iat=iat)
 
 
 def validate_access_token(
@@ -399,8 +412,7 @@ def validate_access_token(
         decoded_authorization_code = jwt.decode(authorization_code, secret_key, algorithms=algorithms)
     except jwt.InvalidTokenError:
         raise AuthenticationError("Authorization code is invalid.")
-
-    if int(time.time()) > decoded_authorization_code["expires"]:
+    except jwt.ExpiredSignatureError:
         raise AuthorizationCodeExpiredError("Authorization code has expired.")
 
     me = decoded_authorization_code["me"]
