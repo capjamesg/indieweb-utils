@@ -5,4 +5,4 @@ lxml
 pyjwt
 Pillow
 granary
-http-message-signatures
+http_message_signatures
