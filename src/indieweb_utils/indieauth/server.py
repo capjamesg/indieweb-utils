@@ -5,7 +5,7 @@ import os
 import time
 from dataclasses import dataclass
 
-import jwt
+from jose import jwt
 
 
 def generate_token(*, size: int = 20) -> str:
@@ -37,7 +37,8 @@ class AuthTokenResponse:
     code: str
     code_verifier: str
     code_challenge: str
-
+    exp: int
+    iat: int
 
 @dataclass
 class TokenEndpointResponse:
@@ -45,7 +46,8 @@ class TokenEndpointResponse:
     token_type: str
     scope: str
     me: str
-
+    exp: int
+    iat: int
 
 def validate_authorization_response(
     grant_type: str,
@@ -179,6 +181,7 @@ def generate_auth_token(
     final_scope: str,
     secret_key: str,
     expiry_seconds: int = 3600,
+    code_challenge: str = "",
     **kwargs
 ) -> AuthTokenResponse:
     """
@@ -232,12 +235,6 @@ def generate_auth_token(
     if response_type not in ["code", "id"]:
         raise AuthenticationError("Only code and id response types are supported.")
 
-    code_verifier = generate_token()
-
-    sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
-
-    code_challenge = base64.urlsafe_b64encode(sha256_code.encode("utf-8")).decode("utf-8")
-    
     iat = int(time.time())
 
     encoded_code = jwt.encode(
@@ -256,7 +253,7 @@ def generate_auth_token(
         algorithm="HS256",
     )
 
-    return AuthTokenResponse(code=encoded_code, code_verifier=code_verifier, code_challenge=code_challenge, exp=expiry_seconds, iat=iat)
+    return AuthTokenResponse(code=encoded_code, code_verifier="", code_challenge=code_challenge, exp=expiry_seconds, iat=iat)
 
 
 def redeem_code(
@@ -329,16 +326,14 @@ def redeem_code(
         raise AuthenticationError("Code is invalid.")
 
     if code_verifier is not None and decoded_code["code_challenge_method"] == "S256":
-        sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).hexdigest()
-
+        sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).digest()
         # urls must be encoded with url safe base64, not just standard base64
-        code_challenge = base64.urlsafe_b64encode(sha256_code.encode("utf-8")).decode("utf-8")
-
+        code_challenge = base64.urlsafe_b64encode(sha256_code).rstrip(b"=").decode("utf-8")        
         if code_challenge != decoded_code["code_challenge"]:
             raise AuthenticationError("Code challenge in decoded code was invalid.")
 
     valid = _verify_decoded_code(
-        client_id, redirect_uri, decoded_code["client_id"], decoded_code["redirect_uri"], decoded_code["expires"]
+        client_id, redirect_uri, decoded_code["client_id"], decoded_code["redirect_uri"], decoded_code["exp"]
     )
 
     if not valid:
