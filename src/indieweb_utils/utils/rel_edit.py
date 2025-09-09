@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from ..constants import USER_AGENT
 
+
 def discover_edit_links(url: str, request: requests.Response = None):
     if not request:
         try:

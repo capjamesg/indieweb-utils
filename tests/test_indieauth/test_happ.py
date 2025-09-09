@@ -1,5 +1,4 @@
 import responses
-
 from indieweb_utils.indieauth import happ
 
 

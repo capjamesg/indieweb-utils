@@ -1,6 +1,5 @@
 import pytest
 import responses
-
 from indieweb_utils.indieauth import profile
 
 

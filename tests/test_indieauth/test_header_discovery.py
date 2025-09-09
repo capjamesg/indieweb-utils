@@ -5,9 +5,8 @@ import responses
 class TestHeaderDiscovery:
     @pytest.fixture
     def target(self):
-        from indieweb_utils.indieauth.header_discovery import (
-            discover_indieauth_endpoints,
-        )
+        from indieweb_utils.indieauth.header_discovery import \
+            discover_indieauth_endpoints
 
         return discover_indieauth_endpoints
 

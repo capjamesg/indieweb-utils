@@ -1,5 +1,4 @@
 import pytest
-
 from indieweb_utils.utils import autolink_tags
 
 

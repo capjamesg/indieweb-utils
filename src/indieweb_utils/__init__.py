@@ -38,8 +38,8 @@ from .trackback import (
     send_trackback,
 )
 from .utils import add_footnote_links
-from .utils.rel_edit import discover_edit_links
 from .utils.autotag import autolink_tags
+from .utils.rel_edit import discover_edit_links
 from .utils.url_summary import InvalidURL, get_url_summary
 from .utils.urls import canonicalize_url, is_site_url, remove_tracking_params, slugify
 from .utils.web_bot_auth import HTTPSignatureKeyResolver, signed_web_bot_auth_request
@@ -50,6 +50,7 @@ from .webmentions import (
     send_webmention,
     validate_webmention,
 )
+from .feeds import urls
 
 __version__ = "0.10.0"
 

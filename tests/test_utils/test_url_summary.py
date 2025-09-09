@@ -1,5 +1,4 @@
 import pytest
-
 from indieweb_utils import utils
 
 

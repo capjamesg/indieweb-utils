@@ -5,7 +5,6 @@ from ..constants import USER_AGENT
 
 import requests
 from bs4 import BeautifulSoup
-
 from indieweb_utils.webmentions.discovery import discover_endpoints
 
 from ..utils.urls import canonicalize_url
