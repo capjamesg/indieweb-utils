@@ -19,6 +19,7 @@ class TestGenerateAuthToken:
         )
 
         assert response.code
+        assert response.code_verifier
         assert response.code_challenge
 
         exchange_response = server.redeem_code(
