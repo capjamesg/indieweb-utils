@@ -1,4 +1,5 @@
 import re
+from typing import Tuple, Optional, Dict
 
 patterns = {
     r"https://(www\.)?reddit\.com/r/([^/]+)/?": r"https://www.reddit.com/r/\2.rss",
@@ -13,7 +14,7 @@ ACTIVITYPUB_USERNAME_REGEX = re.compile(r"^@([a-zA-Z0-9._-]+)@([a-zA-Z0-9.-]+)$"
 BLUESKY_USERNAME_REGEX = re.compile(r"^@([a-zA-Z0-9._-]+)")
 
 
-def get_web_feed_url(url: str) -> tuple[str | None, str | None]:
+def get_web_feed_url(url: str) -> Optional[Tuple[str, str]]:
     """
     Given a URL, return the corresponding feed URL if it matches a known pattern.
 
@@ -29,7 +30,7 @@ def get_web_feed_url(url: str) -> tuple[str | None, str | None]:
     return None, None
 
 
-def check_if_feed_is_activitypub(url: str) -> str | None:
+def check_if_feed_is_activitypub(url: str) -> Optional[str]:
     """
     Check if a URL is likely an ActivityPub profile URL, based on the pattern "https://example.com/@username".
 
@@ -47,7 +48,7 @@ def check_if_feed_is_activitypub(url: str) -> str | None:
     return None
 
 
-def check_if_feed_is_bsky(url: str) -> str | None:
+def check_if_feed_is_bsky(url: str) -> Optional[str]:
     """
     Check if a URL is likely a Bluesky profile URL, based on the pattern "https://bsky.app/profile/username".
 
