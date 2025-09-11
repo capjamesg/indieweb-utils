@@ -1,9 +1,12 @@
 import setuptools
 from setuptools import find_packages
 import re
+import os
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+
+requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
 
 with open("./src/indieweb_utils/__init__.py", "r") as f:
     content = f.read()
@@ -15,7 +18,7 @@ setuptools.setup(
     version=version,
     author="capjamesg",
     author_email="jamesg@jamesg.blog",
-    description="Utilities to aid the implementation of various IndieWeb specifications and functionalities.",
+    description=" Building blocks for IndieWeb applications.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/capjamesg/indieweb-utils",
@@ -29,14 +32,5 @@ setuptools.setup(
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    python_requires=">=3.6",
-    install_requires=[
-        "mf2py",
-        "requests",
-        "beautifulsoup4",
-        "lxml",
-        "pyjwt",
-        "granary",
-        "Pillow"
-    ],
+    python_requires=">=3.6"
 )

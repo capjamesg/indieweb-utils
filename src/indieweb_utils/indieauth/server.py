@@ -4,7 +4,7 @@ import hashlib
 import os
 import time
 from dataclasses import dataclass
-
+import secrets
 from jose import jwt
 
 
@@ -177,11 +177,9 @@ def generate_auth_token(
     redirect_uri: str,
     response_type: str,
     state: str,
-    code_challenge_method: str,
     final_scope: str,
     secret_key: str,
     expiry_seconds: int = 3600,
-    code_challenge: str = "",
     **kwargs
 ) -> AuthTokenResponse:
     """
@@ -197,8 +195,6 @@ def generate_auth_token(
     :type response_type: str
     :param state: The state of the authorization request.
     :type state: str
-    :param code_challenge_method: The code challenge method, used for PKCE.
-    :type code_challenge_method: str
     :param final_scope: The scopes approved by the user.
     :type final_scope: str
     :param secret_key: The secret key used to sign the token.
@@ -237,6 +233,11 @@ def generate_auth_token(
 
     iat = int(time.time())
 
+    #  code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
+    code_verifier = secrets.token_urlsafe(32)
+    hashed = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+    code_challenge = base64.urlsafe_b64encode(hashed).rstrip(b"=").decode("utf-8")
+
     encoded_code = jwt.encode(
         {
             "me": me,
@@ -246,14 +247,14 @@ def generate_auth_token(
             "redirect_uri": redirect_uri,
             "scope": final_scope,
             "code_challenge": code_challenge,
-            "code_challenge_method": code_challenge_method,
+            "code_challenge_method": "S256",
             **kwargs,
         },
         secret_key,
         algorithm="HS256",
     )
 
-    return AuthTokenResponse(code=encoded_code, code_verifier="", code_challenge=code_challenge, exp=expiry_seconds, iat=iat)
+    return AuthTokenResponse(code=encoded_code, code_verifier=code_verifier, code_challenge=code_challenge, exp=expiry_seconds, iat=iat)
 
 
 def redeem_code(
