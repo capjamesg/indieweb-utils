@@ -32,5 +32,15 @@ setuptools.setup(
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    python_requires=">=3.6"
+    python_requires=">=3.6",
+    install_requires=[
+        "mf2py",
+        "requests",
+        "beautifulsoup4",
+        "lxml",
+        "Pillow",
+        "granary",
+        "http_message_signatures",
+        "python-jose"
+    ]
 )
