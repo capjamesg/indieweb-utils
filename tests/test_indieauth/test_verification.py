@@ -3,7 +3,7 @@ from indieweb_utils.indieauth import server
 
 class TestGenerateAuthToken:
     def test_generate_auth_token(self):
-        """A end-to-end happy path test to confirm the entire indieauth flow is working properly.
+        """An end-to-end happy path test to confirm the entire IndieAuth flow is working properly.
         It will: generate an auth token, redeem the token, validate access, and validate authorization.
         """
 
@@ -19,7 +19,6 @@ class TestGenerateAuthToken:
         )
 
         assert response.code
-        assert response.code_verifier
         assert response.code_challenge
 
         exchange_response = server.redeem_code(

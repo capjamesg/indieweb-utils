@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `redeem_code()` method nowreturns a JWT access token with `exp` and `iat` values.
 - `discover_edit_links()` lets you discover rel=edit links per the [rel=edit specification](https://microformats.org/wiki/rel-edit).
 - `canonicalize_url()` now depends more on the `urllib` library. This should reduce the number of edge cases in URL canonicalization.
+- [python-jose](https://pypi.org/project/python-jose/) is now used to generate JWT tokens. This allows tokens to be both signed and encrypted.
 
 ## Bug Fixes
 
