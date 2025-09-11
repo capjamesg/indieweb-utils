@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [0.10.0] - 2024-09-11
+
+## Added
+
+- You can now set the user agent with which IndieWeb Utils will make requests. To do so, import the library, then, immediately after, set `indieweb_utils.USER_AGENT = 'your-user-agent'`.
+- The `get_web_feed_url()` lets you match a URL against several services that offer RSS feeds that may not be automatically discoverable. If a URL matches a pattern, the corresponding feed URL is returned. The computed feed URL is not validated by the function. You should write code to make sure the feed exists.
+- `signed_web_bot_auth_request()` lets you make a signed HTTP request using the [Web Bot Auth](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/web-bot-auth/) system.
+- `check_if_feed_is_bsky()` transforms `https://bsky.app/profile/username` into `@username`.
+- The `generate_token()` IndieAuth method now generates a JWT with `exp` and `iat` values.
+- The `redeem_code()` method nowreturns a JWT access token with `exp` and `iat` values.
+- `discover_edit_links()` lets you discover rel=edit links per the [rel=edit specification](https://microformats.org/wiki/rel-edit).
+- `canonicalize_url()` now depends more on the `urllib` library. This should reduce the number of edge cases in URL canonicalization.
+
+## Bug Fixes
+
+- `application/jf2feed+json` feeds can now be discovered through `discover_web_page_feeds`.
+- `get_valid_relmeauth_links()` can now return `mailto:` links.
+- The `get_reply_context()` function no longer returns an error if the microformat for a featured image or a video is processed as a dictionary rather than a list. This was an internal bug caused by missing logic to validate the type of object in those microformats.
+- `send_webmention` now returns the `summary` result from a Webmention endpoint if the endpoint returns a JSON response with a `summary` value.
+
+## Breaking Changes
+
+- `validate_authorization_response()` now requires a code challenge as an argument. The function previously generated a new code challenge, which was not the correct behaviour.
+- `redeem_code()` now decodes code challenges as UTF-8 and applies the required `.rstrip(b"=")` transformation. If you are using IndieWeb Utils both to support a client and a server, both your clients and server will need to be updated to make sure they are all using the same code redemption logic.
+
+## Removed Functions
+
+- The `_generate_tweet_reply_context()` internal function, used to generate reply contexts from Twitter, has now been removed. This was previously used by `get_reply_context()`. As part of this change, `get_reply_context()` no longer accepts the `twitter_bearer_token` argument.
+
 # [0.9.0] - 2024-06-24
 
 ## What's Changed
