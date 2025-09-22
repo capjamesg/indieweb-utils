@@ -5,8 +5,9 @@ patterns = {
     r"https://(www\.)?reddit\.com/r/([^/]+)/?": r"https://www.reddit.com/r/\2.rss",
     r"https://(www\.)?pinterest\.com/([^/]+)/?": r"https://www.pinterest.com/\2.rss",
     r"https://(www\.)?github\.com/([^/]+)/?": r"https://github.com/\2.atom",
-    r"https:\/\/?(www\.|medium\.com\/)(@.*)": r"https://medium.com/feed/\2",
-    r"https:\/\/?(www\.|[^\/]+\.tumblr\.com)\/?": r"https://\2.tumblr.com/rss",
+    r"https://(www\.)?medium\.com/@([^/]+)/?": r"https://medium.com/@\2/feed",
+    # // tumblr shuold turn https://www.tumblr.com/capjamesg into https://capjamesg.tumblr.com/rss
+    r"https://(www\.)?tumblr\.com/([^/]+)/?": r"https://\2.tumblr.com/rss",
     r"https:\/\/?(www\.|arxiv\.org\/list\/)([^\/]+)\/recent": r"https://rss.arxiv.org/rss/\2",
 }
 
@@ -25,6 +26,7 @@ def get_web_feed_url(url: str) -> Optional[Tuple[str, str]]:
     """
     for pattern, feed in patterns.items():
         if re.match(pattern, url):
+            print(pattern, url)
             result = re.sub(pattern, feed, url)
             return result, ""
     return None, None
