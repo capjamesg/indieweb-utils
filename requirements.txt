@@ -2,7 +2,6 @@ mf2py
 requests
 beautifulsoup4
 lxml
-pyjwt
 Pillow
 granary
 http_message_signatures
