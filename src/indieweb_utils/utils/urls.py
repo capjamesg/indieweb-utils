@@ -35,6 +35,10 @@ def canonicalize_url(url: str, domain: str = "", full_url: str = "", protocol: s
     if url.startswith(domain):
         url = url[len(domain) :]
 
+    # used to turn relative path + page url into absolute complete path
+    if not (url_parse.urlparse(url).netloc) and not url.startswith("/"):
+        url = full_url.rstrip("/") + "/" + url.lstrip("/")
+
     parsed_url = url_parse.urlparse(urljoin(protocol + "://" + domain, url))
 
     # remove port

@@ -99,12 +99,12 @@ def discover_web_page_feeds(
     for mime_type in valid_mime_types.union(user_mime_types):
         for item in soup.find_all("link", rel="alternate", type=mime_type):
             feed_title = item.get("title")
-            feed_url = canonicalize_url(item.get("href"), page_domain)
+            feed_url = canonicalize_url(item.get("href"), page_domain, full_url=url)
 
             feeds.append(FeedUrl(url=feed_url, mime_type=mime_type, title=feed_title))
         for item in soup.find_all("link", rel="feed", type=mime_type):
             feed_title = item.get("title")
-            feed_url = canonicalize_url(item.get("href"), page_domain)
+            feed_url = canonicalize_url(item.get("href"), page_domain, full_url=url)
 
             feeds.append(FeedUrl(url=feed_url, mime_type=mime_type, title=feed_title))
 
