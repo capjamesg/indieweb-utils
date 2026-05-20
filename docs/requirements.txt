@@ -3,12 +3,12 @@ bs4==0.0.1
 certifi==2024.7.4
 charset-normalizer==2.0.9
 html5lib==1.1
-idna==3.7
+idna==3.15
 mf2py==1.1.2
 requests
 six==1.16.0
 soupsieve==2.3.1
-urllib3==2.6.3
+urllib3==2.7.0
 webencodings==0.5.1
 indieweb_utils==0.9.1
 pyjwt==2.4.0
