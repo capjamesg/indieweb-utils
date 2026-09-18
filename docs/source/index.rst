@@ -1,7 +1,7 @@
 Welcome to IndieWeb Utils documentation!
 =================================================
 
-WARNING: This package is deprecated as of September 18th, 2026 and is no longer maintained or supported.
+**WARNING**: This package is deprecated as of September 18th, 2026 and is no longer maintained or supported.
 
 **indieweb-utils** is a Python library that provides building blocks for people implementing IndieWeb applications.
 This library also contains implementations for some specifications that may be useful in IndieWeb applications.
