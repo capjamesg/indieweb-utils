@@ -38,7 +38,6 @@ setuptools.setup(
         "requests",
         "beautifulsoup4",
         "lxml",
-        "Pillow",
         "granary",
         "http_message_signatures",
         "python-jose"
