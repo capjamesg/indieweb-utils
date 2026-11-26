@@ -16,6 +16,7 @@ from ..webmentions.discovery import (
     discover_webmention_endpoint,
 )
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 
 @dataclass
@@ -88,9 +89,11 @@ def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, 
             author_url = parsed_url.scheme + "://" + domain + h_entry["properties"].get("author")[0]
 
         try:
+            check_if_url_is_safe(author_url)
             author = mf2py.parse(requests.get(author_url, headers={"User-Agent": USER_AGENT}, timeout=10, verify=False).text)
-        except requests.exceptions.RequestException:
+        except:
             pass
+
         else:
             h_card = [item for item in author["items"] if item.get("type", []) == ["h-card"]][0]
             author_url, author_name, author_image = _get_author_properties(author_url, h_card)

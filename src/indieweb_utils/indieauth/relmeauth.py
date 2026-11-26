@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from ..parsing.parse import get_parsed_mf2_data
 from ..utils.urls import canonicalize_url
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 
 def get_valid_relmeauth_links(
@@ -63,6 +64,11 @@ def get_valid_relmeauth_links(
         return list(set(rel_me_links))
 
     for link in rel_me_links:
+        try:
+            check_if_url_is_safe(link)
+        except:
+            continue
+
         try:
             link_valid = requests.get(link, headers={"User-Agent": USER_AGENT}, timeout=5)
         except requests.exceptions.RequestException:

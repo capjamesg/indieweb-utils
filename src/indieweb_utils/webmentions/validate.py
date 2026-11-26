@@ -6,6 +6,7 @@ from ..constants import USER_AGENT
 import requests
 from bs4 import BeautifulSoup
 from indieweb_utils.webmentions.discovery import discover_endpoints
+from ..parsing.verify_url import check_if_url_is_safe
 
 from ..utils.urls import canonicalize_url
 
@@ -45,8 +46,9 @@ def _process_vouch(vouch: str, source: str, vouch_list: List[str]) -> bool:
 
         if vouch_domain in vouch_list:
             try:
+                check_if_url_is_safe(vouch)
                 r = requests.get(vouch, headers={"User-Agent": USER_AGENT}, timeout=5)
-            except requests.exceptions.RequestException:
+            except:
                 return moderate
 
             soup = BeautifulSoup(r.text, "html.parser")
@@ -154,7 +156,11 @@ def _retrieve_webmention_target(
             access_token = _validate_private_webmention(source, session, code)
 
             request_headers = {"Authorization": f"Bearer {access_token}"}
-
+        try:
+            check_if_url_is_safe(source)
+        except:
+            raise WebmentionValidationError("Source URL is invalid.")
+ 
         try:
             get_source_for_validation = session.get(source, headers=request_headers)
         except requests.exceptions.RequestException:

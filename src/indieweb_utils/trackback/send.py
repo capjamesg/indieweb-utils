@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup, Comment
 from ..rsd.discover import rsd_discovery
 from ..utils.urls import canonicalize_url
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 class TrackbackError(Exception):
     """Base class for trackback errors."""
@@ -58,6 +59,11 @@ def discover_trackback_url(url: str) -> str:
 
         discover_trackback_url('http://example.com/post/123')
     """
+
+    try:
+        check_if_url_is_safe(url)
+    except:
+        raise TrackbackError("The provided URL is not valid.")
 
     get_trackback_url_request = requests.get(url, headers={"User-Agent": USER_AGENT})
 

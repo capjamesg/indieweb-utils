@@ -8,6 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from ..utils.urls import _is_http_url, canonicalize_url
+from ..parsing.verify_url import check_if_url_is_safe
 
 _WEBMENTION = "webmention"  # TODO: Move this to a constants file
 
@@ -75,19 +76,9 @@ def discover_webmention_endpoint(target: str) -> WebmentionDiscoveryResponse:
 
     # verify if IP address is not allowed
     try:
-        endpoint_as_ip = ipaddress.ip_address(endpoint)
-
-        if (
-            endpoint.is_private is True
-            or endpoint.is_multicast is True
-            or endpoint_as_ip.is_loopback is True
-            or endpoint_as_ip.is_unspecified is True
-            or endpoint_as_ip.is_reserved is True
-            or endpoint_as_ip.is_link_local is True
-        ):
-            raise UnacceptableIPAddress("The endpoint does not connect to an accepted IP address.")
-    except ValueError:
-        pass
+       check_if_url_is_safe(endpoint)
+    except:
+        raise UnacceptableIPAddress("The endpoint does not connect to an accepted IP address.")
 
     if endpoint == "localhost":
         raise LocalhostEndpointFound("The endpoint is localhost.")
