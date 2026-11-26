@@ -52,7 +52,7 @@ from .webmentions import (
 )
 from .feeds import urls
 
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 # add for backwards compatibility
 _discover_endpoints = discover_endpoints
