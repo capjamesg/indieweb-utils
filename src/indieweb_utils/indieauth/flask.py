@@ -185,7 +185,7 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
     if check_token.status_code != 200 or not check_token.json().get("me"):
         return False
 
-    if approved_user is not None and check_token.status_code != 200 and check_token.json()["me"] != approved_user:
+    if approved_user is not None and check_token.json()["me"] != approved_user:
         return False
 
     return True

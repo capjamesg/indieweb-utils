@@ -326,7 +326,10 @@ def redeem_code(
     except jwt.InvalidTokenError:
         raise AuthenticationError("Code is invalid.")
 
-    if code_verifier is not None and decoded_code["code_challenge_method"] == "S256":
+    if not code_verifier:
+        raise AuthenticationError("No code verifier was provided.")
+
+    if decoded_code["code_challenge_method"] == "S256":
         sha256_code = hashlib.sha256(code_verifier.encode("utf-8")).digest()
         # urls must be encoded with url safe base64, not just standard base64
         code_challenge = base64.urlsafe_b64encode(sha256_code).rstrip(b"=").decode("utf-8")        
