@@ -136,6 +136,10 @@ def discover_endpoints(
         endpoint_request = request
     else:
         try:
+            check_if_url_is_safe(url)
+        except:
+            raise Exception("URL is not valid.")
+        try:
             endpoint_request = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=5)
         except requests.exceptions.RequestException:
             raise Exception("Could not connect to the specified URL.")

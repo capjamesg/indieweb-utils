@@ -1,26 +1,25 @@
 from urllib.parse import urlparse
 from rfc3986 import is_valid_uri as rfc3986_is_valid_uri
 import ipaddress
+import socket
 
 def check_if_url_is_safe(url):
     parsed = urlparse(url)
     ip = None
 
-    try:
-        ip = ipaddress.ip_address(parsed.hostname)
-    except:
-        pass
-
-    if ip and not ip.is_global:
+    ip_addr = socket.gethostbyname(hostname)
+    ip = ipaddress.ip_address(ip_addr)
+    
+    if not ip.is_global:
         raise Exception("URL is not valid.")
     
     if ip and (
-        endpoint.is_private is True
-        or endpoint.is_multicast is True
-        or endpoint_as_ip.is_loopback is True
-        or endpoint_as_ip.is_unspecified is True
-        or endpoint_as_ip.is_reserved is True
-        or endpoint_as_ip.is_link_local is True
+        ip.is_private is True
+        or ip.is_multicast is True
+        or ip.is_loopback is True
+        or ip.is_unspecified is True
+        or ip.is_reserved is True
+        or ip.is_link_local is True
     ):
         raise Exception("URL is not valid.")
 

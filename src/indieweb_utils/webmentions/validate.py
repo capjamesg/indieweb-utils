@@ -121,6 +121,11 @@ def _validate_private_webmention(source: str, session: requests.Session, code: s
     token_endpoint = source_token_endpoint["token_endpoint"]
 
     try:
+        check_if_url_is_safe(token_endpoint)
+    except:
+        raise WebmentionValidationError("Token endpoint is not valid.")
+
+    try:
         token_request = session.post(token_endpoint, data={"grant_type": "authorization_code", "code": code})
     except requests.exceptions.RequestException:
         raise WebmentionValidationError(
@@ -136,9 +141,14 @@ def _validate_private_webmention(source: str, session: requests.Session, code: s
 
 
 def _retrieve_webmention_target(
-    source: str, code: str = None, target_request: Optional[requests.Response] = None
+    source: str, code: str = None, target_request: Optional[requests.Response] = None, timeout=5
 ) -> Tuple[BeautifulSoup, str]:
     # Only allow 3 redirects before raising an error
+
+    try:
+        check_if_url_is_safe(source)
+    except:
+        raise WebmentionValidationError("Source URL is invalid.")
 
     if target_request:
         validated_headers = _validate_headers(target_request)
@@ -156,13 +166,9 @@ def _retrieve_webmention_target(
             access_token = _validate_private_webmention(source, session, code)
 
             request_headers = {"Authorization": f"Bearer {access_token}"}
+
         try:
-            check_if_url_is_safe(source)
-        except:
-            raise WebmentionValidationError("Source URL is invalid.")
- 
-        try:
-            get_source_for_validation = session.get(source, headers=request_headers)
+            get_source_for_validation = session.get(source, headers=request_headers, timeout=5)
         except requests.exceptions.RequestException:
             raise WebmentionValidationError("Source could not be retrieved.")
 

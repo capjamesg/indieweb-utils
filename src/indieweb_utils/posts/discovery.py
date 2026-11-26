@@ -369,7 +369,7 @@ def _syndication_check(url_to_check, posse_permalink, candidate_url, posse_domai
 
     if url_to_check and url_parse.urlsplit(url_to_check).netloc == posse_domain:
         try:
-            r = requests.get(url_to_check, headers={"User-Agent": USER_AGENT}, timeout=10, allow_redirects=True)
+            r = requests.get(url_to_check, headers={"User-Agent": USER_AGENT}, timeout=10, allow_redirects=False)
         except requests.exceptions.RequestException:
             # handler will prevent exception due to timeout, if one occurs
             pass

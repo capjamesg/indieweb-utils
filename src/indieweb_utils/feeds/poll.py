@@ -51,7 +51,7 @@ def retrieve_feed_contents(feed, format="jsonfeed"):
         raise ValueError("Unsupported format")
 
     try:
-        resp = requests.get(feed, headers={"User-Agent": USER_AGENT}, allow_redirects=True)
+        resp = requests.get(feed, headers={"User-Agent": USER_AGENT}, allow_redirects=False)
     except requests.RequestException:
         raise FailedToFetchFeed("Request to retrieve feed did not return a valid response.")
 

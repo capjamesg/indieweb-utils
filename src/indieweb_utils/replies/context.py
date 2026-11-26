@@ -396,6 +396,11 @@ def get_reply_context(url: str, summary_word_limit: int = 75) -> ReplyContext:
         raise UnsupportedScheme(f"{parsed_url.scheme} is not supported.")
 
     try:
+        check_if_url_is_safe(url)
+    except:
+        raise ReplyContextRetrievalError("URL is not valid.")
+    
+    try:
         page_content = requests.get(url, timeout=10, verify=False, headers=http_headers)
     except requests.exceptions.RequestException:
         raise ReplyContextRetrievalError("Could not retrieve page content.")

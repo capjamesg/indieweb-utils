@@ -21,13 +21,13 @@ class FeedUrl:
 def _get_page_feed_contents(url: str, html: str, user_agent: str = USER_AGENT) -> Tuple[requests.Response, str]:
     if html:
         try:
-            web_page_request = requests.head(url, timeout=10, allow_redirects=True, headers={"User-Agent": user_agent})
+            web_page_request = requests.head(url, timeout=10, allow_redirects=False, headers={"User-Agent": user_agent})
         except requests.RequestException:
             raise Exception("Request to retrieve URL did not return a valid response.")
 
     if not html:
         try:
-            web_page_request = requests.get(url, timeout=10, allow_redirects=True, headers={"User-Agent": user_agent})
+            web_page_request = requests.get(url, timeout=10, allow_redirects=False, headers={"User-Agent": user_agent})
         except requests.RequestException:
             raise Exception("Request to retrieve URL did not return a valid response.")
         else:

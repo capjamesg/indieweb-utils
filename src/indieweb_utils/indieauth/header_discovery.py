@@ -5,6 +5,7 @@ import requests
 
 from ..webmentions.discovery import discover_endpoints
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 @dataclass
 class IndieAuthEndpoints:
@@ -53,6 +54,10 @@ def discover_indieauth_endpoints(url: str) -> IndieAuthEndpoints:
     )
 
     if endpoints.get("indieauth-metadata"):
+        try:
+            check_if_url_is_safe(endpoints["indieauth-metadata"])
+        except:
+            raise Exception("URL is not valid.")
         try:
             response = requests.get(endpoints["indieauth-metadata"], headers={"User-Agent": USER_AGENT}, timeout=5)
         except requests.exceptions.RequestException:

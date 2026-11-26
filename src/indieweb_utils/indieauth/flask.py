@@ -100,6 +100,14 @@ def indieauth_callback_handler(
     :raises AuthenticationError: The token endpoint could not be accessed or authentication failed.
     """
 
+    if not state:
+        message = "The provided state value did not match the session state. Please try again."
+        raise AuthenticationError(message)
+        
+    if not session_state:
+        message = "The provided state value did not match the session state. Please try again."
+        raise AuthenticationError(message)
+
     if state != session_state:
         message = "The provided state value did not match the session state. Please try again."
         raise AuthenticationError(message)
