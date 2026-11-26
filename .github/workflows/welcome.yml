@@ -1,5 +1,8 @@
 name: Welcome
 
+permissions:
+  contents: read
+
 on:
   issues:
     types: [opened]
