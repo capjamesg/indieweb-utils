@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 from ..parsing.parse import RequestError, get_soup
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 def get_page_name(url: str, html: str = None, soup: BeautifulSoup = None) -> str:
     """
@@ -33,6 +34,11 @@ def get_page_name(url: str, html: str = None, soup: BeautifulSoup = None) -> str
 
     if html:
         soup = get_soup(html)
+
+    try:
+        check_if_url_is_safe(url)
+    except:
+        raise Exception("URL is not valid.")
 
     if soup is None:
         try:

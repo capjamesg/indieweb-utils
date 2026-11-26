@@ -3,6 +3,7 @@ from typing import List
 
 import requests
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 @dataclass
 class IndieAuthCallbackResponse:
@@ -123,10 +124,15 @@ def indieauth_callback_handler(
     headers = {"Accept": "application/json"}
 
     try:
+        check_if_url_is_safe(token_endpoint)
         auth_request = requests.post(token_endpoint, data=data, headers=headers)
     except requests.exceptions.RequestException:
         message = "Your token endpoint server could not be accessed."
         raise AuthenticationError(message)
+    except:
+        message = "Your token endpoint server could not be accessed."
+        raise AuthenticationError(message)
+
 
     if auth_request.status_code != 200:
         message = "There was an error with your token endpoint server."
@@ -182,6 +188,11 @@ def is_authenticated(token_endpoint: str, headers: dict, session: dict, approved
         access_token = session.get("access_token")
     else:
         return False
+
+    try:
+        check_if_url_is_safe(token_endpoint)
+    except:
+        raise AuthenticationError("URL is not valid.")
 
     try:
         check_token = requests.get(token_endpoint, headers={"Authorization": f"Bearer {access_token}", "User-Agent": USER_AGENT}, timeout=5)

@@ -135,6 +135,7 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
     endpoint_url = discover_trackback_url(target_url)
 
     try:
+        check_if_url_is_safe(endpoint_url)
         send_trackback_request = requests.post(
             endpoint_url,
             data={"url": source_url, "title": title, "excerpt": excerpt, "blog_name": blog_name},
@@ -145,6 +146,8 @@ def send_trackback(target_url, source_url, title: str = None, excerpt: str = Non
         )
     except requests.exceptions.ConnectionError:
         raise ConnectionError("Could not connect to the server.")
+    except:
+        raise ConnectionError("Could not access the provided URL.")
 
     if send_trackback_request.status_code != 200:
         raise InvalidStatusCodeError(

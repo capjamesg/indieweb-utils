@@ -140,6 +140,7 @@ def send_webmention(
 
     # make post request to endpoint with source and target as values
     try:
+        check_if_url_is_safe(target_webmention_endpoint)
         r = requests.post(
             target_webmention_endpoint,
             data=request_data,
@@ -147,6 +148,8 @@ def send_webmention(
         )
     except requests.exceptions.RequestException:
         raise CouldNotConnectToWebmentionEndpoint("Could not connect to the receiver's webmention endpoint.")
+    except:
+        raise CouldNotConnectToWebmentionEndpoint("Target URL was not valid or could not be accessed.")
 
     # if response is a JSON document
     if r.headers.get("Content-Type") == "application/json":

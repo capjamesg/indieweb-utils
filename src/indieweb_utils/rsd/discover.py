@@ -29,6 +29,11 @@ def rsd_discovery(url: str, attribute: str):
         # discover the RSD document for a given URL
         rsd_discovery('http://example.com', 'trackback:ping')
     """
+    
+    try:
+        check_if_url_is_safe(url)
+    except:
+        raise Exception("URL is not valid.")
 
     get_rsd_request = requests.get(url, headers={"User-Agent": USER_AGENT})
 

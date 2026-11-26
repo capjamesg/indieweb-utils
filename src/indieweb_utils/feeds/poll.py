@@ -2,6 +2,7 @@ import requests
 from granary import atom, jsonfeed, microformats2, rss
 
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 class FailedToFetchFeed(Exception):
     pass
@@ -49,6 +50,11 @@ def retrieve_feed_contents(feed, format="jsonfeed"):
         CONVERSION_FUNCTION = jsonfeed.activities_to_jsonfeed
     else:
         raise ValueError("Unsupported format")
+
+    try:
+        check_if_url_is_safe(feed)
+    except:
+        raise FailedToFetchFeed("URL is not valid.")
 
     try:
         resp = requests.get(feed, headers={"User-Agent": USER_AGENT}, allow_redirects=False)

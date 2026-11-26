@@ -2,6 +2,7 @@ import mf2py
 import requests
 from bs4 import BeautifulSoup
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 class RequestError(Exception):
     pass
@@ -40,6 +41,12 @@ def _get_soup_from_request(url: str, headers: dict = {}) -> BeautifulSoup:
     """
     if not headers.get("User-Agent"):
         headers["User-Agent"] = USER_AGENT
+
+    try:
+        check_if_url_is_safe(url)
+    except:
+        raise Exception("URL is not valid.")
+
     try:
         contents = requests.get(url, timeout=10, headers=headers).text
     except requests.exceptions.RequestException:

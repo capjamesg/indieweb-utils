@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from ..parsing.parse import get_parsed_mf2_data, get_soup
 from ..utils.urls import _is_http_url, canonicalize_url
 from ..constants import USER_AGENT
+from ..parsing.verify_url import check_if_url_is_safe
 
 # This regex identifies permashortlink citations in the form of (example.com slug)
 # Permashortlink citations may be used as a link to a post that does not contain a hyperlink
@@ -26,6 +27,11 @@ class PostTypeFormattingError(Exception):
 
 
 def _process_candidate_url(candidate_url: str, posse_permalink: str, parsed_post: BeautifulSoup) -> str:
+    try:
+        check_if_url_is_safe(candidate_url)
+    except:
+        raise PostDiscoveryError("URL is not valid.")
+
     try:
         request = requests.get(candidate_url, headers={"User-Agent": USER_AGENT}, timeout=5)
     except requests.exceptions.RequestException:
