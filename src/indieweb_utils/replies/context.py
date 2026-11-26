@@ -90,7 +90,7 @@ def _process_h_entry_author(h_entry: dict, url: str, domain: str) -> Tuple[str, 
 
         try:
             check_if_url_is_safe(author_url)
-            author = mf2py.parse(requests.get(author_url, headers={"User-Agent": USER_AGENT}, timeout=10, verify=False).text)
+            author = mf2py.parse(requests.get(author_url, headers={"User-Agent": USER_AGENT}, timeout=10).text)
         except:
             pass
 
@@ -287,7 +287,7 @@ def _get_favicon(photo_url: str, domain: str) -> str:
         raise Exception("Favicon URL is invalid.")
 
     try:
-        r = requests.get(photo_url, headers={"User-Agent": USER_AGENT}, timeout=10, verify=False)
+        r = requests.get(photo_url, headers={"User-Agent": USER_AGENT}, timeout=10)
 
         if r.status_code != 200:
             photo_url = ""
